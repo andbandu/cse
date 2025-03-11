@@ -14,7 +14,7 @@ export default function Navigation() {
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
               <svg
-                className="h-8 w-8 text-primary"
+                className="h-8 w-8 "
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -22,8 +22,10 @@ export default function Navigation() {
               >
                 <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
               </svg>
-              <span className="font-semibold text-xl">
-                ColomboStockExchange.Info
+              <span className="font-bold text-xl text-blue-500">
+                CSE<span className="font-bold text-xl text-green-500">
+                INFO
+              </span>
               </span>
             </Link>
           </div>

@@ -45,12 +45,6 @@ export function Footer() {
               Terms
             </Link>
             <Link
-              href="/cse-market-data"
-              className="text-muted-foreground hover:text-foreground transition-colors"
-            >
-              CSE Market Data
-            </Link>
-            <Link
               href="/privacy"
               className="text-muted-foreground hover:text-foreground transition-colors"
             >

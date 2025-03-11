@@ -5,6 +5,7 @@ import { queryClient } from "./lib/queryClient";
 import { Toaster } from "@/components/ui/toaster";
 import Dashboard from "@/pages/dashboard";
 import NotFound from "@/pages/not-found";
+import { Footer } from "@/components/Footer";
 
 function Router() {
   return (

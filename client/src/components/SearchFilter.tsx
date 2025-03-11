@@ -1,9 +1,15 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Search, RotateCcw } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
-import type { DividendRecord } from '@shared/types';
+import type { DividendRecord } from "@shared/types";
 
 interface FilterState {
   search: string;
@@ -20,19 +26,26 @@ interface SearchFilterProps {
   data: DividendRecord[];
 }
 
-export default function SearchFilter({ filter, onFilterChange, resultCount, data }: SearchFilterProps) {
+export default function SearchFilter({
+  filter,
+  onFilterChange,
+  resultCount,
+  data,
+}: SearchFilterProps) {
   const currentYear = new Date().getFullYear().toString();
 
   // Get unique sectors from data
-  const sectors = Array.from(new Set(data.map(record => record.sector))).sort();
+  const sectors = Array.from(
+    new Set(data.map((record) => record.sector)),
+  ).sort();
 
   const handleReset = () => {
     onFilterChange({
-      search: '',
-      sector: 'All Sectors',
+      search: "",
+      sector: "All Sectors",
       sortBy: `${currentYear} Yield (High to Low)`,
-      payoutMonth: 'All Months',
-      minimumYield: 0
+      payoutMonth: "All Months",
+      minimumYield: 0,
     });
   };
 
@@ -47,35 +60,47 @@ export default function SearchFilter({ filter, onFilterChange, resultCount, data
             placeholder="Search company or ticker..."
             className="pl-9"
             value={filter.search}
-            onChange={(e) => onFilterChange({ ...filter, search: e.target.value })}
+            onChange={(e) =>
+              onFilterChange({ ...filter, search: e.target.value })
+            }
           />
         </div>
 
         <Select
           value={filter.sector}
-          onValueChange={(value) => onFilterChange({ ...filter, sector: value })}
+          onValueChange={(value) =>
+            onFilterChange({ ...filter, sector: value })
+          }
         >
           <SelectTrigger>
             <SelectValue placeholder="Sector" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="All Sectors">All Sectors</SelectItem>
-            {sectors.map(sector => (
-              <SelectItem key={sector} value={sector}>{sector}</SelectItem>
+            {sectors.map((sector) => (
+              <SelectItem key={sector} value={sector}>
+                {sector}
+              </SelectItem>
             ))}
           </SelectContent>
         </Select>
 
         <Select
           value={filter.sortBy}
-          onValueChange={(value) => onFilterChange({ ...filter, sortBy: value })}
+          onValueChange={(value) =>
+            onFilterChange({ ...filter, sortBy: value })
+          }
         >
           <SelectTrigger>
             <SelectValue placeholder="Sort By" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value={`${currentYear} Yield (High to Low)`}>{currentYear} Yield (High to Low)</SelectItem>
-            <SelectItem value={`${currentYear} Yield (Low to High)`}>{currentYear} Yield (Low to High)</SelectItem>
+            <SelectItem value={`${currentYear} Yield (High to Low)`}>
+              {currentYear} Divident (High to Low)
+            </SelectItem>
+            <SelectItem value={`${currentYear} Yield (Low to High)`}>
+              {currentYear} Divident (Low to High)
+            </SelectItem>
             <SelectItem value="Company (A-Z)">Company (A-Z)</SelectItem>
             <SelectItem value="Company (Z-A)">Company (Z-A)</SelectItem>
           </SelectContent>
@@ -83,7 +108,9 @@ export default function SearchFilter({ filter, onFilterChange, resultCount, data
 
         <Select
           value={filter.payoutMonth}
-          onValueChange={(value) => onFilterChange({ ...filter, payoutMonth: value })}
+          onValueChange={(value) =>
+            onFilterChange({ ...filter, payoutMonth: value })
+          }
         >
           <SelectTrigger>
             <SelectValue placeholder="Payout Month" />
@@ -100,12 +127,18 @@ export default function SearchFilter({ filter, onFilterChange, resultCount, data
         <div className="lg:col-span-2">
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <span className="text-sm font-medium">Minimum Yield ({currentYear})</span>
-              <span className="text-sm text-muted-foreground">{filter.minimumYield}%</span>
+              <span className="text-sm font-medium">
+                Minimum Divident ({currentYear})
+              </span>
+              <span className="text-sm text-muted-foreground">
+                {filter.minimumYield} LKR
+              </span>
             </div>
             <Slider
               value={[filter.minimumYield]}
-              onValueChange={([value]) => onFilterChange({ ...filter, minimumYield: value })}
+              onValueChange={([value]) =>
+                onFilterChange({ ...filter, minimumYield: value })
+              }
               max={100}
               step={0.5}
             />
@@ -114,11 +147,9 @@ export default function SearchFilter({ filter, onFilterChange, resultCount, data
       </div>
 
       <div className="flex justify-between items-center mt-4">
-        <p className="text-sm text-gray-500">
-          Showing {resultCount} results
-        </p>
-        <Button 
-          variant="outline" 
+        <p className="text-sm text-gray-500">Showing {resultCount} results</p>
+        <Button
+          variant="outline"
           onClick={handleReset}
           className="flex items-center gap-2"
         >

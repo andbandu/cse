@@ -1,0 +1,5 @@
+
+User-agent: *
+Allow: /
+
+Sitemap: https://your-deployed-replit-url.repl.co/sitemap.xml

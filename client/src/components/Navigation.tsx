@@ -8,12 +8,12 @@ export default function Navigation() {
   const { theme, setTheme } = useTheme();
 
   return (
-    <nav className="border-b">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav className="w-full border-b">
+      <div className="container  mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
-              <svg 
+              <svg
                 className="h-8 w-8 text-primary"
                 viewBox="0 0 24 24"
                 fill="none"
@@ -22,7 +22,9 @@ export default function Navigation() {
               >
                 <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
               </svg>
-              <span className="font-semibold text-xl">Dividend Data Portal</span>
+              <span className="font-semibold text-xl">
+                ColomboStockExchange.Info
+              </span>
             </Link>
           </div>
 

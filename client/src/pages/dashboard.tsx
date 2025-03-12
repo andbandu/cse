@@ -9,7 +9,6 @@ import Analytics from "@/components/Analytics";
 import type { DividendRecord } from "@shared/types";
 import { setPageTitle } from "@/lib/seo";
 import { Helmet } from "react-helmet";
-import { Navbar } from "@/components/Navbar"; // Added import for Navbar
 
 interface FilterState {
   search: string;
@@ -80,7 +79,9 @@ export default function Dashboard() {
   const pageTitle = setPageTitle("Dividend Dashboard");
 
   return (
-    <div className="min-h-screen flex flex-col"> {/* Changed div class */}
+    <div className="min-h-screen flex flex-col">
+      {" "}
+      {/* Changed div class */}
       <Helmet>
         <title>{pageTitle}</title>
         <meta
@@ -88,12 +89,16 @@ export default function Dashboard() {
           content="Track and analyze dividend history, yields and payout trends of companies listed on the Colombo Stock Exchange (CSE)."
         />
       </Helmet>
-      <Navbar /> {/* Added Navbar component */}
       <Header />
       <Hero />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-6">
-          {!isAnalyticsLoading && analyticsData && (<Analytics data={analyticsData} totalCompanies={dividendData?.length || 0}/>)}
+          {!isAnalyticsLoading && analyticsData && (
+            <Analytics
+              data={analyticsData}
+              totalCompanies={dividendData?.length || 0}
+            />
+          )}
           <SearchFilter
             filter={filter}
             onFilterChange={setFilter}

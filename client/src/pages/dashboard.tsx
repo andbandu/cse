@@ -10,6 +10,55 @@ import type { DividendRecord } from "@shared/types";
 import { setPageTitle } from "@/lib/seo";
 import { Helmet } from "react-helmet";
 
+
+// Custom SEO component (needs to be defined elsewhere)
+const SEOHead = ({ title, description, canonical, keywords }) => (
+  <Helmet>
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="keywords" content={keywords} />
+  </Helmet>
+);
+
+//Custom Structured Data components (needs to be defined elsewhere)
+const FinancialToolStructuredData = ({name, description, providerName, providerUrl, category}) => (
+  <script type="application/ld+json">
+    {`
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "${name}",
+        "description": "${description}",
+        "provider": {
+          "@type": "Organization",
+          "name": "${providerName}",
+          "url": "${providerUrl}"
+        },
+        "applicationCategory": "${category}"
+      }
+    `}
+  </script>
+)
+
+const BreadcrumbStructuredData = ({items}) => (
+  <script type="application/ld+json">
+    {`
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": ${JSON.stringify(items.map((item, index) => ({
+          "@type": "ListItem",
+          "position": index + 1,
+          "name": item.name,
+          "item": item.item
+        })))}
+      }
+    `}
+  </script>
+)
+
+
 interface FilterState {
   search: string;
   sector: string;
@@ -80,15 +129,24 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {" "}
-      {/* Changed div class */}
-      <Helmet>
-        <title>{pageTitle}</title>
-        <meta
-          name="description"
-          content="Track and analyze dividend history, yields and payout trends of companies listed on the Colombo Stock Exchange (CSE)."
-        />
-      </Helmet>
+      <SEOHead 
+        title="Dividend History & Yield Tracker" 
+        description="Track and analyze dividend history, yields and payouts of companies listed on the Colombo Stock Exchange (CSE)."
+        canonical="/"
+        keywords="CSE dividends, Colombo Stock Exchange dividends, Sri Lanka stock dividends, CSE dividend history, dividend yield, Sri Lanka investments"
+      />
+      <FinancialToolStructuredData
+        name="Colombo Stock Exchange Dividend Tracker"
+        description="Track and analyze dividend history of companies listed on the Colombo Stock Exchange (CSE)."
+        providerName="ColomboStockExchange.info"
+        providerUrl="https://colombostockexchange.info"
+        category="Financial Analysis Tool"
+      />
+      <BreadcrumbStructuredData
+        items={[
+          { name: 'Home', item: '/' }
+        ]}
+      />
       <Header />
       <Hero />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

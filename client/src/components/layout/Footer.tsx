@@ -11,7 +11,8 @@ export default function Footer() {
               <div className="bg-primary-600 text-white p-1.5 rounded-lg mr-2 shadow-sm">
                 <Building className="h-5 w-5" />
               </div>
-              <h2 className="text-xl font-bold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">CSE INFO</h2>
+              <h2 className="text-xl font-bold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">ColomboStockExchange</h2>
+              <span className="ml-2 text-xs font-semibold bg-gradient-to-r from-amber-500 to-amber-600 text-white px-2 py-0.5 rounded-full shadow-sm">.info</span>
             </div>
             <p className="text-slate-300 text-sm leading-relaxed">Track CSE dividend history, yields, and payout trends. The
             information provided is for informational purposes only and not

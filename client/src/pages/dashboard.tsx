@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import Hero from "@/components/dividend/Hero";
 import CompanyTable from "@/components/CompanyTable";
 import SearchFilter from "@/components/SearchFilter";
 import Analytics from "@/components/Analytics";
@@ -88,16 +89,10 @@ export default function Dashboard() {
       </Helmet>
 
       <Header />
-
+      <Hero />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between">
-            <h1 className="text-2xl font-bold">CSE Dividend Data</h1>
-            <p className="text-sm text-gray-500">
-              Track and analyze Sri Lanka Stock dividend payments from various
-              companies across different sectors
-            </p>
-          </div>
+          
 
           {!isAnalyticsLoading && analyticsData && (<Analytics data={analyticsData} totalCompanies={dividendData?.length || 0}/>)}
 

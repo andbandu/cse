@@ -1,20 +1,32 @@
+import { useState } from "react";
 import { Link } from "wouter";
-import { Building, Calculator, InfoIcon, MessageCircle } from "lucide-react";
+import { Building, Calculator, InfoIcon, MessageCircle, Menu } from "lucide-react";
 
 export default function Header() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
   return (
     <header className="bg-slate-800 text-white shadow-lg">
       <div className="container mx-auto px-4 py-4">
         <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-          <div className="flex items-center">
-            <div className="bg-white text-primary-800 p-1.5 rounded-lg mr-2 shadow-sm">
-              <Building className="h-5 w-5 fill-primary-800 text-black" />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <div className="bg-white text-primary-800 p-1.5 rounded-lg mr-2 shadow-sm">
+                <Building className="h-5 w-5 fill-primary-800 text-black" />
+              </div>
+              <h1 className="text-xl font-bold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">ColomboStockExchange</h1>
+              <span className="ml-2 text-xs font-semibold bg-gradient-to-r from-amber-500 to-amber-600 text-white px-2 py-0.5 rounded-full shadow-sm">.info</span>
             </div>
-            <h1 className="text-xl font-bold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">CSE INFO</h1>
-            <span className="ml-2 text-xs font-semibold bg-gradient-to-r from-amber-500 to-amber-600 text-white px-2 py-0.5 rounded-full shadow-sm">Beta</span>
+            <button className="md:hidden" onClick={toggleMenu}>
+              <Menu className="h-6 w-6" />
+            </button>
           </div>
-          
-          <nav className="flex flex-col sm:flex-row gap-4 md:items-center text-sm md:gap-8">
+
+          <nav className={`${isMenuOpen ? 'block' : 'hidden'} md:flex flex-col sm:flex-row gap-4 md:items-center text-sm md:gap-8`}>
             <Link href="/" className="font-medium hover:text-amber-400 transition-colors border-b-2 border-amber-500 flex items-center gap-1.5">
               <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>

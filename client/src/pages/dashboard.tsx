@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent } from "@/components/ui/card";
-import Navigation from "@/components/Navigation";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 import CompanyTable from "@/components/CompanyTable";
 import SearchFilter from "@/components/SearchFilter";
 import Analytics from "@/components/Analytics";
 import type { DividendRecord } from "@shared/types";
 import { setPageTitle } from "@/lib/seo";
-import { Footer } from "@/components/Footer";
 import { Helmet } from "react-helmet";
 
 interface FilterState {
@@ -88,7 +87,7 @@ export default function Dashboard() {
         />
       </Helmet>
 
-      <Navigation />
+      <Header />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-6">
@@ -100,12 +99,7 @@ export default function Dashboard() {
             </p>
           </div>
 
-          {!isAnalyticsLoading && analyticsData && (
-            <Analytics
-              data={analyticsData}
-              totalCompanies={dividendData?.length || 0}
-            />
-          )}
+          {!isAnalyticsLoading && analyticsData && (<Analytics data={analyticsData} totalCompanies={dividendData?.length || 0}/>)}
 
           <SearchFilter
             filter={filter}

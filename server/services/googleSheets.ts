@@ -1,6 +1,9 @@
 import { google } from 'googleapis';
 import NodeCache from 'node-cache';
 import type { DividendRecord } from '@shared/types';
+import dotenv from 'dotenv';
+dotenv.config();
+
 
 const SPREADSHEET_ID = '14D2R_AK9ZU0AVnLDMNQCkeElBfzvALz5wLr57kQy0mk';
 const RANGE = 'Sheet1!A2:Z'; // Extended range to capture all years

@@ -181,7 +181,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/"
+                  href="/disclaimer"
                   className="text-slate-300 hover:text-white text-sm transition-colors flex items-center gap-2"
                 >
                   <svg

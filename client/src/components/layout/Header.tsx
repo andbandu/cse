@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import {
   Building,
   Calculator,
@@ -10,6 +10,7 @@ import {
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [location] = useLocation();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -57,6 +58,9 @@ export default function Header() {
                 <path d="M9 21V9" />
               </svg>
               <span>Home</span>
+              {location === "/" && (
+                <span className="block h-0.5 w-full bg-yellow-500 rounded-full mt-0.5"></span>
+              )}
             </Link>
             <Link
               href="/cse-dividend-history"
@@ -77,6 +81,9 @@ export default function Header() {
                 <path d="M15 21V9" />
               </svg>
               <span>Dividend History</span>
+              {location === "/cse-dividend-history" && (
+                <span className="block h-0.5 w-full bg-yellow-500 rounded-full mt-0.5"></span>
+              )}
             </Link>
             <Link
               href="/sri-lanka-fd-rates"
@@ -91,6 +98,9 @@ export default function Header() {
                 <path d="M4 17V9h16v8H4zm2-2h12v-4H6v4zM3 7h18V5H3v2zm3 10h12v-1H6v1zm0 2h6v-1H6v1z" />
               </svg>
               <span>FD Rates</span>
+              {location === "/sri-lanka-fd-rates" && (
+                <span className="block h-0.5 w-full bg-yellow-500 rounded-full mt-0.5"></span>
+              )}
             </Link>
             <Link
               href="#calculator"
@@ -98,6 +108,9 @@ export default function Header() {
             >
               <Calculator className="h-4 w-4" />
               <span>Calculator</span>
+              {location === "#calculator" && (
+                <span className="block h-0.5 w-full bg-yellow-500 rounded-full mt-0.5"></span>
+              )}
             </Link>
             <Link
               href="/about"
@@ -105,6 +118,9 @@ export default function Header() {
             >
               <InfoIcon className="h-4 w-4" />
               <span>About Us</span>
+              {location === "/about" && (
+                <span className="block h-0.5 w-full bg-yellow-500 rounded-full mt-0.5"></span>
+              )}
             </Link>
             <Link
               href="/contact"
@@ -112,6 +128,9 @@ export default function Header() {
             >
               <MessageCircle className="h-4 w-4" />
               <span>Contact</span>
+              {location === "/contact" && (
+                <span className="block h-0.5 w-full bg-yellow-500 rounded-full mt-0.5"></span>
+              )}
             </Link>
           </nav>
         </div>

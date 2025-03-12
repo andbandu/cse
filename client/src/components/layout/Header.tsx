@@ -42,7 +42,9 @@ export default function Header() {
           >
             <Link
               href="/"
-              className="font-medium hover:text-amber-400 transition-colors border-b-2 border-amber-500 flex items-center gap-1.5"
+              className={`font-medium hover:text-amber-400 transition-colors flex items-center gap-1.5 ${
+                location === "/" ? "border-b-2 border-amber-500" : ""
+              }`}
             >
               <svg
                 className="h-4 w-4"
@@ -58,13 +60,14 @@ export default function Header() {
                 <path d="M9 21V9" />
               </svg>
               <span>Home</span>
-              {location === "/" && (
-                <span className="block h-0.5 w-full bg-yellow-500 rounded-full mt-0.5"></span>
-              )}
             </Link>
             <Link
               href="/cse-dividend-history"
-              className="font-medium hover:text-amber-400 transition-colors flex items-center gap-1.5"
+              className={`font-medium hover:text-amber-400 transition-colors flex items-center gap-1.5 ${
+                location === "/cse-dividend-history"
+                  ? "border-b-2 border-amber-500"
+                  : ""
+              }`}
             >
               <svg
                 className="h-4 w-4"
@@ -81,13 +84,14 @@ export default function Header() {
                 <path d="M15 21V9" />
               </svg>
               <span>Dividend History</span>
-              {location === "/cse-dividend-history" && (
-                <span className="block h-0.5 w-full bg-yellow-500 rounded-full mt-0.5"></span>
-              )}
             </Link>
             <Link
               href="/sri-lanka-fd-rates"
-              className="font-medium hover:text-amber-400 transition-colors flex items-center gap-1.5"
+              className={`font-medium hover:text-amber-400 transition-colors flex items-center gap-1.5 ${
+                location === "/sri-lanka-fd-rates"
+                  ? "border-b-2 border-amber-500"
+                  : ""
+              }`}
             >
               <svg
                 className="h-4 w-4"
@@ -98,39 +102,33 @@ export default function Header() {
                 <path d="M4 17V9h16v8H4zm2-2h12v-4H6v4zM3 7h18V5H3v2zm3 10h12v-1H6v1zm0 2h6v-1H6v1z" />
               </svg>
               <span>FD Rates</span>
-              {location === "/sri-lanka-fd-rates" && (
-                <span className="block h-0.5 w-full bg-yellow-500 rounded-full mt-0.5"></span>
-              )}
             </Link>
             <Link
               href="#calculator"
-              className="font-medium hover:text-amber-400 transition-colors flex items-center gap-1.5"
+              className={`font-medium hover:text-amber-400 transition-colors flex items-center gap-1.5 ${
+                location === "/calculator" ? "border-b-2 border-amber-500" : ""
+              }`}
             >
               <Calculator className="h-4 w-4" />
               <span>Calculator</span>
-              {location === "#calculator" && (
-                <span className="block h-0.5 w-full bg-yellow-500 rounded-full mt-0.5"></span>
-              )}
             </Link>
             <Link
               href="/about"
-              className="font-medium hover:text-amber-400 transition-colors flex items-center gap-1.5"
+              className={`font-medium hover:text-amber-400 transition-colors flex items-center gap-1.5 ${
+                location === "/about" ? "border-b-2 border-amber-500" : ""
+              }`}
             >
               <InfoIcon className="h-4 w-4" />
               <span>About Us</span>
-              {location === "/about" && (
-                <span className="block h-0.5 w-full bg-yellow-500 rounded-full mt-0.5"></span>
-              )}
             </Link>
             <Link
               href="/contact"
-              className="font-medium hover:text-amber-400 transition-colors flex items-center gap-1.5"
+              className={`font-medium hover:text-amber-400 transition-colors flex items-center gap-1.5 ${
+                location === "/contact" ? "border-b-2 border-amber-500" : ""
+              }`}
             >
               <MessageCircle className="h-4 w-4" />
               <span>Contact</span>
-              {location === "/contact" && (
-                <span className="block h-0.5 w-full bg-yellow-500 rounded-full mt-0.5"></span>
-              )}
             </Link>
           </nav>
         </div>

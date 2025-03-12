@@ -59,7 +59,7 @@ export default function Header() {
               <span>Home</span>
             </Link>
             <Link
-              href="/cse-divident-history"
+              href="/cse-dividend-history"
               className="font-medium hover:text-amber-400 transition-colors flex items-center gap-1.5"
             >
               <svg
@@ -76,7 +76,7 @@ export default function Header() {
                 <path d="M3 15h8" />
                 <path d="M15 21V9" />
               </svg>
-              <span>Divident History</span>
+              <span>Dividend History</span>
             </Link>
             <Link
               href="/sri-lanka-fd-rates"

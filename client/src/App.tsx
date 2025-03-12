@@ -22,6 +22,7 @@ function Router() {
       <Route path="/terms" component={Terms} />
       <Route path="/privacy" component={Privacy} />
       <Route path="/disclaimer" component={Disclaimer} />
+      <Route path="/cse-dividend-history" component={Dashboard} />
       <Route component={NotFound} />
     </Switch>
   );

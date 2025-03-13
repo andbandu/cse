@@ -3,6 +3,24 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { mongoStorage } from "./mongodb-storage"; // Import MongoDB storage
 
+// Added: Sample data initialization function
+async function initSampleData() {
+  try {
+    // Replace this with your actual sample data insertion logic
+    const sampleBanks = [
+      { name: "Bank A", city: "New York" },
+      { name: "Bank B", city: "London" },
+    ];
+    await mongoStorage.collection('banks').insertMany(sampleBanks);
+    console.log("Sample bank data inserted.");
+
+    // Add sample data for other collections as needed
+  } catch (error) {
+    console.error("Error inserting sample data:", error);
+  }
+}
+
+
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -41,6 +59,9 @@ app.use((req, res, next) => {
   try {
     // Connect to MongoDB before registering routes
     await mongoStorage.connect(); // Connect to MongoDB
+
+    // Initialize sample data after connecting to MongoDB
+    await initSampleData();
 
     const server = await registerRoutes(app);
 

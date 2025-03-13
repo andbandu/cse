@@ -1,23 +1,117 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-//import { fdstorage } from "./fd-storage";  //Removed - replaced with mongoStorage below
-import { mongoStorage } from "./mongodb-storage"; // Added import for MongoDB storage
+import { mongoStorage } from "./mongodb-storage";
 import { z } from "zod";
+import { Router } from 'express';
+import { mongoDBService } from './services/mongodb';
+import { sheetsService } from './services/googleSheets';
+
+const router = Router();
+
+// ===== BANKS ENDPOINTS =====
+router.get('/banks', async (req, res) => {
+  try {
+    const banks = await mongoDBService.getBanks();
+    res.json(banks);
+  } catch (error) {
+    console.error('Error fetching banks:', error);
+    res.status(500).json({ error: 'Failed to fetch banks' });
+  }
+});
+
+router.get('/banks/:id', async (req, res) => {
+  try {
+    const bank = await mongoDBService.getBank(req.params.id);
+    if (!bank) {
+      return res.status(404).json({ error: 'Bank not found' });
+    }
+    res.json(bank);
+  } catch (error) {
+    console.error('Error fetching bank:', error);
+    res.status(500).json({ error: 'Failed to fetch bank' });
+  }
+});
+
+// ===== RATES ENDPOINTS =====
+router.get('/rates', async (req, res) => {
+  try {
+    // Parse query parameters
+    const termMonths = req.query.term ? parseInt(req.query.term as string) : undefined;
+    const amount = req.query.amount ? parseInt(req.query.amount as string) : undefined;
+
+    let rates;
+
+    if (termMonths && amount) {
+      rates = await mongoDBService.getRatesByTermAndMinAmount(termMonths, amount);
+    } else if (termMonths) {
+      rates = await mongoDBService.getRatesByTerm(termMonths);
+    } else {
+      rates = await mongoDBService.getAllRates();
+    }
+
+    res.json(rates);
+  } catch (error) {
+    console.error('Error fetching rates:', error);
+    res.status(500).json({ error: 'Failed to fetch rates' });
+  }
+});
+
+router.get('/rates/bank/:bankId', async (req, res) => {
+  try {
+    const rates = await mongoDBService.getRatesByBank(req.params.bankId);
+    res.json(rates);
+  } catch (error) {
+    console.error('Error fetching rates by bank:', error);
+    res.status(500).json({ error: 'Failed to fetch rates' });
+  }
+});
+
+router.get('/rates/top', async (req, res) => {
+  try {
+    const limit = req.query.limit ? parseInt(req.query.limit as string) : 5;
+    const termMonths = req.query.term ? parseInt(req.query.term as string) : undefined;
+
+    const topRates = await mongoDBService.getTopRates(limit, termMonths);
+    res.json(topRates);
+  } catch (error) {
+    console.error('Error fetching top rates:', error);
+    res.status(500).json({ error: 'Failed to fetch top rates' });
+  }
+});
+
+// ===== UPDATES ENDPOINTS =====
+router.get('/updates', async (req, res) => {
+  try {
+    const limit = req.query.limit ? parseInt(req.query.limit as string) : 3;
+    const updates = await mongoDBService.getUpdates(limit);
+    res.json(updates);
+  } catch (error) {
+    console.error('Error fetching updates:', error);
+    res.status(500).json({ error: 'Failed to fetch updates' });
+  }
+});
+
+// ===== DIVIDEND DATA ENDPOINTS =====
+router.get('/dividends', async (req, res) => {
+  try {
+    const dividendData = await sheetsService.getDividendData();
+    res.json(dividendData);
+  } catch (error) {
+    console.error('Error fetching dividend data:', error);
+    res.status(500).json({ error: 'Failed to fetch dividend data' });
+  }
+});
+
+export default router;
+
 
 export async function registerRoutes(app: Express): Promise<Server> {
 
-   // API routes prefix
-   const apiPrefix = "/api";
+  // API routes prefix
+  const apiPrefix = "/api";
 
-  app.get('/api/dividends', async (_req, res) => {
-    try {
-      const data = await storage.getDividendData();
-      res.json(data);
-    } catch (error) {
-      res.status(500).json({ message: 'Failed to fetch dividend data' });
-    }
-  });
+  app.use(apiPrefix, router); // Use the new router for API routes
 
   app.get('/api/analytics', async (_req, res) => {
     try {
@@ -28,147 +122,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get all banks
-  app.get(`${apiPrefix}/banks`, async (req, res) => {
-    try {
-      const banks = await mongoStorage.getAllBanks(); //Replaced fdstorage
-      res.json(banks);
-    } catch (error) {
-      res.status(500).json({ message: "Error fetching banks" });
-    }
-  });
-
-  // Get a specific bank
-  app.get(`${apiPrefix}/banks/:id`, async (req, res) => {
-    try {
-      const id = parseInt(req.params.id);
-      if (isNaN(id)) {
-        return res.status(400).json({ message: "Invalid bank ID" });
-      }
-
-      const bank = await mongoStorage.getBank(id); //Replaced fdstorage
-      if (!bank) {
-        return res.status(404).json({ message: "Bank not found" });
-      }
-
-      res.json(bank);
-    } catch (error) {
-      res.status(500).json({ message: "Error fetching bank" });
-    }
-  });
-
-  // Get rates for a specific bank
-  app.get(`${apiPrefix}/banks/:id/rates`, async (req, res) => {
-    try {
-      const id = parseInt(req.params.id);
-      if (isNaN(id)) {
-        return res.status(400).json({ message: "Invalid bank ID" });
-      }
-
-      const rates = await mongoStorage.getRatesByBank(id); //Replaced fdstorage
-      res.json(rates);
-    } catch (error) {
-      res.status(500).json({ message: "Error fetching rates" });
-    }
-  });
-
-  // Get all rates
-  app.get(`${apiPrefix}/rates`, async (req, res) => {
-    try {
-      const rates = await mongoStorage.getAllRates(); //Replaced fdstorage
-      res.json(rates);
-    } catch (error) {
-      res.status(500).json({ message: "Error fetching rates" });
-    }
-  });
-
-  // Get top rates
-  app.get(`${apiPrefix}/rates/top`, async (req, res) => {
-    try {
-      const limitParam = req.query.limit;
-      const termParam = req.query.term;
-
-      const limit = limitParam ? parseInt(limitParam as string) : 5;
-      const term = termParam ? parseInt(termParam as string) : undefined;
-
-      if (isNaN(limit)) {
-        return res.status(400).json({ message: "Invalid limit parameter" });
-      }
-
-      if (termParam && isNaN(parseInt(termParam as string))) {
-        return res.status(400).json({ message: "Invalid term parameter" });
-      }
-
-      const rates = await mongoStorage.getTopRates(limit, term); //Replaced fdstorage
-
-      // Fetch bank details for each rate
-      const ratesWithBanks = await Promise.all(rates.map(async (rate) => {
-        const bank = await mongoStorage.getBank(rate.bankId); //Replaced fdstorage
-        return { ...rate, bank };
-      }));
-
-      res.json(ratesWithBanks);
-    } catch (error) {
-      res.status(500).json({ message: "Error fetching top rates" });
-    }
-  });
-
-  // Filter rates by term and deposit amount
-  app.get(`${apiPrefix}/rates/filter`, async (req, res) => {
-    try {
-      const schema = z.object({
-        term: z.coerce.number().optional(),
-        amount: z.coerce.number().optional()
-      });
-
-      const result = schema.safeParse(req.query);
-
-      if (!result.success) {
-        return res.status(400).json({ message: "Invalid query parameters" });
-      }
-
-      const { term, amount } = result.data;
-
-      let rates;
-      if (term && amount) {
-        rates = await mongoStorage.getRatesByTermAndMinAmount(term, amount); //Replaced fdstorage
-      } else if (term) {
-        rates = await mongoStorage.getRatesByTerm(term); //Replaced fdstorage
-      } else {
-        rates = await mongoStorage.getAllRates(); //Replaced fdstorage
-      }
-
-      // Fetch bank details for each rate
-      const ratesWithBanks = await Promise.all(rates.map(async (rate) => {
-        const bank = await mongoStorage.getBank(rate.bankId); //Replaced fdstorage
-        return { ...rate, bank };
-      }));
-
-      // Sort by interest rate in descending order
-      ratesWithBanks.sort((a, b) => Number(b.interestRate) - Number(a.interestRate));
-
-      res.json(ratesWithBanks);
-    } catch (error) {
-      res.status(500).json({ message: "Error filtering rates" });
-    }
-  });
-
-  // Get latest updates
-  app.get(`${apiPrefix}/updates`, async (req, res) => {
-    try {
-      const limitParam = req.query.limit;
-      const limit = limitParam ? parseInt(limitParam as string) : 3;
-
-      if (isNaN(limit)) {
-        return res.status(400).json({ message: "Invalid limit parameter" });
-      }
-
-      const updates = await mongoStorage.getLatestUpdates(limit); //Replaced fdstorage
-      res.json(updates);
-    } catch (error) {
-      res.status(500).json({ message: "Error fetching updates" });
-    }
-  });
 
   const httpServer = createServer(app);
   return httpServer;

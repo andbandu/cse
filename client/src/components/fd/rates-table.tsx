@@ -5,7 +5,8 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { formatDateToLocal } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Bank, Rate } from "@shared/fd-schema";
+import { Rate } from "@shared/types";
+import { Bank } from "@shared/types";
 import { PayoutOption } from "@/lib/utils/calculator";
 
 interface RateWithBank extends Rate {
@@ -33,7 +34,7 @@ export default function RatesTable({
 }: RatesTableProps) {
   // Construct the API endpoint with appropriate query parameters
   let apiEndpoint = '';
-  
+
   if (filters?.term && filters?.amount) {
     apiEndpoint = `/api/rates/filter?term=${filters.term}&amount=${filters.amount}`;
   } else if (filters?.term) {
@@ -53,7 +54,7 @@ export default function RatesTable({
       cell: ({ row }) => {
         const bank = row.original.bank;
         if (!bank) return null;
-        
+
         return (
           <Link href={`/banks/${row.original.bankId}`} className="cursor-pointer">
             <div className="flex items-center">
@@ -115,6 +116,15 @@ export default function RatesTable({
     },
   ];
 
+  const data = useMemo(() => 
+    rates?.map(rate => ({
+      ...rate,
+      // Ensure date is properly formatted for display
+      lastUpdated: rate.lastUpdated instanceof Date ? rate.lastUpdated : new Date(rate.lastUpdated)
+    })) || [], 
+  [rates]);
+
+
   return (
     <section className="py-16 bg-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -137,7 +147,7 @@ export default function RatesTable({
         ) : (
           <div className="bg-white rounded-lg shadow-md overflow-hidden mb-10">
             <div className="overflow-x-auto">
-              {rates && <DataTable columns={columns} data={rates} showPagination={false} />}
+              {rates && <DataTable columns={columns} data={data} showPagination={false} />}
             </div>
           </div>
         )}

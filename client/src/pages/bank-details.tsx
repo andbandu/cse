@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatDateToLocal } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Bank, Rate } from "@shared/fd-schema";
+import { Bank, Rate } from "@shared/types"; // Assuming types are updated to reflect MongoDB schema
 import { ExternalLink, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
 import { DataTable } from "@/components/ui/data-table";
@@ -19,27 +19,30 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 
 export default function BankDetailsPage() {
   const params = useParams<{ id: string }>();
-  const bankId = parseInt(params.id);
+  const bankId = params.id; // Assuming MongoDB uses string IDs
+
   const [payoutOption, setPayoutOption] = useState<PayoutOption>('maturity');
 
   const { data: bank, isLoading: isLoadingBank } = useQuery<Bank>({
-    queryKey: [`/api/banks/${bankId}`],
+    queryKey: [`/api/banks/${bankId}`], // API endpoint now fetches from MongoDB
+    enabled: !!bankId
   });
 
   const { data: rates, isLoading: isLoadingRates } = useQuery<Rate[]>({
-    queryKey: [`/api/banks/${bankId}/rates`],
+    queryKey: [`/api/banks/${bankId}/rates`], // API endpoint now fetches from MongoDB
+    enabled: !!bankId
   });
-  
+
   // Prepare chart data
   const chartData = rates?.map(rate => ({
     term: `${rate.termMonths} Months`,
     maturityRate: Number(rate.interestRate),
-    monthlyRate: Number(rate.interestRate) * 0.95, // Use a slightly lower rate for monthly payout (estimated)
+    monthlyRate: Number(rate.interestRate) * 0.95, 
   })) || [];
 
   const getRate = (baseRate: string, isMonthly: boolean): number => {
     const rate = Number(baseRate);
-    return isMonthly ? rate * 0.95 : rate; // Monthly rates are typically 5% lower
+    return isMonthly ? rate * 0.95 : rate; 
   };
 
   // Generate columns based on selected payout option
@@ -73,7 +76,7 @@ export default function BankDetailsPage() {
       ),
     },
   ];
-  
+
   const columns = getColumns();
 
   return (
@@ -82,7 +85,7 @@ export default function BankDetailsPage() {
         <title>{bank ? `${bank.name} Fixed Deposits Rates | Sri Lanka` : 'Fixed Deposits Rates | Sri Lanka'}</title>
         <meta name="description" content={bank ? `View fixed deposit rates and details for ${bank.name} in Sri Lanka.` : 'Bank fixed deposit details'} />
       </Helmet>
-      
+
       <div className="bg-gradient-to-r from-slate-700 to-slate-900 py-12">
         <div className="container mx-auto px-4">
           {isLoadingBank ? (
@@ -122,7 +125,7 @@ export default function BankDetailsPage() {
                 </div>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardHeader>
                 <Skeleton className="h-6 w-48" />
@@ -182,7 +185,7 @@ export default function BankDetailsPage() {
                     <TabsTrigger value="table">Table View</TabsTrigger>
                     <TabsTrigger value="chart">Chart View</TabsTrigger>
                   </TabsList>
-                  
+
                   <TabsContent value="table">
                     <div className="mb-6">
                       <h3 className="text-lg font-medium mb-2">Payout Option</h3>
@@ -212,7 +215,7 @@ export default function BankDetailsPage() {
                       />
                     )}
                   </TabsContent>
-                  
+
                   <TabsContent value="chart">
                     <div className="mb-6">
                       <h3 className="text-lg font-medium mb-2">Payout Option</h3>
@@ -231,7 +234,7 @@ export default function BankDetailsPage() {
                         </div>
                       </RadioGroup>
                     </div>
-                    
+
                     <div className="h-72">
                       {isLoadingRates ? (
                         <Skeleton className="h-full w-full" />

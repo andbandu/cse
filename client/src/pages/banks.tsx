@@ -71,7 +71,7 @@ export default function BanksPage() {
                       <br />
                       Last Updated: {formatDateToLocal(new Date(bank.updatedAt))}
                     </p>
-                    <Link href={`/banks/${bank.id}`}>
+                    <Link href={`/banks/${bank._id}`}> {/* Updated to use _id */}
                       <Button variant={"outline"} className="w-full group-hover:bg-primary-600">
                         View Details{" "}
                         <ChevronRight className="h-4 w-4 ml-2 transition-transform group-hover:translate-x-1" />

@@ -1,3 +1,40 @@
+
+// Bank and FD rates types
+export interface Bank {
+  _id: string;
+  name: string;
+  shortName: string;
+  description?: string;
+  established?: number;
+  logoUrl?: string;
+  website?: string;
+  category: 'bank' | 'finance';
+  regulatedBy: string;
+  status: 'active' | 'inactive';
+}
+
+export interface Rate {
+  _id: string;
+  bankId: string;
+  bankName: string;
+  termMonths: number;
+  interestRate: number;
+  minDeposit: number;
+  maxDeposit?: number;
+  specialConditions?: string;
+  lastUpdated: Date;
+}
+
+export interface Update {
+  _id: string;
+  title: string;
+  content: string;
+  category: string;
+  imageUrl?: string;
+  date: Date;
+}
+
+// Dividend tracker types
 export interface DividendRecord {
   company: string;
   ticker: string;
@@ -8,16 +45,5 @@ export interface DividendRecord {
   frequency: string;
   dividends: {
     [year: string]: number;
-  };
-}
-
-export interface AnalyticsData {
-  averageYield: number;
-  sectorDistribution: {
-    [sector: string]: number;
-  };
-  highestYield: {
-    company: string;
-    yield: number;
   };
 }

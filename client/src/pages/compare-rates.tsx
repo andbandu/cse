@@ -11,11 +11,15 @@ import { useFilters } from "@/hooks/use-filters";
 import { useToast } from "@/hooks/use-toast";
 import { Helmet } from "react-helmet";
 import { PayoutOption } from "@/lib/utils/calculator";
+import { Rate } from "@shared/types"; // Updated import
+import { getRates } from "@/services/mongodb"; // Assuming this service fetches data
+
 
 export default function CompareRatesPage() {
   const filters = useFilters();
   const [amount, setAmount] = useState(filters.amount.toString());
   const [formattedAmount, setFormattedAmount] = useState("");
+  const [rates, setRates] = useState<Rate[]>([]); // State to hold fetched rates
   const { toast } = useToast();
 
   // Format amount with commas
@@ -28,9 +32,27 @@ export default function CompareRatesPage() {
     }
   }, [amount]);
 
+  useEffect(() => {
+    const fetchRates = async () => {
+      try {
+        const fetchedRates = await getRates(filters); // Fetch rates from MongoDB
+        setRates(fetchedRates);
+      } catch (error) {
+        console.error("Error fetching rates:", error);
+        toast({
+          title: "Error fetching rates",
+          description: "Could not retrieve rates from the database.",
+          variant: "destructive",
+        });
+      }
+    };
+
+    fetchRates();
+  }, [filters, toast]);
+
   const handleSearch = () => {
     let depositAmount = parseInt(amount.replace(/,/g, ""));
-    
+
     if (isNaN(depositAmount) || depositAmount <= 0) {
       toast({
         title: "Invalid deposit amount",
@@ -39,7 +61,7 @@ export default function CompareRatesPage() {
       });
       return;
     }
-    
+
     filters.setFilters({
       term: filters.term,
       amount: depositAmount,
@@ -53,7 +75,7 @@ export default function CompareRatesPage() {
         <title>Compare Rates | DepositCompare.lk</title>
         <meta name="description" content="Find and compare the best fixed deposit rates from Sri Lankan banks and financial institutions." />
       </Helmet>
-      
+
       <div className="bg-gradient-to-r from-slate-700 to-slate-900 py-12">
         <div className="container mx-auto px-4">
           <h1 className="text-3xl font-bold text-white mb-2">Compare Fixed Deposit Rates</h1>
@@ -88,7 +110,7 @@ export default function CompareRatesPage() {
                   />
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <label htmlFor="deposit-term" className="block text-sm font-medium text-gray-700">
                   Term Period
@@ -112,7 +134,7 @@ export default function CompareRatesPage() {
                   </SelectContent>
                 </Select>
               </div>
-              
+
               <div className="flex items-end">
                 <Button 
                   className="w-full flex items-center justify-center" 
@@ -122,7 +144,7 @@ export default function CompareRatesPage() {
                 </Button>
               </div>
             </div>
-            
+
             <div className="mt-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Payout Option
@@ -148,6 +170,7 @@ export default function CompareRatesPage() {
         <RatesTable 
           title="Fixed Deposit Rates Comparison" 
           description={`Showing rates for ${filters.term}-month fixed deposits of Rs. ${filters.amount.toLocaleString()} (${filters.payoutOption === 'maturity' ? 'At Maturity' : 'Monthly Payout'})`}
+          rates={rates} // Pass fetched rates to the table
           filters={{ term: filters.term, amount: filters.amount, payoutOption: filters.payoutOption }}
           showViewAll={false}
         />

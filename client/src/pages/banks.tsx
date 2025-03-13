@@ -1,3 +1,4 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -5,16 +6,18 @@ import { Link } from "wouter";
 import { ChevronRight } from "lucide-react";
 import { formatDateToLocal } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Bank } from "@shared/fd-schema";
+import { Bank } from "@shared/types";
 import { Helmet } from "react-helmet";
-
 
 export default function BanksPage() {
   const { data: banks, isLoading } = useQuery<Bank[]>({
     queryKey: ["banks"],
     queryFn: async () => {
       const response = await fetch('/api/banks');
-      if (!response.ok) throw new Error('Failed to fetch banks');
+      if (!response.ok) {
+        console.error('Failed to fetch banks:', response.statusText);
+        throw new Error('Failed to fetch banks');
+      }
       return response.json();
     }
   });

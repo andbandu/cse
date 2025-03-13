@@ -12,7 +12,9 @@ const router = Router();
 // ===== BANKS ENDPOINTS =====
 router.get('/banks', async (req, res) => {
   try {
+    console.log('Fetching all banks from MongoDB...');
     const banks = await mongoDBService.getBanks();
+    console.log(`Successfully fetched ${banks.length} banks`);
     res.json(banks);
   } catch (error) {
     console.error('Error fetching banks:', error);
@@ -22,10 +24,13 @@ router.get('/banks', async (req, res) => {
 
 router.get('/banks/:id', async (req, res) => {
   try {
+    console.log(`Fetching bank with id: ${req.params.id}`);
     const bank = await mongoDBService.getBank(req.params.id);
     if (!bank) {
+      console.log(`Bank with id ${req.params.id} not found`);
       return res.status(404).json({ error: 'Bank not found' });
     }
+    console.log(`Successfully fetched bank: ${bank.name}`);
     res.json(bank);
   } catch (error) {
     console.error('Error fetching bank:', error);

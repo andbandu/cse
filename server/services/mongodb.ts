@@ -48,7 +48,16 @@ class MongoDBService {
     try {
       await this.connect();
       const collection = this.client.db(DB_NAME).collection('banks');
-      const banks = await collection.find().toArray() as unknown as Bank[];
+      const banksRaw = await collection.find().toArray();
+      
+      // Transform MongoDB _id to id for client consumption
+      const banks = banksRaw.map(bank => {
+        const { _id, ...rest } = bank;
+        return { 
+          id: _id.toString(), 
+          ...rest 
+        };
+      }) as unknown as Bank[];
       
       cache.set('banks', banks);
       return banks;
@@ -62,7 +71,27 @@ class MongoDBService {
     try {
       await this.connect();
       const collection = this.client.db(DB_NAME).collection('banks');
-      return await collection.findOne({ _id: id }) as unknown as Bank;
+      
+      // Try to convert id to MongoDB ObjectId
+      let bankId;
+      try {
+        const { ObjectId } = require('mongodb');
+        bankId = new ObjectId(id);
+      } catch (err) {
+        // If conversion fails, use the string id
+        bankId = id;
+      }
+      
+      const bank = await collection.findOne({ _id: bankId });
+      
+      if (!bank) return null;
+      
+      // Transform MongoDB _id to id for client consumption
+      const { _id, ...rest } = bank;
+      return { 
+        id: _id.toString(), 
+        ...rest 
+      } as unknown as Bank;
     } catch (error) {
       console.error('Failed to fetch bank from MongoDB:', error);
       throw new Error('Failed to fetch bank data');

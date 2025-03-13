@@ -1,7 +1,8 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { fdstorage } from "./fd-storage";
+//import { fdstorage } from "./fd-storage";  //Removed - replaced with mongoStorage below
+import { mongoStorage } from "./mongo-storage"; // Added import for MongoDB storage
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -30,7 +31,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get all banks
   app.get(`${apiPrefix}/banks`, async (req, res) => {
     try {
-      const banks = await fdstorage.getAllBanks();
+      const banks = await mongoStorage.getAllBanks(); //Replaced fdstorage
       res.json(banks);
     } catch (error) {
       res.status(500).json({ message: "Error fetching banks" });
@@ -45,7 +46,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid bank ID" });
       }
 
-      const bank = await fdstorage.getBank(id);
+      const bank = await mongoStorage.getBank(id); //Replaced fdstorage
       if (!bank) {
         return res.status(404).json({ message: "Bank not found" });
       }
@@ -64,7 +65,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid bank ID" });
       }
 
-      const rates = await fdstorage.getRatesByBank(id);
+      const rates = await mongoStorage.getRatesByBank(id); //Replaced fdstorage
       res.json(rates);
     } catch (error) {
       res.status(500).json({ message: "Error fetching rates" });
@@ -74,7 +75,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get all rates
   app.get(`${apiPrefix}/rates`, async (req, res) => {
     try {
-      const rates = await fdstorage.getAllRates();
+      const rates = await mongoStorage.getAllRates(); //Replaced fdstorage
       res.json(rates);
     } catch (error) {
       res.status(500).json({ message: "Error fetching rates" });
@@ -98,14 +99,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid term parameter" });
       }
 
-      const rates = await fdstorage.getTopRates(limit, term);
-      
+      const rates = await mongoStorage.getTopRates(limit, term); //Replaced fdstorage
+
       // Fetch bank details for each rate
       const ratesWithBanks = await Promise.all(rates.map(async (rate) => {
-        const bank = await fdstorage.getBank(rate.bankId);
+        const bank = await mongoStorage.getBank(rate.bankId); //Replaced fdstorage
         return { ...rate, bank };
       }));
-      
+
       res.json(ratesWithBanks);
     } catch (error) {
       res.status(500).json({ message: "Error fetching top rates" });
@@ -119,33 +120,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
         term: z.coerce.number().optional(),
         amount: z.coerce.number().optional()
       });
-      
+
       const result = schema.safeParse(req.query);
-      
+
       if (!result.success) {
         return res.status(400).json({ message: "Invalid query parameters" });
       }
-      
+
       const { term, amount } = result.data;
-      
+
       let rates;
       if (term && amount) {
-        rates = await fdstorage.getRatesByTermAndMinAmount(term, amount);
+        rates = await mongoStorage.getRatesByTermAndMinAmount(term, amount); //Replaced fdstorage
       } else if (term) {
-        rates = await fdstorage.getRatesByTerm(term);
+        rates = await mongoStorage.getRatesByTerm(term); //Replaced fdstorage
       } else {
-        rates = await fdstorage.getAllRates();
+        rates = await mongoStorage.getAllRates(); //Replaced fdstorage
       }
-      
+
       // Fetch bank details for each rate
       const ratesWithBanks = await Promise.all(rates.map(async (rate) => {
-        const bank = await fdstorage.getBank(rate.bankId);
+        const bank = await mongoStorage.getBank(rate.bankId); //Replaced fdstorage
         return { ...rate, bank };
       }));
-      
+
       // Sort by interest rate in descending order
       ratesWithBanks.sort((a, b) => Number(b.interestRate) - Number(a.interestRate));
-      
+
       res.json(ratesWithBanks);
     } catch (error) {
       res.status(500).json({ message: "Error filtering rates" });
@@ -162,7 +163,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid limit parameter" });
       }
 
-      const updates = await fdstorage.getLatestUpdates(limit);
+      const updates = await mongoStorage.getLatestUpdates(limit); //Replaced fdstorage
       res.json(updates);
     } catch (error) {
       res.status(500).json({ message: "Error fetching updates" });

@@ -1,5 +1,4 @@
 export interface DividendRecord {
-  _id?: string;
   company: string;
   ticker: string;
   sector: string;

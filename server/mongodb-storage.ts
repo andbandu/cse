@@ -102,15 +102,23 @@ export class MongoDBStorage implements IStorage {
   async createRate(rate: InsertRate): Promise<Rate> {
     try {
       const collection = this.db.collection('rates');
+      // Generate a new ID
+      const maxIdResult = await collection.find({}).sort({ id: -1 }).limit(1).toArray();
+      const nextId = maxIdResult.length > 0 ? maxIdResult[0].id + 1 : 1;
       
-      const result = await collection.insertOne(rate);
+      const newRate = {
+        ...rate,
+        id: nextId
+      };
+      
+      const result = await collection.insertOne(newRate);
       if (!result.acknowledged) {
         throw new Error("Failed to insert rate");
       }
       
       return {
-        ...rate,
-        id: result.insertedId.toString()
+        ...newRate,
+        id: nextId
       } as Rate;
     } catch (error) {
       console.error('Error creating rate:', error);
@@ -130,15 +138,23 @@ export class MongoDBStorage implements IStorage {
   async createUpdate(update: InsertUpdate): Promise<Update> {
     try {
       const collection = this.db.collection('updates');
+      // Generate a new ID
+      const maxIdResult = await collection.find({}).sort({ id: -1 }).limit(1).toArray();
+      const nextId = maxIdResult.length > 0 ? maxIdResult[0].id + 1 : 1;
       
-      const result = await collection.insertOne(update);
+      const newUpdate = {
+        ...update,
+        id: nextId
+      };
+      
+      const result = await collection.insertOne(newUpdate);
       if (!result.acknowledged) {
         throw new Error("Failed to insert update");
       }
       
       return {
-        ...update,
-        id: result.insertedId.toString()
+        ...newUpdate,
+        id: nextId
       } as Update;
     } catch (error) {
       console.error('Error creating update:', error);

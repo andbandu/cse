@@ -165,3 +165,13 @@ export class MongoDBStorage implements IStorage {
 
 // Export an instance of the MongoDB storage
 export const mongoStorage = new MongoDBStorage();
+
+// Initialize the connection when the module is loaded
+(async () => {
+  try {
+    await mongoStorage.connect();
+    console.log('MongoDB storage initialized and connected');
+  } catch (error) {
+    console.error('Failed to connect MongoDB storage:', error);
+  }
+})();

@@ -12,7 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Helmet } from "react-helmet";
 import { PayoutOption } from "@/lib/utils/calculator";
 import { Rate } from "@shared/types"; // Updated import
-import { getRates } from "@/services/mongodb"; // Assuming this service fetches data
+//import { getRates } from "@/services/mongodb"; //This import is removed
 
 
 export default function CompareRatesPage() {
@@ -35,13 +35,24 @@ export default function CompareRatesPage() {
   useEffect(() => {
     const fetchRates = async () => {
       try {
-        const fetchedRates = await getRates(filters); // Fetch rates from MongoDB
+        const response = await fetch('/api/rates', {
+          method: 'POST', // Or 'GET' if your API supports it
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(filters), // Send filters as JSON body
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const fetchedRates = await response.json();
         setRates(fetchedRates);
       } catch (error) {
         console.error("Error fetching rates:", error);
         toast({
           title: "Error fetching rates",
-          description: "Could not retrieve rates from the database.",
+          description: "Could not retrieve rates from the API.",
           variant: "destructive",
         });
       }

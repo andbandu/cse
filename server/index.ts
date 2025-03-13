@@ -39,12 +39,35 @@ app.use((req, res, next) => {
 
 (async () => {
   try {
-    // Connect to MongoDB before registering routes
-    await mongoStorage.connect(); // Connect to MongoDB
-    console.log("MongoDB connection established");
+    let mongoConnected = false;
+    
+    try {
+      // Attempt to connect to MongoDB
+      await mongoStorage.connect();
+      console.log("MongoDB connection established");
+      mongoConnected = true;
+    } catch (error) {
+      console.warn("MongoDB connection failed, using fallback data", error);
+    }
 
     // Import sample data from server/sample-data.ts
     const { sampleBanks, sampleRates, sampleUpdates } = await import('./sample-data');
+    
+    if (!mongoConnected) {
+      console.log("Using sample data as fallback");
+      // Setup mock data handling since MongoDB isn't available
+      app.use('/api/banks', (req, res) => {
+        res.json(sampleBanks);
+      });
+      
+      app.use('/api/rates', (req, res) => {
+        res.json(sampleRates);
+      });
+      
+      app.use('/api/updates', (req, res) => {
+        res.json(sampleUpdates);
+      });
+    }
     
     // Register routes and get the HTTP server
     const server = await registerRoutes(app);

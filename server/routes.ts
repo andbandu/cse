@@ -8,6 +8,9 @@ import { mongoDBService } from './services/mongodb';
 import { sheetsService } from './services/googleSheets';
 import { sampleBanks, sampleRates, sampleUpdates } from './sample-data';
 
+// Flag to determine if we're using fallback data (for MongoDB connection failures)
+let usingFallbackData = false;
+
 const router = Router();
 
 // Initialize database with sample data if empty

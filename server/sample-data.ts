@@ -1,272 +1,260 @@
 
-import { MongoClient } from 'mongodb';
-import dotenv from 'dotenv';
+// Sample data for the application
+// Used for seeding the MongoDB database if it's empty
 
-dotenv.config();
-
-// MongoDB connection URL
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/fd_rates';
-const DB_NAME = 'fd_rates';
-
-const sampleBanks = [
+// Sample banks
+export const sampleBanks = [
   {
+    id: 1,
     name: "Commercial Bank of Ceylon PLC",
-    shortName: "ComBank",
-    description: "Commercial Bank of Ceylon PLC is one of the leading banks in Sri Lanka with a strong presence across the country.",
-    established: 1969,
-    logoUrl: "https://images.unsplash.com/photo-1563013544-28ae5e8cbf34?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+    code: "COMB",
+    logo: "https://upload.wikimedia.org/wikipedia/en/7/73/Commercial_Bank_of_Ceylon_logo.png",
+    description: "Commercial Bank of Ceylon PLC is one of the leading commercial banks in Sri Lanka. The bank offers various fixed deposit options with competitive interest rates.",
+    minDeposit: 10000,
+    establishedYear: 1969,
+    branches: 268,
+    headquarters: "Colombo",
     website: "https://www.combank.lk",
-    category: "bank",
-    regulatedBy: "CBSL",
-    status: "active"
+    phone: "+94 11 2353535",
+    updatedAt: new Date().toISOString()
   },
   {
+    id: 2,
     name: "Hatton National Bank PLC",
-    shortName: "HNB",
-    description: "Hatton National Bank PLC is one of the largest private sector commercial banks in Sri Lanka.",
-    established: 1888,
-    logoUrl: "https://images.unsplash.com/photo-1563013544-28ae5e8cbf34?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+    code: "HNB",
+    logo: "https://upload.wikimedia.org/wikipedia/en/9/9a/Hatton_National_Bank_logo.png",
+    description: "Hatton National Bank PLC is one of the largest private sector commercial banks in Sri Lanka, with a nationwide network of branches and ATMs.",
+    minDeposit: 25000,
+    establishedYear: 1888,
+    branches: 252,
+    headquarters: "Colombo",
     website: "https://www.hnb.net",
-    category: "bank",
-    regulatedBy: "CBSL",
-    status: "active"
+    phone: "+94 11 2462462",
+    updatedAt: new Date().toISOString()
   },
   {
+    id: 3,
     name: "People's Bank",
-    shortName: "PB",
-    description: "People's Bank is a state-owned commercial bank in Sri Lanka focusing on retail and development banking.",
-    established: 1961,
-    logoUrl: "https://images.unsplash.com/photo-1563013544-28ae5e8cbf34?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+    code: "PBSL",
+    logo: "https://www.peoplesbank.lk/wp-content/themes/peoples/images/logo.png",
+    description: "People's Bank is a state-owned commercial bank in Sri Lanka offering a wide range of services to retail and corporate customers.",
+    minDeposit: 5000,
+    establishedYear: 1961,
+    branches: 737,
+    headquarters: "Colombo",
     website: "https://www.peoplesbank.lk",
-    category: "bank",
-    regulatedBy: "CBSL",
-    status: "active"
+    phone: "+94 11 2481481",
+    updatedAt: new Date().toISOString()
   },
   {
+    id: 4,
+    name: "Sampath Bank PLC",
+    code: "SAMP",
+    logo: "https://upload.wikimedia.org/wikipedia/en/5/5d/Sampath_Bank_logo.png",
+    description: "Sampath Bank PLC is a private sector bank in Sri Lanka known for its innovative banking solutions and customer-focused approach.",
+    minDeposit: 10000,
+    establishedYear: 1987,
+    branches: 228,
+    headquarters: "Colombo",
+    website: "https://www.sampathbank.lk",
+    phone: "+94 11 2303030",
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 5,
     name: "Bank of Ceylon",
-    shortName: "BOC",
-    description: "Bank of Ceylon is a state-owned commercial bank with a wide network across Sri Lanka.",
-    established: 1939,
-    logoUrl: "https://images.unsplash.com/photo-1563013544-28ae5e8cbf34?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+    code: "BOC",
+    logo: "https://upload.wikimedia.org/wikipedia/en/6/64/Bank_of_Ceylon_logo.png",
+    description: "Bank of Ceylon is a state-owned commercial bank with the largest branch network in Sri Lanka, offering a variety of financial services.",
+    minDeposit: 5000,
+    establishedYear: 1939,
+    branches: 628,
+    headquarters: "Colombo",
     website: "https://www.boc.lk",
-    category: "bank",
-    regulatedBy: "CBSL",
-    status: "active"
-  },
-  {
-    name: "Central Finance Company PLC",
-    shortName: "CF",
-    description: "Central Finance Company PLC is a leading finance company in Sri Lanka offering various financial services.",
-    established: 1957,
-    logoUrl: "https://images.unsplash.com/photo-1563013544-28ae5e8cbf34?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
-    website: "https://www.centralfinance.lk",
-    category: "finance",
-    regulatedBy: "CBSL",
-    status: "active"
+    phone: "+94 11 2446790",
+    updatedAt: new Date().toISOString()
   }
 ];
 
-const sampleRates = [
+// Sample rates
+export const sampleRates = [
   {
-    bankId: "1", // Will be replaced with actual bank _id
+    id: 1,
+    bankId: 1,
     bankName: "Commercial Bank of Ceylon PLC",
     termMonths: 3,
-    interestRate: 12.5,
-    minDeposit: 10000,
-    maxDeposit: 10000000,
+    interestRate: "12.5",
+    minDeposit: "10000",
+    maxDeposit: "10000000",
     specialConditions: "Senior citizens receive an additional 0.5% interest",
-    lastUpdated: new Date("2023-05-15")
+    updatedAt: new Date().toISOString()
   },
   {
-    bankId: "1", // Will be replaced with actual bank _id
+    id: 2,
+    bankId: 1,
     bankName: "Commercial Bank of Ceylon PLC",
     termMonths: 6,
-    interestRate: 13.5,
-    minDeposit: 10000,
-    lastUpdated: new Date("2023-05-15")
+    interestRate: "13.5",
+    minDeposit: "10000",
+    maxDeposit: "10000000",
+    updatedAt: new Date().toISOString()
   },
   {
-    bankId: "1", // Will be replaced with actual bank _id
+    id: 3,
+    bankId: 1,
     bankName: "Commercial Bank of Ceylon PLC",
     termMonths: 12,
-    interestRate: 14.25,
-    minDeposit: 10000,
-    lastUpdated: new Date("2023-05-15")
+    interestRate: "14.25",
+    minDeposit: "10000",
+    maxDeposit: "10000000",
+    updatedAt: new Date().toISOString()
   },
   {
-    bankId: "2", // Will be replaced with actual bank _id
+    id: 4,
+    bankId: 2,
     bankName: "Hatton National Bank PLC",
     termMonths: 3,
-    interestRate: 12.75,
-    minDeposit: 25000,
-    lastUpdated: new Date("2023-05-16")
+    interestRate: "12.75",
+    minDeposit: "25000",
+    maxDeposit: "10000000",
+    updatedAt: new Date().toISOString()
   },
   {
-    bankId: "2", // Will be replaced with actual bank _id
+    id: 5,
+    bankId: 2,
     bankName: "Hatton National Bank PLC",
     termMonths: 6,
-    interestRate: 13.75,
-    minDeposit: 25000,
-    lastUpdated: new Date("2023-05-16")
+    interestRate: "13.75",
+    minDeposit: "25000",
+    maxDeposit: "10000000",
+    updatedAt: new Date().toISOString()
   },
   {
-    bankId: "2", // Will be replaced with actual bank _id
+    id: 6,
+    bankId: 2,
     bankName: "Hatton National Bank PLC",
     termMonths: 12,
-    interestRate: 14.5,
-    minDeposit: 25000,
-    lastUpdated: new Date("2023-05-16")
+    interestRate: "14.5",
+    minDeposit: "25000",
+    maxDeposit: "10000000",
+    updatedAt: new Date().toISOString()
   },
   {
-    bankId: "3", // Will be replaced with actual bank _id
+    id: 7,
+    bankId: 3,
     bankName: "People's Bank",
     termMonths: 3,
-    interestRate: 12.25,
-    minDeposit: 5000,
-    lastUpdated: new Date("2023-05-14")
+    interestRate: "12.0",
+    minDeposit: "5000",
+    maxDeposit: "10000000",
+    updatedAt: new Date().toISOString()
   },
   {
-    bankId: "3", // Will be replaced with actual bank _id
+    id: 8,
+    bankId: 3,
     bankName: "People's Bank",
     termMonths: 6,
-    interestRate: 13.25,
-    minDeposit: 5000,
-    lastUpdated: new Date("2023-05-14")
+    interestRate: "13.0",
+    minDeposit: "5000",
+    maxDeposit: "10000000",
+    updatedAt: new Date().toISOString()
   },
   {
-    bankId: "3", // Will be replaced with actual bank _id
+    id: 9,
+    bankId: 3,
     bankName: "People's Bank",
     termMonths: 12,
-    interestRate: 14.0,
-    minDeposit: 5000,
-    lastUpdated: new Date("2023-05-14")
+    interestRate: "14.0",
+    minDeposit: "5000",
+    maxDeposit: "10000000",
+    updatedAt: new Date().toISOString()
   },
   {
-    bankId: "4", // Will be replaced with actual bank _id
+    id: 10,
+    bankId: 4,
+    bankName: "Sampath Bank PLC",
+    termMonths: 3,
+    interestRate: "12.6",
+    minDeposit: "10000",
+    maxDeposit: "10000000",
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 11,
+    bankId: 4,
+    bankName: "Sampath Bank PLC",
+    termMonths: 6,
+    interestRate: "13.6",
+    minDeposit: "10000",
+    maxDeposit: "10000000",
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 12,
+    bankId: 4,
+    bankName: "Sampath Bank PLC",
+    termMonths: 12,
+    interestRate: "14.85",
+    minDeposit: "10000",
+    maxDeposit: "10000000",
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 13,
+    bankId: 5,
     bankName: "Bank of Ceylon",
     termMonths: 3,
-    interestRate: 12.0,
-    minDeposit: 5000,
-    lastUpdated: new Date("2023-05-13")
+    interestRate: "12.25",
+    minDeposit: "5000",
+    maxDeposit: "10000000",
+    updatedAt: new Date().toISOString()
   },
   {
-    bankId: "4", // Will be replaced with actual bank _id
+    id: 14,
+    bankId: 5,
     bankName: "Bank of Ceylon",
     termMonths: 6,
-    interestRate: 13.0,
-    minDeposit: 5000,
-    lastUpdated: new Date("2023-05-13")
+    interestRate: "13.25",
+    minDeposit: "5000",
+    maxDeposit: "10000000",
+    updatedAt: new Date().toISOString()
   },
   {
-    bankId: "4", // Will be replaced with actual bank _id
+    id: 15,
+    bankId: 5,
     bankName: "Bank of Ceylon",
     termMonths: 12,
-    interestRate: 13.75,
-    minDeposit: 5000,
-    lastUpdated: new Date("2023-05-13")
-  },
-  {
-    bankId: "5", // Will be replaced with actual bank _id
-    bankName: "Central Finance Company PLC",
-    termMonths: 3,
-    interestRate: 14.0,
-    minDeposit: 10000,
-    lastUpdated: new Date("2023-05-17")
-  },
-  {
-    bankId: "5", // Will be replaced with actual bank _id
-    bankName: "Central Finance Company PLC",
-    termMonths: 6,
-    interestRate: 15.0,
-    minDeposit: 10000,
-    lastUpdated: new Date("2023-05-17")
-  },
-  {
-    bankId: "5", // Will be replaced with actual bank _id
-    bankName: "Central Finance Company PLC",
-    termMonths: 12,
-    interestRate: 15.5,
-    minDeposit: 10000,
-    lastUpdated: new Date("2023-05-17")
+    interestRate: "14.75",
+    minDeposit: "5000",
+    maxDeposit: "10000000",
+    updatedAt: new Date().toISOString()
   }
 ];
 
-const sampleUpdates = [
+// Sample updates
+export const sampleUpdates = [
   {
-    title: "CDB Finance Increases Fixed Deposit Rates to 15.5%",
-    content: "Citizens Development Business Finance has increased its 12-month fixed deposit rate to 15.5%, offering one of the highest returns in the market.",
+    id: 1,
+    title: "Sampath Bank Increases Fixed Deposit Rates to 14.85%",
+    content: "Sampath Bank has increased its 12-month fixed deposit rate to 14.85%, offering one of the highest returns in the market.",
     category: "Bank Rates",
     imageUrl: "https://images.unsplash.com/photo-1601597111158-2fceff292cdc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-    date: new Date("2023-05-12")
+    date: new Date("2023-05-12").toISOString()
   },
   {
+    id: 2,
     title: "Central Bank Holds Policy Rates Steady in May",
     content: "The Central Bank of Sri Lanka has decided to maintain its policy interest rates, signaling stability in the financial markets.",
     category: "Market Analysis",
     imageUrl: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-    date: new Date("2023-05-10")
+    date: new Date("2023-05-10").toISOString()
   },
   {
+    id: 3,
     title: "How to Choose the Best Fixed Deposit for Your Needs",
     content: "Our comprehensive guide helps you navigate through the various fixed deposit options to find the one that best suits your financial goals.",
     category: "Guides",
     imageUrl: "https://images.unsplash.com/photo-1579532537598-459ecdaf39cc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-    date: new Date("2023-05-08")
+    date: new Date("2023-05-08").toISOString()
   }
 ];
-
-async function seedDatabase() {
-  const client = new MongoClient(MONGODB_URI);
-  
-  try {
-    await client.connect();
-    console.log('Connected to MongoDB for seeding data');
-    
-    const db = client.db(DB_NAME);
-    
-    // Clear existing data
-    await db.collection('banks').deleteMany({});
-    await db.collection('rates').deleteMany({});
-    await db.collection('updates').deleteMany({});
-    
-    // Insert banks
-    const banksResult = await db.collection('banks').insertMany(sampleBanks);
-    console.log(`${banksResult.insertedCount} banks inserted`);
-    
-    // Get bank IDs
-    const banks = await db.collection('banks').find().toArray();
-    
-    // Update rates with actual bank IDs
-    const rates = sampleRates.map((rate, index) => {
-      const bankIndex = Math.floor(index / 3);
-      return {
-        ...rate,
-        bankId: banks[bankIndex]._id.toString()
-      };
-    });
-    
-    // Insert rates
-    const ratesResult = await db.collection('rates').insertMany(rates);
-    console.log(`${ratesResult.insertedCount} rates inserted`);
-    
-    // Insert updates
-    const updatesResult = await db.collection('updates').insertMany(sampleUpdates);
-    console.log(`${updatesResult.insertedCount} updates inserted`);
-    
-    console.log('Database seeded successfully');
-  } catch (error) {
-    console.error('Error seeding database:', error);
-  } finally {
-    await client.close();
-    console.log('MongoDB connection closed');
-  }
-}
-
-// Execute seeding if this file is run directly
-if (require.main === module) {
-  seedDatabase()
-    .then(() => console.log('Seeding completed'))
-    .catch(err => console.error('Seeding failed:', err));
-}
-
-export { seedDatabase, sampleBanks, sampleRates, sampleUpdates };

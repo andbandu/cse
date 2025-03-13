@@ -1,96 +1,74 @@
 
-import { MongoClient, ServerApiVersion } from 'mongodb';
-import dotenv from 'dotenv';
-import type { Bank, Rate, Update } from '@shared/types';
-import NodeCache from 'node-cache';
+import { MongoClient } from 'mongodb';
+import { Bank, Rate, Update } from '@shared/types';
 
-// Load environment variables
-dotenv.config();
-
-// Cache configuration (30 seconds TTL)
-const cache = new NodeCache({ stdTTL: 30 });
-
-// MongoDB connection URL
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/fd_rates';
-const DB_NAME = 'fd_rates';
+const DB_NAME = 'fd-rates';
+// Cache MongoDB connection to prevent multiple connections
+let client: MongoClient | null = null;
 
 class MongoDBService {
-  private client: MongoClient;
-  private connected: boolean = false;
-  
-  constructor() {
-    this.client = new MongoClient(MONGODB_URI, {
-      serverApi: {
-        version: ServerApiVersion.v1,
-        strict: true,
-        deprecationErrors: true,
-      }
-    });
-  }
+  private client: MongoClient | null = null;
 
-  async connect(): Promise<void> {
-    if (!this.connected) {
-      try {
-        await this.client.connect();
-        console.log('Connected to MongoDB');
-        this.connected = true;
-      } catch (error) {
-        console.error('Failed to connect to MongoDB:', error);
-        throw new Error('Failed to connect to MongoDB');
-      }
+  async connect(): Promise<MongoClient> {
+    if (client) {
+      return client;
+    }
+
+    try {
+      const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017';
+      client = new MongoClient(uri);
+      await client.connect();
+      console.log('Connected to MongoDB successfully');
+      this.client = client;
+      return client;
+    } catch (error) {
+      console.error('Failed to connect to MongoDB:', error);
+      throw new Error('Failed to connect to MongoDB');
     }
   }
 
   async getBanks(): Promise<Bank[]> {
-    const cachedData = cache.get<Bank[]>('banks');
-    if (cachedData) return cachedData;
-
     try {
-      await this.connect();
-      const collection = this.client.db(DB_NAME).collection('banks');
-      const banks = await collection.find().toArray() as unknown as Bank[];
-      
-      cache.set('banks', banks);
-      return banks;
+      const client = await this.connect();
+      const collection = client.db(DB_NAME).collection('banks');
+      return await collection.find({}).toArray() as unknown as Bank[];
     } catch (error) {
       console.error('Failed to fetch banks from MongoDB:', error);
       throw new Error('Failed to fetch banks data');
     }
   }
 
-  async getBank(id: string): Promise<Bank | null> {
+  async getBank(id: string | number): Promise<Bank | null> {
     try {
-      await this.connect();
-      const collection = this.client.db(DB_NAME).collection('banks');
-      return await collection.findOne({ _id: id }) as unknown as Bank;
+      const client = await this.connect();
+      const collection = client.db(DB_NAME).collection('banks');
+      // Handle both string IDs and numeric IDs
+      const query = typeof id === 'string' ? { _id: id } : { id: Number(id) };
+      return await collection.findOne(query) as unknown as Bank;
     } catch (error) {
       console.error('Failed to fetch bank from MongoDB:', error);
       throw new Error('Failed to fetch bank data');
     }
   }
 
-  async getRatesByBank(bankId: string): Promise<Rate[]> {
+  async getAllRates(): Promise<Rate[]> {
     try {
-      await this.connect();
-      const collection = this.client.db(DB_NAME).collection('rates');
-      return await collection.find({ bankId }).toArray() as unknown as Rate[];
+      const client = await this.connect();
+      const collection = client.db(DB_NAME).collection('rates');
+      return await collection.find({}).toArray() as unknown as Rate[];
     } catch (error) {
       console.error('Failed to fetch rates from MongoDB:', error);
       throw new Error('Failed to fetch rates data');
     }
   }
 
-  async getAllRates(): Promise<Rate[]> {
-    const cachedData = cache.get<Rate[]>('rates');
-    if (cachedData) return cachedData;
-
+  async getRatesByBank(bankId: string | number): Promise<Rate[]> {
     try {
-      await this.connect();
-      const collection = this.client.db(DB_NAME).collection('rates');
-      const rates = await collection.find().toArray() as unknown as Rate[];
-      
-      cache.set('rates', rates);
-      return rates;
+      const client = await this.connect();
+      const collection = client.db(DB_NAME).collection('rates');
+      // Handle both string IDs and numeric IDs
+      const query = typeof bankId === 'string' ? { bankId } : { bankId: Number(bankId) };
+      return await collection.find(query).toArray() as unknown as Rate[];
     } catch (error) {
       console.error('Failed to fetch rates from MongoDB:', error);
       throw new Error('Failed to fetch rates data');
@@ -99,8 +77,8 @@ class MongoDBService {
 
   async getRatesByTerm(termMonths: number): Promise<Rate[]> {
     try {
-      await this.connect();
-      const collection = this.client.db(DB_NAME).collection('rates');
+      const client = await this.connect();
+      const collection = client.db(DB_NAME).collection('rates');
       return await collection.find({ termMonths }).toArray() as unknown as Rate[];
     } catch (error) {
       console.error('Failed to fetch rates from MongoDB:', error);
@@ -110,8 +88,8 @@ class MongoDBService {
 
   async getRatesByTermAndMinAmount(termMonths: number, minAmount: number): Promise<Rate[]> {
     try {
-      await this.connect();
-      const collection = this.client.db(DB_NAME).collection('rates');
+      const client = await this.connect();
+      const collection = client.db(DB_NAME).collection('rates');
       return await collection.find({ 
         termMonths, 
         minDeposit: { $lte: minAmount } 
@@ -124,8 +102,8 @@ class MongoDBService {
 
   async getTopRates(limit: number, termMonths?: number): Promise<Rate[]> {
     try {
-      await this.connect();
-      const collection = this.client.db(DB_NAME).collection('rates');
+      const client = await this.connect();
+      const collection = client.db(DB_NAME).collection('rates');
       
       const query = termMonths ? { termMonths } : {};
       return await collection
@@ -141,10 +119,10 @@ class MongoDBService {
 
   async getUpdates(limit: number): Promise<Update[]> {
     try {
-      await this.connect();
-      const collection = this.client.db(DB_NAME).collection('updates');
+      const client = await this.connect();
+      const collection = client.db(DB_NAME).collection('updates');
       return await collection
-        .find()
+        .find({})
         .sort({ date: -1 })
         .limit(limit)
         .toArray() as unknown as Update[];
@@ -154,12 +132,22 @@ class MongoDBService {
     }
   }
 
-  // Helper method to close MongoDB connection
-  async close(): Promise<void> {
-    if (this.connected) {
-      await this.client.close();
-      this.connected = false;
-      console.log('MongoDB connection closed');
+  // Helper method to seed data if needed
+  async seedData(collection: string, data: any[]) {
+    try {
+      const client = await this.connect();
+      const db = client.db(DB_NAME);
+      // Check if data exists first
+      const count = await db.collection(collection).countDocuments({});
+      if (count === 0) {
+        console.log(`Seeding ${collection} collection...`);
+        await db.collection(collection).insertMany(data);
+        console.log(`Successfully seeded ${collection} collection with ${data.length} documents`);
+      } else {
+        console.log(`Collection ${collection} already has data, skipping seed.`);
+      }
+    } catch (error) {
+      console.error(`Failed to seed ${collection} collection:`, error);
     }
   }
 }

@@ -12,6 +12,7 @@ import Contact from "@/pages/contact";
 import Terms from "@/pages/terms";
 import Privacy from "@/pages/privacy";
 import Disclaimer from "@/pages/disclaimer";
+import FixedDepositPage from "@/pages/home-fd";
 
 function Router() {
   return (
@@ -23,6 +24,7 @@ function Router() {
       <Route path="/privacy" component={Privacy} />
       <Route path="/disclaimer" component={Disclaimer} />
       <Route path="/cse-dividend-history" component={Dashboard} />
+      <Route path="/sri-lanka-fixed-deposit-interest-rates" component={FixedDepositPage} />
       <Route component={NotFound} />
     </Switch>
   );

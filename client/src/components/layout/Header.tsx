@@ -86,9 +86,9 @@ export default function Header() {
               <span>Dividend History</span>
             </Link>
             <Link
-              href="/sri-lanka-fd-rates"
+              href="/sri-lanka-fixed-deposit-interest-rates"
               className={`font-medium hover:text-amber-400 transition-colors flex items-center gap-1.5 ${
-                location === "/sri-lanka-fd-rates"
+                location === "/sri-lanka-fixed-deposit-interest-rates"
                   ? "border-b-2 border-amber-500"
                   : ""
               }`}

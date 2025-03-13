@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,20 +14,34 @@ import { PayoutOption } from "@/lib/utils/calculator";
 import { Rate } from "@shared/types"; // Updated import
 import { useQuery } from "@tanstack/react-query";
 
+const formatNumberWithCommas = (number: number): string => {
+  return number.toLocaleString();
+};
+
+
 export default function CompareRatesPage() {
   const filters = useFilters();
   const [amount, setAmount] = useState(filters.amount.toString());
-  const [formattedAmount, setFormattedAmount] = useState("");
-  const [rates, setRates] = useState<Rate[]>([]); // State to hold fetched rates
+  const formattedAmount = useMemo(() => {
+    return formatNumberWithCommas(filters.amount);
+  }, [filters.amount]);
+  const [formattedRates, setFormattedRates] = useState<Rate[]>([]);
   const { toast } = useToast();
 
-  // Format amount with commas
+  // Update amount filter when input changes
+  const handleAmountChange = (value: string) => {
+    setAmount(value);
+    const cleanValue = value.replace(/,/g, '');
+    if (cleanValue && !isNaN(Number(cleanValue))) {
+      filters.setFilters({ amount: Number(cleanValue) });
+    }
+  };
+
+  // Format amount with commas as the user types
   useEffect(() => {
-    if (amount) {
-      const numAmount = parseInt(amount.replace(/,/g, ""));
-      if (!isNaN(numAmount)) {
-        setFormattedAmount(numAmount.toLocaleString());
-      }
+    const cleanValue = amount.replace(/,/g, '');
+    if (cleanValue && !isNaN(Number(cleanValue))) {
+      setAmount(formatNumberWithCommas(Number(cleanValue)));
     }
   }, [amount]);
 
@@ -38,7 +52,7 @@ export default function CompareRatesPage() {
         // Use GET request with query parameters, which matches our API implementation
         const url = `/api/rates?term=${filters.term}&amount=${filters.amount}`;
         const response = await fetch(url);
-        
+
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -54,10 +68,12 @@ export default function CompareRatesPage() {
       }
     },
     enabled: !!filters.term && !!filters.amount
-    };
+  });
 
-    fetchRates();
-  }, [filters, toast]);
+  useEffect(() => {
+    setFormattedRates(rates);
+  }, [rates]);
+
 
   const handleSearch = () => {
     let depositAmount = parseInt(amount.replace(/,/g, ""));
@@ -114,7 +130,7 @@ export default function CompareRatesPage() {
                     id="deposit-amount"
                     className="pl-12"
                     value={formattedAmount}
-                    onChange={(e) => setAmount(e.target.value)}
+                    onChange={(e) => handleAmountChange(e.target.value)}
                     placeholder="100,000"
                   />
                 </div>
@@ -126,7 +142,7 @@ export default function CompareRatesPage() {
                 </label>
                 <Select
                   value={filters.term.toString()}
-                  onValueChange={(value) => 
+                  onValueChange={(value) =>
                     filters.setFilters({ term: parseInt(value), amount: filters.amount })
                   }
                 >
@@ -145,8 +161,8 @@ export default function CompareRatesPage() {
               </div>
 
               <div className="flex items-end">
-                <Button 
-                  className="w-full flex items-center justify-center" 
+                <Button
+                  className="w-full flex items-center justify-center"
                   onClick={handleSearch}
                 >
                   <Search className="mr-2 h-4 w-4" /> Find Best Rates
@@ -158,8 +174,8 @@ export default function CompareRatesPage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Payout Option
               </label>
-              <RadioGroup 
-                value={filters.payoutOption} 
+              <RadioGroup
+                value={filters.payoutOption}
                 onValueChange={(value) => filters.setFilters({ payoutOption: value as PayoutOption })}
                 className="flex space-x-4"
               >
@@ -176,10 +192,10 @@ export default function CompareRatesPage() {
           </CardContent>
         </Card>
 
-        <RatesTable 
-          title="Fixed Deposit Rates Comparison" 
+        <RatesTable
+          title="Fixed Deposit Rates Comparison"
           description={`Showing rates for ${filters.term}-month fixed deposits of Rs. ${filters.amount.toLocaleString()} (${filters.payoutOption === 'maturity' ? 'At Maturity' : 'Monthly Payout'})`}
-          rates={rates} // Pass fetched rates to the table
+          rates={formattedRates} // Pass fetched rates to the table
           filters={{ term: filters.term, amount: filters.amount, payoutOption: filters.payoutOption }}
           showViewAll={false}
         />

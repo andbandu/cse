@@ -1,4 +1,4 @@
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 import type { Bank, Rate, Update } from '../shared/types';
 
 class MongoDBService {
@@ -31,10 +31,11 @@ class MongoDBService {
     }
   }
 
-  async getBank(id: number): Promise<Bank | null> {
+  async getBank(id: string): Promise<Bank | null> {
     try {
       const collection = this.db.collection('banks');
-      return await collection.findOne({ id });
+      const _id = new ObjectId(id);
+      return await collection.findOne({ _id });
     } catch (error) {
       console.error('Error fetching bank:', error);
       throw error;
@@ -51,7 +52,7 @@ class MongoDBService {
     }
   }
 
-  async getRatesByBank(bankId: number): Promise<Rate[]> {
+  async getRatesByBank(bankId: string): Promise<Rate[]> {
     try {
       const collection = this.db.collection('rates');
       return await collection.find({ bankId }).toArray();

@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 //import { fdstorage } from "./fd-storage";  //Removed - replaced with mongoStorage below
 import { mongoStorage } from "./mongodb-storage"; // Added import for MongoDB storage
+import { ObjectId } from "mongodb";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -41,12 +42,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get a specific bank
   app.get(`${apiPrefix}/banks/:id`, async (req, res) => {
     try {
-      const id = parseInt(req.params.id);
-      if (isNaN(id)) {
+      const id = req.params.id;
+      if (!id || !ObjectId.isValid(id)) {
         return res.status(400).json({ message: "Invalid bank ID" });
       }
 
-      const bank = await mongoStorage.getBank(id); //Replaced fdstorage
+      const bank = await mongoStorage.getBank(id);
       if (!bank) {
         return res.status(404).json({ message: "Bank not found" });
       }
@@ -60,12 +61,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get rates for a specific bank
   app.get(`${apiPrefix}/banks/:id/rates`, async (req, res) => {
     try {
-      const id = parseInt(req.params.id);
-      if (isNaN(id)) {
+      const id = req.params.id;
+      if (!id || !ObjectId.isValid(id)) {
         return res.status(400).json({ message: "Invalid bank ID" });
       }
 
-      const rates = await mongoStorage.getRatesByBank(id); //Replaced fdstorage
+      const rates = await mongoStorage.getRatesByBank(id);
       res.json(rates);
     } catch (error) {
       res.status(500).json({ message: "Error fetching rates" });

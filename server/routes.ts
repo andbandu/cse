@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 //import { fdstorage } from "./fd-storage";  //Removed - replaced with mongoStorage below
-import { mongoStorage } from "./mongo-storage"; // Added import for MongoDB storage
+import { mongoStorage } from "./mongodb-storage"; // Added import for MongoDB storage
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {

@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "wouter";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDateToLocal } from "@/lib/utils";
-import { Bank, Rate } from "@shared/schema";
+import { Bank, Rate } from "@shared/fd-schema";
 
 interface BankWithRates extends Bank {
   rates?: Rate[];
@@ -76,11 +76,11 @@ export default function FeaturedBanks() {
                 key={bank.id}
                 className="overflow-hidden transform transition-transform hover:scale-105 hover:shadow-lg"
               >
-                <div className="h-3 bg-primary"></div>
+                <div className="h-3 bg-slate-700"></div>
                 <CardContent className="p-6">
                   <div className="flex items-center mb-4">
                     <div className="w-12 h-12 bg-gray-100 rounded-md flex items-center justify-center mr-4">
-                      <span className="text-primary font-bold">
+                      <span className="text-amber-500 font-bold">
                         {bank.shortName}
                       </span>
                     </div>
@@ -116,7 +116,7 @@ export default function FeaturedBanks() {
                     <Link href={`/banks/${bank.id}`}>
                       <Button
                         variant="link"
-                        className="text-primary hover:text-primary-600"
+                        className="text-gray-800 hover:text-gray-900"
                       >
                         View Details
                       </Button>
@@ -133,7 +133,7 @@ export default function FeaturedBanks() {
 
         <div className="text-center mt-10">
           <Link href="/banks">
-            <Button variant="link" className="text-primary hover:text-primary-700">
+            <Button variant="link" className="text-gray-600 hover:text-gray-700">
               View all banks and financial institutions
               <svg
                 xmlns="http://www.w3.org/2000/svg"

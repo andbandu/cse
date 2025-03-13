@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
 import Hero from "@/components/dividend/Hero";
 import CompanyTable from "@/components/CompanyTable";
 import SearchFilter from "@/components/SearchFilter";
@@ -128,7 +126,7 @@ export default function Dashboard() {
   const pageTitle = setPageTitle("Dividend Dashboard");
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <>
       <SEOHead 
         title="Dividend History & Yield Tracker" 
         description="Track and analyze dividend history, yields and payouts of companies listed on the Colombo Stock Exchange (CSE)."
@@ -147,7 +145,7 @@ export default function Dashboard() {
           { name: 'Home', item: '/' }
         ]}
       />
-      <Header />
+
       <Hero />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-6">
@@ -170,9 +168,6 @@ export default function Dashboard() {
           />
         </div>
       </main>
-      <div className="mt-auto">
-        <Footer />
-      </div>
-    </div>
+    </>
   );
 }

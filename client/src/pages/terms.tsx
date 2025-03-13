@@ -5,13 +5,12 @@ import SEOHead from "@/components/SEOHead";
 
 export default function Terms() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <>
       <SEOHead 
         title="Terms of Service" 
         description="Terms and conditions for using the Colombo Stock Exchange dividend data and information services."
         canonical="/terms"
       />
-      <Header />
       <main className="flex-grow container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
           <div className="bg-gradient-to-r from-slate-800 to-slate-900 px-6 py-4">
@@ -102,7 +101,7 @@ export default function Terms() {
           </div>
         </div>
       </main>
-      <Footer />
-    </div>
+
+    </>
   );
 }

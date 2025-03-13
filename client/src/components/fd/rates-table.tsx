@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Rate } from "@shared/types";
 import { Bank } from "@shared/types";
 import { PayoutOption } from "@/lib/utils/calculator";
+import React, { useMemo } from "react"; // Added import statement
 
 interface RateWithBank extends Rate {
   bank?: Bank;

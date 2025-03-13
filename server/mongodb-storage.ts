@@ -1,4 +1,3 @@
-
 import { 
   Bank, InsertBank,
   Rate, InsertRate,
@@ -7,8 +6,28 @@ import {
 } from "@shared/fd-schema";
 import { IStorage } from "./fd-storage";
 import { mongoDBService } from "./services/mongodb";
+import { MongoClient, ObjectId } from 'mongodb';
 
 export class MongoDBStorage implements IStorage {
+  private client: MongoClient;
+  private db: any;
+
+  constructor() {
+    const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017';
+    this.client = new MongoClient(uri);
+    this.db = this.client.db('fd-rates');
+  }
+
+  async connect() {
+    try {
+      await this.client.connect();
+      console.log('Connected to MongoDB');
+    } catch (error) {
+      console.error('Error connecting to MongoDB:', error);
+      throw error;
+    }
+  }
+
   async getUser(id: number): Promise<User | undefined> {
     // Implementation would be added when user functionality is required
     throw new Error("Method not implemented");

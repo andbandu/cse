@@ -43,7 +43,7 @@ const sampleBanks = [
 ];
 
 // Function to generate sample rates for a bank
-const generateRatesForBank = async (storage: MongoDBStorage, bankId: number) => {
+const generateRatesForBank = async (storage: MongoDBStorage, bankId: string) => {
   const termMonths = [3, 6, 12, 24];
   const baseRates = {
     3: "13.25",
@@ -63,7 +63,7 @@ const generateRatesForBank = async (storage: MongoDBStorage, bankId: number) => 
       bankId,
       termMonths: term,
       interestRate: adjustedRate,
-      minDeposit: sampleBanks.find(b => b.id === bankId)?.minDeposit || "10000",
+      minDeposit: sampleBanks.find(b => b._id === bankId)?.minDeposit || "10000",
       updatedAt: new Date()
     });
   }

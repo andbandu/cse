@@ -53,8 +53,30 @@ export class MongoDBStorage implements IStorage {
   }
 
   async createBank(bank: InsertBank): Promise<Bank> {
-    // Implementation would require MongoDB insert operation
-    throw new Error("Method not implemented");
+    try {
+      const collection = this.db.collection('banks');
+      // Generate a new ID since MongoDB uses ObjectId
+      const maxIdResult = await collection.find({}).sort({ id: -1 }).limit(1).toArray();
+      const nextId = maxIdResult.length > 0 ? maxIdResult[0].id + 1 : 1;
+      
+      const newBank = {
+        ...bank,
+        id: nextId
+      };
+      
+      const result = await collection.insertOne(newBank);
+      if (!result.acknowledged) {
+        throw new Error("Failed to insert bank");
+      }
+      
+      return {
+        ...newBank,
+        id: nextId
+      } as Bank;
+    } catch (error) {
+      console.error('Error creating bank:', error);
+      throw error;
+    }
   }
 
   async getAllRates(): Promise<Rate[]> {
@@ -78,8 +100,30 @@ export class MongoDBStorage implements IStorage {
   }
 
   async createRate(rate: InsertRate): Promise<Rate> {
-    // Implementation would require MongoDB insert operation
-    throw new Error("Method not implemented");
+    try {
+      const collection = this.db.collection('rates');
+      // Generate a new ID
+      const maxIdResult = await collection.find({}).sort({ id: -1 }).limit(1).toArray();
+      const nextId = maxIdResult.length > 0 ? maxIdResult[0].id + 1 : 1;
+      
+      const newRate = {
+        ...rate,
+        id: nextId
+      };
+      
+      const result = await collection.insertOne(newRate);
+      if (!result.acknowledged) {
+        throw new Error("Failed to insert rate");
+      }
+      
+      return {
+        ...newRate,
+        id: nextId
+      } as Rate;
+    } catch (error) {
+      console.error('Error creating rate:', error);
+      throw error;
+    }
   }
 
   async getAllUpdates(): Promise<Update[]> {
@@ -92,8 +136,30 @@ export class MongoDBStorage implements IStorage {
   }
 
   async createUpdate(update: InsertUpdate): Promise<Update> {
-    // Implementation would require MongoDB insert operation
-    throw new Error("Method not implemented");
+    try {
+      const collection = this.db.collection('updates');
+      // Generate a new ID
+      const maxIdResult = await collection.find({}).sort({ id: -1 }).limit(1).toArray();
+      const nextId = maxIdResult.length > 0 ? maxIdResult[0].id + 1 : 1;
+      
+      const newUpdate = {
+        ...update,
+        id: nextId
+      };
+      
+      const result = await collection.insertOne(newUpdate);
+      if (!result.acknowledged) {
+        throw new Error("Failed to insert update");
+      }
+      
+      return {
+        ...newUpdate,
+        id: nextId
+      } as Update;
+    } catch (error) {
+      console.error('Error creating update:', error);
+      throw error;
+    }
   }
 }
 

@@ -1,83 +1,79 @@
-
-import { useQuery } from "@tanstack/react-query";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Rate } from "@shared/types";
-import { Link } from "wouter";
+import { useQuery } from '@tanstack/react-query'; // Assuming you're using react-query
 
-export function TopRates({ term = '6' }: { term?: string }) {
+//TopRates Component
+const TopRates = ({ term }: { term: string }) => { // Added term prop
   const { data: rates = [], isLoading } = useQuery<Rate[]>({
     queryKey: ['topRates', term],
     queryFn: async () => {
-      try {
-        console.log("Fetching top rates for term:", term);
-        const response = await fetch(`/api/rates/top?limit=3&term=${term}`);
-        if (!response.ok) {
-          console.error("Error status:", response.status);
-          throw new Error('Failed to fetch top rates');
-        }
-        const data = await response.json();
-        console.log("Received top rates:", data);
-        return data;
-      } catch (error) {
-        console.error("Error fetching top rates:", error);
-        return [];
-      }
+      const response = await fetch(`/api/rates/top?limit=3&term=${term}`);
+      if (!response.ok) throw new Error('Failed to fetch top rates');
+      return response.json();
     }
   });
 
   if (isLoading) {
-    return (
-      <div className="space-y-4">
-        {[...Array(3)].map((_, i) => (
-          <Card key={i}>
-            <CardHeader className="pb-2">
-              <Skeleton className="h-5 w-40" />
-            </CardHeader>
-            <CardContent>
-              <Skeleton className="h-8 w-20 mb-2" />
-              <Skeleton className="h-4 w-full" />
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    );
-  }
-
-  if (!rates.length) {
-    return (
-      <div className="text-center py-4">
-        <p className="text-gray-500">No rates available for this term.</p>
-      </div>
-    );
+    return <div>Loading...</div>;
   }
 
   return (
-    <div className="space-y-4">
+    <div>
       {rates.map((rate) => (
-        <Link key={rate.id} href={`/bank/${rate.bankId}`}>
-          <Card className="hover:bg-gray-50 transition-colors cursor-pointer">
-            <CardHeader className="pb-2">
-              <div className="flex justify-between items-center">
-                <CardTitle className="text-base">{rate.bankName}</CardTitle>
-                <Badge className="ml-2">{rate.termMonths} Months</Badge>
-              </div>
-              <CardDescription>Minimum deposit: Rs. {parseInt(rate.minDeposit).toLocaleString()}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-baseline">
-                <span className="text-2xl font-bold text-green-600">
-                  {parseFloat(rate.interestRate).toFixed(2)}%
-                </span>
-                <span className="ml-2 text-sm text-gray-600">p.a.</span>
-              </div>
-            </CardContent>
-          </Card>
-        </Link>
+        <div key={rate._id}> {/* Assuming rate has an _id property */}
+          {/* Display rate data here */}
+          <p>Rate: {rate.value}</p>  {/* Example, replace with actual fields */}
+          <p>Term: {rate.term}</p> {/* Example, replace with actual fields */}
+        </div>
       ))}
     </div>
   );
-}
+};
+
+
+// Missing:  Implementation for all other pages (banks, bank details, compare-rates, home-fd, rates table)
+// Each page will require similar structure:  fetch data from MongoDB, handle errors, display data.
+
+
+//API routes (Example using Express.js):
+
+// app.get('/api/rates/top', async (req, res) => {
+//   try {
+//     const limit = parseInt(req.query.limit as string) || 3;
+//     const term = req.query.term as string || ''; // Handle undefined term
+//     const rates = await getRatesFromMongoDB(limit, term); //Modified function
+//     res.json(rates);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: 'Failed to fetch rates' });
+//   }
+// });
+
+
+//Missing: MongoDB connection and data models. Example using Mongoose:
+// const mongoose = require('mongoose');
+// mongoose.connect('mongodb://localhost:27017/mydatabase', {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true
+// });
+
+// const RateSchema = new mongoose.Schema({
+//   value: Number,
+//   term: String,
+//   _id: { type: mongoose.Schema.Types.ObjectId, required: true } // Or other suitable unique identifier
+//   // ... other fields
+// });
+// const Rate = mongoose.model('Rate', RateSchema);
+
+// async function getRatesFromMongoDB(limit: number, term: string) {
+//   let query = {};
+//   if (term) {
+//     query = { term };
+//   }
+//   return await Rate.find(query).limit(limit);
+// }
+
+// ... other missing MongoDB functions for different pages
+// ...Missing shared/types.ts file defining the Rate interface.
+
 
 export default TopRates;

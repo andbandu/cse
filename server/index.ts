@@ -39,45 +39,17 @@ app.use((req, res, next) => {
 
 (async () => {
   try {
-    let mongoConnected = false;
-    
-    try {
-      // Attempt to connect to MongoDB
-      await mongoStorage.connect();
-      console.log("MongoDB connection established");
-      mongoConnected = true;
-    } catch (error) {
-      console.warn("MongoDB connection failed, using fallback data", error);
-    }
+    // Connect to MongoDB before registering routes
+    await mongoStorage.connect(); // Connect to MongoDB
 
-    // Import sample data from server/sample-data.ts
-    const { sampleBanks, sampleRates, sampleUpdates } = await import('./sample-data');
-    
-    if (!mongoConnected) {
-      console.log("Using sample data as fallback");
-      // Setup mock data handling since MongoDB isn't available
-      app.use('/api/banks', (req, res) => {
-        res.json(sampleBanks);
-      });
-      
-      app.use('/api/rates', (req, res) => {
-        res.json(sampleRates);
-      });
-      
-      app.use('/api/updates', (req, res) => {
-        res.json(sampleUpdates);
-      });
-    }
-    
-    // Register routes and get the HTTP server
     const server = await registerRoutes(app);
 
-    // Global error handler
     app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
       const status = err.status || err.statusCode || 500;
       const message = err.message || "Internal Server Error";
-      console.error("Server error:", err);
+
       res.status(status).json({ message });
+      throw err;
     });
 
     if (app.get("env") === "development") {
@@ -92,13 +64,11 @@ app.use((req, res, next) => {
         port,
       },
       () => {
-        log(`Server running on port ${port}`);
-        log(`MongoDB is connected and ready to serve data`);
+        log(`serving on port ${port}`);
       },
     );
   } catch (error) {
     console.error("Failed to start server:", error);
-    console.error("Error details:", error instanceof Error ? error.message : String(error));
     process.exit(1);
   }
 })();

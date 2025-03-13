@@ -1,212 +1,272 @@
-// Sample data for the application
-// Used for seeding the MongoDB database if it's empty
-// Also used as fallback when MongoDB connection fails
 
-import { Bank, Rate, Update } from '@shared/types';
+import { MongoClient } from 'mongodb';
+import dotenv from 'dotenv';
 
-// Sample bank data
-export const sampleBanks: Bank[] = [
+dotenv.config();
+
+// MongoDB connection URL
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/fd_rates';
+const DB_NAME = 'fd_rates';
+
+const sampleBanks = [
   {
-    id: 1,
-    name: 'SBI Bank',
-    code: 'SBI',
-    logo: '/images/banks/sbi.png',
-    description: 'State Bank of India (SBI) is an Indian multinational public sector bank and financial services statutory body.',
-    website: 'https://sbi.co.in',
-    rating: 4.5,
-    popularity: 95
+    name: "Commercial Bank of Ceylon PLC",
+    shortName: "ComBank",
+    description: "Commercial Bank of Ceylon PLC is one of the leading banks in Sri Lanka with a strong presence across the country.",
+    established: 1969,
+    logoUrl: "https://images.unsplash.com/photo-1563013544-28ae5e8cbf34?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+    website: "https://www.combank.lk",
+    category: "bank",
+    regulatedBy: "CBSL",
+    status: "active"
   },
   {
-    id: 2,
-    name: 'HDFC Bank',
-    code: 'HDFC',
-    logo: '/images/banks/hdfc.png',
-    description: 'HDFC Bank Limited is an Indian banking and financial services company.',
-    website: 'https://www.hdfcbank.com',
-    rating: 4.7,
-    popularity: 90
+    name: "Hatton National Bank PLC",
+    shortName: "HNB",
+    description: "Hatton National Bank PLC is one of the largest private sector commercial banks in Sri Lanka.",
+    established: 1888,
+    logoUrl: "https://images.unsplash.com/photo-1563013544-28ae5e8cbf34?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+    website: "https://www.hnb.net",
+    category: "bank",
+    regulatedBy: "CBSL",
+    status: "active"
   },
   {
-    id: 3,
-    name: 'ICICI Bank',
-    code: 'ICICI',
-    logo: '/images/banks/icici.png',
-    description: 'ICICI Bank is an Indian multinational banking and financial services company.',
-    website: 'https://www.icicibank.com',
-    rating: 4.3,
-    popularity: 85
+    name: "People's Bank",
+    shortName: "PB",
+    description: "People's Bank is a state-owned commercial bank in Sri Lanka focusing on retail and development banking.",
+    established: 1961,
+    logoUrl: "https://images.unsplash.com/photo-1563013544-28ae5e8cbf34?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+    website: "https://www.peoplesbank.lk",
+    category: "bank",
+    regulatedBy: "CBSL",
+    status: "active"
   },
   {
-    id: 4,
-    name: 'Axis Bank',
-    code: 'AXIS',
-    logo: '/images/banks/axis.png',
-    description: 'Axis Bank is the third-largest of the private-sector banks in India.',
-    website: 'https://www.axisbank.com',
-    rating: 4.2,
-    popularity: 80
+    name: "Bank of Ceylon",
+    shortName: "BOC",
+    description: "Bank of Ceylon is a state-owned commercial bank with a wide network across Sri Lanka.",
+    established: 1939,
+    logoUrl: "https://images.unsplash.com/photo-1563013544-28ae5e8cbf34?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+    website: "https://www.boc.lk",
+    category: "bank",
+    regulatedBy: "CBSL",
+    status: "active"
   },
   {
-    id: 5,
-    name: 'Kotak Mahindra Bank',
-    code: 'KOTAK',
-    logo: '/images/banks/kotak.png',
-    description: 'Kotak Mahindra Bank is an Indian private sector bank.',
-    website: 'https://www.kotak.com',
-    rating: 4.4,
-    popularity: 78
+    name: "Central Finance Company PLC",
+    shortName: "CF",
+    description: "Central Finance Company PLC is a leading finance company in Sri Lanka offering various financial services.",
+    established: 1957,
+    logoUrl: "https://images.unsplash.com/photo-1563013544-28ae5e8cbf34?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+    website: "https://www.centralfinance.lk",
+    category: "finance",
+    regulatedBy: "CBSL",
+    status: "active"
   }
 ];
 
-// Sample rate data
-export const sampleRates: Rate[] = [
+const sampleRates = [
   {
-    id: 1,
-    bankId: 1,
-    term: 12,
-    rate: 7.5,
-    minAmount: 10000,
-    maxAmount: 10000000,
-    seniorCitizen: false,
-    specialRate: false,
-    payoutOptions: ['monthly', 'quarterly', 'annually', 'maturity']
+    bankId: "1", // Will be replaced with actual bank _id
+    bankName: "Commercial Bank of Ceylon PLC",
+    termMonths: 3,
+    interestRate: 12.5,
+    minDeposit: 10000,
+    maxDeposit: 10000000,
+    specialConditions: "Senior citizens receive an additional 0.5% interest",
+    lastUpdated: new Date("2023-05-15")
   },
   {
-    id: 2,
-    bankId: 1,
-    term: 24,
-    rate: 7.8,
-    minAmount: 10000,
-    maxAmount: 10000000,
-    seniorCitizen: false,
-    specialRate: false,
-    payoutOptions: ['monthly', 'quarterly', 'annually', 'maturity']
+    bankId: "1", // Will be replaced with actual bank _id
+    bankName: "Commercial Bank of Ceylon PLC",
+    termMonths: 6,
+    interestRate: 13.5,
+    minDeposit: 10000,
+    lastUpdated: new Date("2023-05-15")
   },
   {
-    id: 3,
-    bankId: 2,
-    term: 12,
-    rate: 7.6,
-    minAmount: 25000,
-    maxAmount: 20000000,
-    seniorCitizen: false,
-    specialRate: false,
-    payoutOptions: ['monthly', 'quarterly', 'annually', 'maturity']
+    bankId: "1", // Will be replaced with actual bank _id
+    bankName: "Commercial Bank of Ceylon PLC",
+    termMonths: 12,
+    interestRate: 14.25,
+    minDeposit: 10000,
+    lastUpdated: new Date("2023-05-15")
   },
   {
-    id: 4,
-    bankId: 2,
-    term: 24,
-    rate: 8.0,
-    minAmount: 25000,
-    maxAmount: 20000000,
-    seniorCitizen: false,
-    specialRate: false,
-    payoutOptions: ['monthly', 'quarterly', 'annually', 'maturity']
+    bankId: "2", // Will be replaced with actual bank _id
+    bankName: "Hatton National Bank PLC",
+    termMonths: 3,
+    interestRate: 12.75,
+    minDeposit: 25000,
+    lastUpdated: new Date("2023-05-16")
   },
   {
-    id: 5,
-    bankId: 3,
-    term: 12,
-    rate: 7.4,
-    minAmount: 10000,
-    maxAmount: 15000000,
-    seniorCitizen: false,
-    specialRate: false,
-    payoutOptions: ['monthly', 'quarterly', 'annually', 'maturity']
+    bankId: "2", // Will be replaced with actual bank _id
+    bankName: "Hatton National Bank PLC",
+    termMonths: 6,
+    interestRate: 13.75,
+    minDeposit: 25000,
+    lastUpdated: new Date("2023-05-16")
   },
   {
-    id: 6,
-    bankId: 3,
-    term: 24,
-    rate: 7.7,
-    minAmount: 10000,
-    maxAmount: 15000000,
-    seniorCitizen: false,
-    specialRate: false,
-    payoutOptions: ['monthly', 'quarterly', 'annually', 'maturity']
+    bankId: "2", // Will be replaced with actual bank _id
+    bankName: "Hatton National Bank PLC",
+    termMonths: 12,
+    interestRate: 14.5,
+    minDeposit: 25000,
+    lastUpdated: new Date("2023-05-16")
   },
   {
-    id: 7,
-    bankId: 4,
-    term: 12,
-    rate: 7.55,
-    minAmount: 5000,
-    maxAmount: 10000000,
-    seniorCitizen: false,
-    specialRate: false,
-    payoutOptions: ['monthly', 'quarterly', 'annually', 'maturity']
+    bankId: "3", // Will be replaced with actual bank _id
+    bankName: "People's Bank",
+    termMonths: 3,
+    interestRate: 12.25,
+    minDeposit: 5000,
+    lastUpdated: new Date("2023-05-14")
   },
   {
-    id: 8,
-    bankId: 4,
-    term: 24,
-    rate: 7.85,
-    minAmount: 5000,
-    maxAmount: 10000000,
-    seniorCitizen: false,
-    specialRate: false,
-    payoutOptions: ['monthly', 'quarterly', 'annually', 'maturity']
+    bankId: "3", // Will be replaced with actual bank _id
+    bankName: "People's Bank",
+    termMonths: 6,
+    interestRate: 13.25,
+    minDeposit: 5000,
+    lastUpdated: new Date("2023-05-14")
   },
   {
-    id: 9,
-    bankId: 5,
-    term: 12,
-    rate: 7.65,
-    minAmount: 10000,
-    maxAmount: 10000000,
-    seniorCitizen: false,
-    specialRate: false,
-    payoutOptions: ['monthly', 'quarterly', 'annually', 'maturity']
+    bankId: "3", // Will be replaced with actual bank _id
+    bankName: "People's Bank",
+    termMonths: 12,
+    interestRate: 14.0,
+    minDeposit: 5000,
+    lastUpdated: new Date("2023-05-14")
   },
   {
-    id: 10,
-    bankId: 5,
-    term: 24,
-    rate: 7.95,
-    minAmount: 10000,
-    maxAmount: 10000000,
-    seniorCitizen: false,
-    specialRate: false,
-    payoutOptions: ['monthly', 'quarterly', 'annually', 'maturity']
+    bankId: "4", // Will be replaced with actual bank _id
+    bankName: "Bank of Ceylon",
+    termMonths: 3,
+    interestRate: 12.0,
+    minDeposit: 5000,
+    lastUpdated: new Date("2023-05-13")
+  },
+  {
+    bankId: "4", // Will be replaced with actual bank _id
+    bankName: "Bank of Ceylon",
+    termMonths: 6,
+    interestRate: 13.0,
+    minDeposit: 5000,
+    lastUpdated: new Date("2023-05-13")
+  },
+  {
+    bankId: "4", // Will be replaced with actual bank _id
+    bankName: "Bank of Ceylon",
+    termMonths: 12,
+    interestRate: 13.75,
+    minDeposit: 5000,
+    lastUpdated: new Date("2023-05-13")
+  },
+  {
+    bankId: "5", // Will be replaced with actual bank _id
+    bankName: "Central Finance Company PLC",
+    termMonths: 3,
+    interestRate: 14.0,
+    minDeposit: 10000,
+    lastUpdated: new Date("2023-05-17")
+  },
+  {
+    bankId: "5", // Will be replaced with actual bank _id
+    bankName: "Central Finance Company PLC",
+    termMonths: 6,
+    interestRate: 15.0,
+    minDeposit: 10000,
+    lastUpdated: new Date("2023-05-17")
+  },
+  {
+    bankId: "5", // Will be replaced with actual bank _id
+    bankName: "Central Finance Company PLC",
+    termMonths: 12,
+    interestRate: 15.5,
+    minDeposit: 10000,
+    lastUpdated: new Date("2023-05-17")
   }
 ];
 
-// Sample update data
-export const sampleUpdates: Update[] = [
+const sampleUpdates = [
   {
-    id: 1,
-    title: 'SBI increases FD rates',
-    description: 'State Bank of India has increased fixed deposit rates by 0.25%',
-    date: new Date('2023-01-15').toISOString(),
-    bankId: 1
+    title: "CDB Finance Increases Fixed Deposit Rates to 15.5%",
+    content: "Citizens Development Business Finance has increased its 12-month fixed deposit rate to 15.5%, offering one of the highest returns in the market.",
+    category: "Bank Rates",
+    imageUrl: "https://images.unsplash.com/photo-1601597111158-2fceff292cdc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+    date: new Date("2023-05-12")
   },
   {
-    id: 2,
-    title: 'HDFC Bank launches new FD scheme',
-    description: 'HDFC Bank introduces special FD scheme with 7.8% interest rate',
-    date: new Date('2023-02-10').toISOString(),
-    bankId: 2
+    title: "Central Bank Holds Policy Rates Steady in May",
+    content: "The Central Bank of Sri Lanka has decided to maintain its policy interest rates, signaling stability in the financial markets.",
+    category: "Market Analysis",
+    imageUrl: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+    date: new Date("2023-05-10")
   },
   {
-    id: 3,
-    title: 'ICICI Bank revises FD rates',
-    description: 'ICICI Bank has revised FD rates for different tenure deposits',
-    date: new Date('2023-03-05').toISOString(),
-    bankId: 3
-  },
-  {
-    id: 4,
-    title: 'Axis Bank announces special scheme for senior citizens',
-    description: 'Axis Bank offers additional 0.5% interest rate for senior citizens',
-    date: new Date('2023-03-20').toISOString(),
-    bankId: 4
-  },
-  {
-    id: 5,
-    title: 'Kotak Mahindra Bank reduces minimum deposit amount',
-    description: 'Kotak Mahindra Bank reduces minimum FD amount to ₹5,000',
-    date: new Date('2023-04-15').toISOString(),
-    bankId: 5
+    title: "How to Choose the Best Fixed Deposit for Your Needs",
+    content: "Our comprehensive guide helps you navigate through the various fixed deposit options to find the one that best suits your financial goals.",
+    category: "Guides",
+    imageUrl: "https://images.unsplash.com/photo-1579532537598-459ecdaf39cc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+    date: new Date("2023-05-08")
   }
 ];
+
+async function seedDatabase() {
+  const client = new MongoClient(MONGODB_URI);
+  
+  try {
+    await client.connect();
+    console.log('Connected to MongoDB for seeding data');
+    
+    const db = client.db(DB_NAME);
+    
+    // Clear existing data
+    await db.collection('banks').deleteMany({});
+    await db.collection('rates').deleteMany({});
+    await db.collection('updates').deleteMany({});
+    
+    // Insert banks
+    const banksResult = await db.collection('banks').insertMany(sampleBanks);
+    console.log(`${banksResult.insertedCount} banks inserted`);
+    
+    // Get bank IDs
+    const banks = await db.collection('banks').find().toArray();
+    
+    // Update rates with actual bank IDs
+    const rates = sampleRates.map((rate, index) => {
+      const bankIndex = Math.floor(index / 3);
+      return {
+        ...rate,
+        bankId: banks[bankIndex]._id.toString()
+      };
+    });
+    
+    // Insert rates
+    const ratesResult = await db.collection('rates').insertMany(rates);
+    console.log(`${ratesResult.insertedCount} rates inserted`);
+    
+    // Insert updates
+    const updatesResult = await db.collection('updates').insertMany(sampleUpdates);
+    console.log(`${updatesResult.insertedCount} updates inserted`);
+    
+    console.log('Database seeded successfully');
+  } catch (error) {
+    console.error('Error seeding database:', error);
+  } finally {
+    await client.close();
+    console.log('MongoDB connection closed');
+  }
+}
+
+// Execute seeding if this file is run directly
+if (require.main === module) {
+  seedDatabase()
+    .then(() => console.log('Seeding completed'))
+    .catch(err => console.error('Seeding failed:', err));
+}
+
+export { seedDatabase, sampleBanks, sampleRates, sampleUpdates };

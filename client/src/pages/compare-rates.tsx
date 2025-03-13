@@ -1,44 +1,47 @@
-
-import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { RatesTable } from "@/components/fd/rates-table";
-import { useToast } from "@/components/ui/use-toast";
-import { useFilters } from "@/lib/hooks/use-filters";
+import { useState, useEffect, useMemo } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Search } from "lucide-react";
+import RatesTable from "@/components/fd/rates-table";
+import { useFilters } from "@/hooks/use-filters";
+import { useToast } from "@/hooks/use-toast";
 import { Helmet } from "react-helmet";
 import { PayoutOption } from "@/lib/utils/calculator";
 import { Rate } from "@shared/types"; // Updated import
+import { useQuery } from "@tanstack/react-query";
+
+const formatNumberWithCommas = (number: number): string => {
+  return number.toLocaleString();
+};
+
 
 export default function CompareRatesPage() {
   const filters = useFilters();
   const [amount, setAmount] = useState(filters.amount.toString());
-  const [payoutOption, setPayoutOption] = useState<PayoutOption>(filters.payoutOption);
+  const formattedAmount = useMemo(() => {
+    return formatNumberWithCommas(filters.amount);
+  }, [filters.amount]);
+  const [formattedRates, setFormattedRates] = useState<Rate[]>([]);
   const { toast } = useToast();
 
-  const formatNumberWithCommas = (number: number): string => {
-    return number.toLocaleString();
-  };
-
-  // Update filters when payout option changes
-  useEffect(() => {
-    filters.setFilters({ payoutOption });
-  }, [payoutOption]);
-
-  // Handle amount input change
+  // Update amount filter when input changes
   const handleAmountChange = (value: string) => {
-    // Remove commas before processing
+    setAmount(value);
     const cleanValue = value.replace(/,/g, '');
-    setAmount(cleanValue);
+    if (cleanValue && !isNaN(Number(cleanValue))) {
+      filters.setFilters({ amount: Number(cleanValue) });
+    }
   };
 
   // Format amount with commas as the user types
   useEffect(() => {
-    if (amount && !isNaN(Number(amount))) {
-      const formattedAmount = formatNumberWithCommas(Number(amount));
-      setAmount(formattedAmount);
+    const cleanValue = amount.replace(/,/g, '');
+    if (cleanValue && !isNaN(Number(cleanValue))) {
+      setAmount(formatNumberWithCommas(Number(cleanValue)));
     }
   }, [amount]);
 
@@ -46,17 +49,14 @@ export default function CompareRatesPage() {
     queryKey: ['rates', filters.term, filters.amount, filters.payoutOption],
     queryFn: async () => {
       try {
-        console.log("Fetching rates with filters:", filters);
-        const response = await fetch(`/api/rates?term=${filters.term}&amount=${filters.amount}`);
-        
+        // Use GET request with query parameters, which matches our API implementation
+        const url = `/api/rates?term=${filters.term}&amount=${filters.amount}`;
+        const response = await fetch(url);
+
         if (!response.ok) {
-          console.error("Error status:", response.status);
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
-        const data = await response.json();
-        console.log("Received rates data:", data);
-        return data;
+        return response.json();
       } catch (error) {
         console.error("Error fetching rates:", error);
         toast({
@@ -69,6 +69,11 @@ export default function CompareRatesPage() {
     },
     enabled: !!filters.term && !!filters.amount
   });
+
+  useEffect(() => {
+    setFormattedRates(rates);
+  }, [rates]);
+
 
   const handleSearch = () => {
     let depositAmount = parseInt(amount.replace(/,/g, ""));
@@ -92,7 +97,7 @@ export default function CompareRatesPage() {
   return (
     <>
       <Helmet>
-        <title>Compare Fixed Deposit Rates | Sri Lanka</title>
+        <title>Compare Rates | DepositCompare.lk</title>
         <meta name="description" content="Find and compare the best fixed deposit rates from Sri Lankan banks and financial institutions." />
       </Helmet>
 
@@ -100,106 +105,100 @@ export default function CompareRatesPage() {
         <div className="container mx-auto px-4">
           <h1 className="text-3xl font-bold text-white mb-2">Compare Fixed Deposit Rates</h1>
           <p className="text-white/90">
-            Find the best interest rates on fixed deposits from all banks in Sri Lanka
+            Find the best rates for your savings from Sri Lankan banks and financial institutions
           </p>
         </div>
       </div>
 
       <div className="container mx-auto px-4 py-10">
-        <div className="bg-white p-6 rounded-lg shadow mb-10">
-          <h2 className="text-xl font-bold mb-6">Filter Options</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div>
-              <Label htmlFor="term" className="block mb-2">Term Period</Label>
-              <RadioGroup
-                value={filters.term.toString()}
-                onValueChange={(value) => filters.setFilters({ term: parseInt(value) })}
-                className="flex flex-col space-y-2"
-                id="term"
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="3" id="term-3" />
-                  <Label htmlFor="term-3">3 Months</Label>
+        <Card className="mb-10">
+          <CardHeader>
+            <CardTitle>Filter Rates</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="space-y-2">
+                <label htmlFor="deposit-amount" className="block text-sm font-medium text-gray-700">
+                  Deposit Amount (LKR)
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <span className="text-gray-500 sm:text-sm">Rs.</span>
+                  </div>
+                  <Input
+                    type="text"
+                    id="deposit-amount"
+                    className="pl-12"
+                    value={formattedAmount}
+                    onChange={(e) => handleAmountChange(e.target.value)}
+                    placeholder="100,000"
+                  />
                 </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="6" id="term-6" />
-                  <Label htmlFor="term-6">6 Months</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="12" id="term-12" />
-                  <Label htmlFor="term-12">12 Months</Label>
-                </div>
-              </RadioGroup>
-            </div>
-            
-            <div>
-              <Label htmlFor="amount" className="block mb-2">Deposit Amount</Label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">Rs.</span>
-                <Input 
-                  id="amount"
-                  value={amount} 
-                  onChange={(e) => handleAmountChange(e.target.value)}
-                  className="pl-10"
-                />
               </div>
-              <p className="text-sm text-gray-500 mt-1">Min. amount: Rs. 5,000</p>
+
+              <div className="space-y-2">
+                <label htmlFor="deposit-term" className="block text-sm font-medium text-gray-700">
+                  Term Period
+                </label>
+                <Select
+                  value={filters.term.toString()}
+                  onValueChange={(value) =>
+                    filters.setFilters({ term: parseInt(value), amount: filters.amount })
+                  }
+                >
+                  <SelectTrigger id="deposit-term">
+                    <SelectValue placeholder="Select term" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="3">3 Months</SelectItem>
+                    <SelectItem value="6">6 Months</SelectItem>
+                    <SelectItem value="12">12 Months</SelectItem>
+                    <SelectItem value="24">24 Months</SelectItem>
+                    <SelectItem value="36">36 Months</SelectItem>
+                    <SelectItem value="60">60 Months</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex items-end">
+                <Button
+                  className="w-full flex items-center justify-center"
+                  onClick={handleSearch}
+                >
+                  <Search className="mr-2 h-4 w-4" /> Find Best Rates
+                </Button>
+              </div>
             </div>
-            
-            <div>
-              <Label className="block mb-2">Payout Option</Label>
+
+            <div className="mt-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Payout Option
+              </label>
               <RadioGroup
-                value={payoutOption}
-                onValueChange={(value) => setPayoutOption(value as PayoutOption)}
-                className="flex flex-col space-y-2"
+                value={filters.payoutOption}
+                onValueChange={(value) => filters.setFilters({ payoutOption: value as PayoutOption })}
+                className="flex space-x-4"
               >
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="maturity" id="maturity" />
-                  <Label htmlFor="maturity">At Maturity</Label>
+                  <RadioGroupItem value="maturity" id="compare-payout-maturity" />
+                  <Label htmlFor="compare-payout-maturity">At Maturity</Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="monthly" id="monthly" />
-                  <Label htmlFor="monthly">Monthly Interest</Label>
+                  <RadioGroupItem value="monthly" id="compare-payout-monthly" />
+                  <Label htmlFor="compare-payout-monthly">Monthly</Label>
                 </div>
               </RadioGroup>
             </div>
-          </div>
-          
-          <Button 
-            onClick={handleSearch}
-            className="mt-6 w-full md:w-auto"
-          >
-            Search Rates
-          </Button>
-        </div>
-        
-        <h2 className="text-2xl font-bold mb-6">Available Fixed Deposit Rates</h2>
-        
-        <div className="mb-4 text-sm text-gray-500">
-          {filters.term && filters.amount && (
-            <p>
-              Showing rates for {filters.term} months term with a minimum deposit of Rs.{" "}
-              {filters.amount.toLocaleString()}
-            </p>
-          )}
-        </div>
-        
-        <RatesTable 
-          rates={rates} 
-          isLoading={isLoading}
-          payoutOption={payoutOption}
+          </CardContent>
+        </Card>
+
+        <RatesTable
+          title="Fixed Deposit Rates Comparison"
+          description={`Showing rates for ${filters.term}-month fixed deposits of Rs. ${filters.amount.toLocaleString()} (${filters.payoutOption === 'maturity' ? 'At Maturity' : 'Monthly Payout'})`}
+          rates={formattedRates} // Pass fetched rates to the table
+          filters={{ term: filters.term, amount: filters.amount, payoutOption: filters.payoutOption }}
+          showViewAll={false}
         />
-        
-        <div className="mt-10 p-6 bg-gray-50 rounded-lg">
-          <h3 className="text-lg font-bold mb-2">About Fixed Deposit Rates</h3>
-          <p className="text-gray-600 mb-4">
-            Fixed deposit rates vary between banks and financial institutions in Sri Lanka. These rates are typically influenced by the term period, deposit amount, and central bank policies.
-          </p>
-          <p className="text-gray-600">
-            When comparing rates, also consider factors such as the bank's reputation, early withdrawal penalties, and automatic renewal options. The interest rates shown are subject to change and were last updated as indicated.
-          </p>
-        </div>
       </div>
     </>
   );

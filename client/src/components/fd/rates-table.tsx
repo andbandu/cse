@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Rate } from "@shared/types";
 import { Bank } from "@shared/types";
 import { PayoutOption } from "@/lib/utils/calculator";
-import React, { useMemo } from "react"; // Added import statement
+import React, { useMemo } from "react";
 
 interface RateWithBank extends Rate {
   bank?: Bank;
@@ -24,6 +24,7 @@ interface RatesTableProps {
     payoutOption?: PayoutOption;
   };
   showViewAll?: boolean;
+  rates?: RateWithBank[]; // Added rates prop for potential passing from parent
 }
 
 export default function RatesTable({
@@ -32,6 +33,7 @@ export default function RatesTable({
   description,
   filters,
   showViewAll = true,
+  rates: propsRates, // Renamed prop for clarity
 }: RatesTableProps) {
   // Construct the API endpoint with appropriate query parameters
   let apiEndpoint = '';
@@ -44,9 +46,17 @@ export default function RatesTable({
     apiEndpoint = `/api/rates/top?limit=${limit}&term=${filters?.term || 12}`;
   }
 
-  const { data: rates, isLoading } = useQuery<RateWithBank[]>({
-    queryKey: [apiEndpoint],
+  const { data: fetchedRates = [], isLoading } = useQuery<RateWithBank[]>({
+    queryKey: ['topRates', filters?.term || 12],
+    queryFn: async () => {
+      const response = await fetch(apiEndpoint); // Use the dynamically generated endpoint
+      if (!response.ok) throw new Error(`Failed to fetch rates: ${response.status} ${response.statusText}`);
+      return response.json();
+    },
+    enabled: !propsRates, // Don't fetch if rates are provided as props
   });
+
+  const displayRates = propsRates || fetchedRates;
 
   const columns: ColumnDef<RateWithBank>[] = [
     {
@@ -118,12 +128,12 @@ export default function RatesTable({
   ];
 
   const data = useMemo(() => 
-    rates?.map(rate => ({
+    displayRates.map(rate => ({
       ...rate,
       // Ensure date is properly formatted for display
       lastUpdated: rate.lastUpdated instanceof Date ? rate.lastUpdated : new Date(rate.lastUpdated)
     })) || [], 
-  [rates]);
+  [displayRates]);
 
 
   return (
@@ -148,7 +158,7 @@ export default function RatesTable({
         ) : (
           <div className="bg-white rounded-lg shadow-md overflow-hidden mb-10">
             <div className="overflow-x-auto">
-              {rates && <DataTable columns={columns} data={data} showPagination={false} />}
+              {displayRates && <DataTable columns={columns} data={data} showPagination={false} />}
             </div>
           </div>
         )}

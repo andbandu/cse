@@ -1,5 +1,5 @@
 // Assuming necessary imports like React, etc. are already present.
-import { Update } from "@shared/types"; // Updated import
+import { Update } from "@shared/types"; 
 import { useState, useEffect } from 'react';
 
 function LatestUpdates() {
@@ -9,11 +9,15 @@ function LatestUpdates() {
     // Fetch updates from MongoDB
     const fetchUpdates = async () => {
       try {
-        const response = await fetch('/api/updates'); // Assuming an API endpoint exists
+        const response = await fetch('/api/updates?limit=3'); // Added limit for efficiency
+        if (!response.ok) {
+          throw new Error(`Failed to fetch updates: ${response.status}`);
+        }
         const data = await response.json();
         setUpdates(data);
       } catch (error) {
         console.error("Error fetching updates:", error);
+        // Consider adding error handling UI here (e.g., display an error message)
       }
     };
 
@@ -23,7 +27,7 @@ function LatestUpdates() {
   return (
     <div>
       <h2>Latest Updates</h2>
-      {updates?.map((update) => ( // Updated to use MongoDB ID
+      {updates?.map((update) => (
         <div key={update._id} className="mb-6">
           <h3>{update.title}</h3>
           <p>{update.description}</p>

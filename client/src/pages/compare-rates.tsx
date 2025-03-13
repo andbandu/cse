@@ -12,8 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Helmet } from "react-helmet";
 import { PayoutOption } from "@/lib/utils/calculator";
 import { Rate } from "@shared/types"; // Updated import
-//import { getRates } from "@/services/mongodb"; //This import is removed
-
+import { useQuery } from "@tanstack/react-query";
 
 export default function CompareRatesPage() {
   const filters = useFilters();
@@ -32,22 +31,18 @@ export default function CompareRatesPage() {
     }
   }, [amount]);
 
-  useEffect(() => {
-    const fetchRates = async () => {
+  const { data: rates = [], isLoading, error } = useQuery<Rate[]>({
+    queryKey: ['rates', filters.term, filters.amount, filters.payoutOption],
+    queryFn: async () => {
       try {
-        const response = await fetch('/api/rates', {
-          method: 'POST', // Or 'GET' if your API supports it
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(filters), // Send filters as JSON body
-        });
-
+        // Use GET request with query parameters, which matches our API implementation
+        const url = `/api/rates?term=${filters.term}&amount=${filters.amount}`;
+        const response = await fetch(url);
+        
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        const fetchedRates = await response.json();
-        setRates(fetchedRates);
+        return response.json();
       } catch (error) {
         console.error("Error fetching rates:", error);
         toast({
@@ -55,7 +50,10 @@ export default function CompareRatesPage() {
           description: "Could not retrieve rates from the API.",
           variant: "destructive",
         });
+        return [];
       }
+    },
+    enabled: !!filters.term && !!filters.amount
     };
 
     fetchRates();

@@ -1,16 +1,30 @@
 import { Rate } from "@shared/types";
+import { useQuery } from '@tanstack/react-query'; // Assuming you're using react-query
 
-//TopRates Component (Incomplete - Requires significant implementation)
-const TopRates = () => {
-  // Missing:  Logic to fetch rate data from MongoDB using an API call
-  // Example:  const rates = await fetchRatesFromMongoDB();
+//TopRates Component
+const TopRates = ({ term }: { term: string }) => { // Added term prop
+  const { data: rates = [], isLoading } = useQuery<Rate[]>({
+    queryKey: ['topRates', term],
+    queryFn: async () => {
+      const response = await fetch(`/api/rates/top?limit=3&term=${term}`);
+      if (!response.ok) throw new Error('Failed to fetch top rates');
+      return response.json();
+    }
+  });
 
-  // Placeholder for rate data
-  const rates: Rate[] = []; // Replace with actual data fetched from MongoDB
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div>
-      {/* ... rest of the TopRates component using the 'rates' data ... */}
+      {rates.map((rate) => (
+        <div key={rate._id}> {/* Assuming rate has an _id property */}
+          {/* Display rate data here */}
+          <p>Rate: {rate.value}</p>  {/* Example, replace with actual fields */}
+          <p>Term: {rate.term}</p> {/* Example, replace with actual fields */}
+        </div>
+      ))}
     </div>
   );
 };
@@ -20,11 +34,13 @@ const TopRates = () => {
 // Each page will require similar structure:  fetch data from MongoDB, handle errors, display data.
 
 
-//Missing:  API routes to fetch data from MongoDB.  Example using Express.js:
+//API routes (Example using Express.js):
 
-// app.get('/api/rates', async (req, res) => {
+// app.get('/api/rates/top', async (req, res) => {
 //   try {
-//     const rates = await getRatesFromMongoDB(); //Missing getRatesFromMongoDB function
+//     const limit = parseInt(req.query.limit as string) || 3;
+//     const term = req.query.term as string || ''; // Handle undefined term
+//     const rates = await getRatesFromMongoDB(limit, term); //Modified function
 //     res.json(rates);
 //   } catch (error) {
 //     console.error(error);
@@ -41,12 +57,19 @@ const TopRates = () => {
 // });
 
 // const RateSchema = new mongoose.Schema({
-//   // ... your rate schema definition here
+//   value: Number,
+//   term: String,
+//   _id: { type: mongoose.Schema.Types.ObjectId, required: true } // Or other suitable unique identifier
+//   // ... other fields
 // });
 // const Rate = mongoose.model('Rate', RateSchema);
 
-// async function getRatesFromMongoDB() {
-//   return await Rate.find({});
+// async function getRatesFromMongoDB(limit: number, term: string) {
+//   let query = {};
+//   if (term) {
+//     query = { term };
+//   }
+//   return await Rate.find(query).limit(limit);
 // }
 
 // ... other missing MongoDB functions for different pages

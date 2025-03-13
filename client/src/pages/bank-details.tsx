@@ -24,12 +24,22 @@ export default function BankDetailsPage() {
   const [payoutOption, setPayoutOption] = useState<PayoutOption>('maturity');
 
   const { data: bank, isLoading: isLoadingBank } = useQuery<Bank>({
-    queryKey: [`/api/banks/${bankId}`], // API endpoint now fetches from MongoDB
+    queryKey: ['bank', bankId],
+    queryFn: async () => {
+      const response = await fetch(`/api/banks/${bankId}`);
+      if (!response.ok) throw new Error('Failed to fetch bank details');
+      return response.json();
+    },
     enabled: !!bankId
   });
 
   const { data: rates, isLoading: isLoadingRates } = useQuery<Rate[]>({
-    queryKey: [`/api/banks/${bankId}/rates`], // API endpoint now fetches from MongoDB
+    queryKey: ['bankRates', bankId],
+    queryFn: async () => {
+      const response = await fetch(`/api/rates/bank/${bankId}`);
+      if (!response.ok) throw new Error('Failed to fetch bank rates');
+      return response.json();
+    },
     enabled: !!bankId
   });
 

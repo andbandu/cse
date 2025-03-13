@@ -11,12 +11,17 @@ interface BankWithRates extends Bank {
 }
 
 export default function FeaturedBanks() {
-  const { data: banks, isLoading } = useQuery<Bank[]>({
-    queryKey: ["/api/banks"],
+  const { data: banks = [], isLoading } = useQuery<Bank[]>({
+    queryKey: ["banks"],
+    queryFn: async () => {
+      const response = await fetch('/api/banks');
+      if (!response.ok) throw new Error('Failed to fetch banks');
+      return response.json();
+    }
   });
 
   const { data: rates } = useQuery<Rate[]>({
-    queryKey: ["/api/rates"],
+    queryKey: ["rates"],
   });
 
   // Combine banks with their rates

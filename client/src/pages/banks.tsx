@@ -11,7 +11,12 @@ import { Helmet } from "react-helmet";
 
 export default function BanksPage() {
   const { data: banks, isLoading } = useQuery<Bank[]>({
-    queryKey: ["/api/banks"],
+    queryKey: ["banks"],
+    queryFn: async () => {
+      const response = await fetch('/api/banks');
+      if (!response.ok) throw new Error('Failed to fetch banks');
+      return response.json();
+    }
   });
 
   return (
@@ -71,7 +76,7 @@ export default function BanksPage() {
                       <br />
                       Last Updated: {formatDateToLocal(new Date(bank.updatedAt))}
                     </p>
-                    <Link href={`/banks/${bank._id}`}> {/* Updated to use _id */}
+                    <Link href={`/bank-details/${bank.id}`}>
                       <Button variant={"outline"} className="w-full group-hover:bg-primary-600">
                         View Details{" "}
                         <ChevronRight className="h-4 w-4 ml-2 transition-transform group-hover:translate-x-1" />

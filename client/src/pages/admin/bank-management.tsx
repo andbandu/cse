@@ -6,9 +6,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { AlertCircle, Edit, Trash, Plus } from "lucide-react";
+import { AlertCircle, Edit, Trash, Plus, CheckCircle } from "lucide-react";
 import { Bank } from "@shared/types";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useToast } from "@/components/ui/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Helmet } from "react-helmet";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -73,6 +74,8 @@ export default function BankManagementPage() {
   });
 
   // Update bank mutation
+  const { toast } = useToast();
+  
   const updateBankMutation = useMutation({
     mutationFn: async ({ id, ...bankData }: Bank) => {
       const response = await fetch(`/api/admin/banks/${id}`, {
@@ -90,12 +93,22 @@ export default function BankManagementPage() {
       
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['banks'] });
       closeForm();
+      toast({
+        title: "Bank Updated",
+        description: `${data.name} has been successfully updated.`,
+        icon: <CheckCircle className="h-4 w-4 text-green-500" />,
+      });
     },
     onError: (error) => {
       setError(error.message);
+      toast({
+        title: "Update Failed",
+        description: error.message,
+        variant: "destructive",
+      });
     }
   });
 
@@ -111,13 +124,23 @@ export default function BankManagementPage() {
         throw new Error(error.message || 'Failed to delete bank');
       }
       
-      return true;
+      return id;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['banks'] });
+      toast({
+        title: "Bank Deleted",
+        description: "The bank has been successfully deleted.",
+        icon: <CheckCircle className="h-4 w-4 text-green-500" />,
+      });
     },
     onError: (error) => {
       setError(error.message);
+      toast({
+        title: "Delete Failed",
+        description: error.message,
+        variant: "destructive",
+      });
     }
   });
 

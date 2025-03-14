@@ -18,14 +18,17 @@ export default function FixedDepositPage() {
     <>
       <Helmet>
         <title>Sri Lanka's Best Fixed Deposit Rates </title>
-        <meta name="description" content="Compare the best fixed deposit rates from Sri Lanka's leading banks and financial institutions to maximize your returns." />
+        <meta
+          name="description"
+          content="Compare the best fixed deposit rates from Sri Lanka's leading banks and financial institutions to maximize your returns."
+        />
       </Helmet>
       <Header />
       <HeroSection />
+      <RatesTable />
       <Calculator />
-      <Footer/>
-      
-      
+      <FeaturedBanks />
+      <Footer />
     </>
   );
 }

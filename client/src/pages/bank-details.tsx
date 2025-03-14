@@ -1,4 +1,3 @@
-
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "wouter";
 import {
@@ -119,8 +118,7 @@ export default function BankDetailsPage() {
                         {Number(bank?.minDeposit).toLocaleString()}
                       </p>
                       <p>
-                        <strong>Last Updated:</strong>{" "}
-                        {formatDateToLocal(new Date(bank?.updatedAt || ""))}
+                        <strong>Last Updated:</strong> {bank.updatedAt}
                       </p>
                     </div>
                   </div>

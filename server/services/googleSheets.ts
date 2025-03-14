@@ -84,7 +84,7 @@ export class GoogleSheetsService {
     try {
       const response = await this.sheets.spreadsheets.values.get({
         spreadsheetId: SPREADSHEET_ID,
-        range: "Sheet3",
+        range: BANKS_RANGE,
       });
 
       const rows = response.data.values;
@@ -95,7 +95,7 @@ export class GoogleSheetsService {
 
       return rows.slice(1).map((row) => ({
         id: parseInt(row[0]) || 0,
-        bankId: parseInt(row[1]) || 0,
+        bankId: parseInt(row[0]) || 0,
         termMonths: parseInt(row[2]) || 0,
         interestRate: parseFloat(row[3]) || 0,
         updatedAt: row[4] || new Date().toISOString(),

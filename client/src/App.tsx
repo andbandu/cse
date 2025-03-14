@@ -6,9 +6,6 @@ import { Toaster } from "@/components/ui/toaster";
 import Dashboard from "@/pages/dashboard";
 import NotFound from "@/pages/not-found";
 import { Footer } from "@/components/Footer";
-import { BanksPage } from "@/pages/banks";
-import { BankDetailsPage } from "@/pages/bank-details";
-import { CompareRatesPage } from "@/pages/compare-rates";
 
 import About from "@/pages/about";
 import Contact from "@/pages/contact";
@@ -22,9 +19,6 @@ function Router() {
     <Switch>
       <Route path="/" component={Dashboard} />
       <Route path="/about" component={About} />
-      <Route path="/banks" component={BanksPage} />
-      <Route path="/banks/:id" component={BankDetailsPage} />
-      <Route path="/compare-rates" component={CompareRatesPage} />
       <Route path="/contact" component={Contact} />
       <Route path="/terms" component={Terms} />
       <Route path="/privacy" component={Privacy} />

@@ -17,6 +17,8 @@ import CompareRatesPage from "@/pages/compare-rates";
 import BanksPage from "@/pages/banks";
 import CalculatorsPage from "@/pages/calculators";
 import BankDetailsPage from "@/pages/bank-details";
+import AdminDashboard from "@/pages/admin";
+import BankManagement from "@/pages/admin/bank-management";
 import Header from "./components/layout/Header";
 
 function Router() {
@@ -37,6 +39,8 @@ function Router() {
       <Route path="/sri-lanka-banks" component={BanksPage} />
       <Route path="/banks/:id" component={BankDetailsPage} />
       <Route path="/finance-calculator" component={CalculatorsPage} />
+      <Route path="/admin" component={AdminDashboard} />
+      <Route path="/admin/bank-management" component={BankManagement} />
       <Route component={NotFound} />
     </Switch>
     <Footer/>

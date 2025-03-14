@@ -6,6 +6,7 @@ import { z } from "zod";
 import { Router } from 'express';
 import { mongoDBService } from './services/mongodb';
 import { sheetsService } from './services/googleSheets';
+import { log } from "console";
 
 const router = Router();
 
@@ -40,6 +41,7 @@ router.get('/banks/:id', async (req, res) => {
 
 // ===== RATES ENDPOINTS =====
 router.get('/rates', async (req, res) => {
+  
   try {
     // Parse query parameters
     const termMonths = req.query.term ? parseInt(req.query.term as string) : undefined;
@@ -49,10 +51,13 @@ router.get('/rates', async (req, res) => {
 
     if (termMonths && amount) {
       rates = await mongoDBService.getRatesByTermAndMinAmount(termMonths, amount);
+      console.log("buduammo1")
     } else if (termMonths) {
       rates = await mongoDBService.getRatesByTerm(termMonths);
+      console.log("buduammo2")
     } else {
       rates = await mongoDBService.getAllRates();
+      console.log("buduammo3")
     }
 
     res.json(rates);
@@ -67,12 +72,12 @@ router.get('/rates/bank/:bankId', async (req, res) => {
     const rates = await mongoDBService.getRatesByBank(req.params.bankId);
     res.json(rates);
   } catch (error) {
-    console.error('Error fetching rates by bank:', error);
     res.status(500).json({ error: 'Failed to fetch rates' });
   }
 });
 
 router.get('/rates/top', async (req, res) => {
+  console.log("buduammo")
   try {
     const limit = req.query.limit ? parseInt(req.query.limit as string) : 5;
     const termMonths = req.query.term ? parseInt(req.query.term as string) : undefined;

@@ -118,7 +118,7 @@ export default function FeaturedBanks() {
                   </div>
 
                   <div className="flex justify-between items-center">
-                    <Link href={`/bank-details/${bank.id}`}>
+                    <Link href={`/banks/${bank.id}`}>
                       <Button
                         variant="link"
                         className="text-gray-800 hover:text-gray-900"

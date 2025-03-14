@@ -20,13 +20,17 @@
     <meta name="googlebot" content="index, follow" />
     <link rel="canonical" href="https://your-deployed-replit-url.repl.co" />
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CLCSLE43DV"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=%VITE_GA_ID%"></script>
     <script>
+      // Access the environment variable for Google Analytics ID
+      const gaId = '%VITE_GA_ID%';
+
+      // Initialize Google Analytics
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
-      gtag('config', 'G-CLCSLE43DV');
+      // Configure Google Analytics with the environment variable
+      gtag('config', gaId);
     </script>
     <title>Colombo Stock Exchange (CSE) Dividend | CSE Dividend History & Yield Tracker</title>
     

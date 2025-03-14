@@ -1,4 +1,4 @@
-import { MongoClient, ServerApiVersion } from "mongodb";
+import { MongoClient, ServerApiVersion,ObjectId} from "mongodb";
 import dotenv from "dotenv";
 import type { Bank, Rate, Update } from "@shared/types";
 import NodeCache from "node-cache";
@@ -73,14 +73,10 @@ class MongoDBService {
       const collection = this.client.db(DB_NAME).collection("banks");
 
       // Try to convert id to MongoDB ObjectId
-      let bankId;
-      try {
-        const { ObjectId } = require("mongodb");
-        bankId = new ObjectId(id);
-      } catch (err) {
-        // If conversion fails, use the string id
-        bankId = id;
-      }
+    
+      const bankId = new ObjectId(id); // This will throw an error if the ID is invalid
+
+      console.log(`Querying bank with ID: ${bankId}`);
 
       const bank = await collection.findOne({ _id: bankId });
 
@@ -104,7 +100,6 @@ class MongoDBService {
       const collection = this.client.db(DB_NAME).collection("rates");
       return (await collection.find({ bankId }).toArray()) as unknown as Rate[];
     } catch (error) {
-      console.error("Failed to fetch rates from MongoDB:", error);
       throw new Error("Failed to fetch rates data");
     }
   }

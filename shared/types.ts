@@ -1,7 +1,7 @@
 
 // Bank and FD rates types
 export interface Bank {
-  _id: string;
+  id: string;
   name: string;
   shortName: string;
   description?: string;
@@ -14,7 +14,7 @@ export interface Bank {
 }
 
 export interface Rate {
-  _id: string;
+  id: string;
   bankId: string;
   bankName: string;
   termMonths: number;
@@ -26,7 +26,7 @@ export interface Rate {
 }
 
 export interface Update {
-  _id: string;
+  id: string;
   title: string;
   content: string;
   category: string;

@@ -40,10 +40,13 @@ export default function RatesTable({
 
   if (filters?.term && filters?.amount) {
     apiEndpoint = `/api/rates/filter?term=${filters.term}&amount=${filters.amount}`;
+    
   } else if (filters?.term) {
     apiEndpoint = `/api/rates/filter?term=${filters.term}`;
+    
   } else {
     apiEndpoint = `/api/rates/top?limit=${limit}&term=${filters?.term || 12}`;
+    
   }
 
   const { data: fetchedRates = [], isLoading } = useQuery<RateWithBank[]>({
@@ -64,8 +67,9 @@ export default function RatesTable({
       header: "Bank / Institution",
       cell: ({ row }) => {
         const bank = row.original.bank;
+        console.log("helow words");
         if (!bank) return null;
-
+        
         return (
           <Link href={`/banks/${row.original.bankId}`} className="cursor-pointer">
             <div className="flex items-center">

@@ -84,7 +84,7 @@ export class GoogleSheetsService {
     try {
       const response = await this.sheets.spreadsheets.values.get({
         spreadsheetId: SPREADSHEET_ID,
-        range: "Sheet3!A2:Z",
+        range: "Sheet3",
       });
 
       const rows = response.data.values;
@@ -125,7 +125,7 @@ export class GoogleSheetsService {
         shortName: row[2] || "",
         description: row[3] || "",
         minDeposit: row[4] || "",
-        updatedAt: row[5] ? new Date(row[5]).toISOString() : new Date().toISOString(),
+        updatedAt: row[5] || "",
       }));
     } catch (error) {
       console.error("Failed to fetch bank data from Google Sheets:", error);

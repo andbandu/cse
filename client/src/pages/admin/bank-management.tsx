@@ -1,5 +1,4 @@
-
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,11 +9,16 @@ import { AlertCircle, Edit, Trash, Plus, CheckCircle } from "lucide-react";
 import { Bank } from "@shared/types";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Helmet } from "react-helmet";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDateToLocal } from "@/lib/utils";
-import { Link } from "wouter";
 
 export default function BankManagementPage() {
   const queryClient = useQueryClient();
@@ -27,121 +31,163 @@ export default function BankManagementPage() {
     established: 2000,
     minDeposit: "10000",
     website: "",
-    logoUrl: "https://images.unsplash.com/photo-1563013544-28ae5e8cbf34?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+    logoUrl:
+      "https://images.unsplash.com/photo-1563013544-28ae5e8cbf34?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
     category: "bank",
     regulatedBy: "CBSL",
     status: "active",
   });
   const [error, setError] = useState("");
+  const { toast } = useToast();
 
   // Fetch banks
   const { data: banks, isLoading } = useQuery<Bank[]>({
     queryKey: ["banks"],
     queryFn: async () => {
-      const response = await fetch('/api/banks');
+      console.log("Fetching banks from server...");
+      const response = await fetch("/api/banks");
       if (!response.ok) {
-        throw new Error('Failed to fetch banks');
+        throw new Error("Failed to fetch banks");
       }
-      return response.json();
-    }
+      const data = await response.json();
+      console.log("Fetched banks:", data);
+      return data;
+    },
   });
 
-  // Create bank mutation
+  // Create bank mutation with optimistic updates
   const createBankMutation = useMutation({
     mutationFn: async (bankData: Omit<Bank, "id" | "updatedAt">) => {
-      const response = await fetch('/api/admin/banks', {
-        method: 'POST',
+      const response = await fetch("/api/admin/banks", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(bankData),
       });
-      
+
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || 'Failed to create bank');
+        throw new Error(error.error || "Failed to create bank");
       }
-      
+
       return response.json();
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['banks'] });
+    onSuccess: (data) => {
+      // Invalidate the query cache to trigger a refetch
+      queryClient.invalidateQueries({ queryKey: ["banks"] });
+
+      toast({
+        title: "Bank Created",
+        description: `${data.name} has been successfully created.`,
+        icon: <CheckCircle className="h-4 w-4 text-green-500" />,
+      });
       closeForm();
     },
     onError: (error) => {
       setError(error.message);
-    }
+      toast({
+        title: "Creation Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
   });
 
-  // Update bank mutation
-  const { toast } = useToast();
-  
+  // Update bank mutation with optimistic updates
   const updateBankMutation = useMutation({
     mutationFn: async ({ id, ...bankData }: Bank) => {
       const response = await fetch(`/api/admin/banks/${id}`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(bankData),
       });
-      
+
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || 'Failed to update bank');
+        throw new Error(error.message || "Failed to update bank");
       }
-      
+
       return response.json();
     },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['banks'] });
-      closeForm();
-      toast({
-        title: "Bank Updated",
-        description: `${data.name} has been successfully updated.`,
-        icon: <CheckCircle className="h-4 w-4 text-green-500" />,
-      });
+    onMutate: async (updatedBank) => {
+      await queryClient.cancelQueries({ queryKey: ["banks"] });
+      const previousBanks = queryClient.getQueryData<Bank[]>(["banks"]);
+      if (previousBanks) {
+        queryClient.setQueryData<Bank[]>(
+          ["banks"],
+          previousBanks.map((bank) =>
+            bank.id === updatedBank.id ? { ...bank, ...updatedBank } : bank,
+          ),
+        );
+      }
+      return { previousBanks };
     },
-    onError: (error) => {
+    onError: (error, updatedBank, context) => {
+      if (context?.previousBanks) {
+        queryClient.setQueryData<Bank[]>(["banks"], context.previousBanks);
+      }
       setError(error.message);
       toast({
         title: "Update Failed",
         description: error.message,
         variant: "destructive",
       });
-    }
-  });
-
-  // Delete bank mutation
-  const deleteBankMutation = useMutation({
-    mutationFn: async (id: string) => {
-      const response = await fetch(`/api/admin/banks/${id}`, {
-        method: 'DELETE',
-      });
-      
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to delete bank');
-      }
-      
-      return id;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['banks'] });
+    onSuccess: (data) => {
       toast({
-        title: "Bank Deleted",
-        description: "The bank has been successfully deleted.",
+        title: "Bank Updated",
+        description: `${data.name} has been successfully updated.`,
         icon: <CheckCircle className="h-4 w-4 text-green-500" />,
       });
     },
-    onError: (error) => {
+  });
+
+  // Delete bank mutation with optimistic updates
+  const deleteBankMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const response = await fetch(`/api/admin/banks/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to delete bank");
+      }
+
+      return id;
+    },
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: ["banks"] });
+      const previousBanks = queryClient.getQueryData<Bank[]>(["banks"]);
+      if (previousBanks) {
+        queryClient.setQueryData<Bank[]>(
+          ["banks"],
+          previousBanks.filter((bank) => bank.id !== id),
+        );
+      }
+      return { previousBanks };
+    },
+    onError: (error, id, context) => {
+      if (context?.previousBanks) {
+        queryClient.setQueryData<Bank[]>(["banks"], context.previousBanks);
+      }
       setError(error.message);
       toast({
         title: "Delete Failed",
         description: error.message,
         variant: "destructive",
       });
-    }
+    },
+    onSuccess: () => {
+      toast({
+        title: "Bank Deleted",
+        description: "The bank has been successfully deleted.",
+        icon: <CheckCircle className="h-4 w-4 text-green-500" />,
+      });
+    },
   });
 
   const openCreateForm = () => {
@@ -153,7 +199,8 @@ export default function BankManagementPage() {
       established: 2000,
       minDeposit: "10000",
       website: "",
-      logoUrl: "https://images.unsplash.com/photo-1563013544-28ae5e8cbf34?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+      logoUrl:
+        "https://images.unsplash.com/photo-1563013544-28ae5e8cbf34?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
       category: "bank",
       regulatedBy: "CBSL",
       status: "active",
@@ -184,7 +231,9 @@ export default function BankManagementPage() {
     setError("");
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -216,7 +265,11 @@ export default function BankManagementPage() {
   };
 
   const handleDelete = (id: string) => {
-    if (window.confirm("Are you sure you want to delete this bank? This will also delete all related rates.")) {
+    if (
+      window.confirm(
+        "Are you sure you want to delete this bank? This will also delete all related rates.",
+      )
+    ) {
       deleteBankMutation.mutate(id);
     }
   };
@@ -237,7 +290,10 @@ export default function BankManagementPage() {
                 Add, edit, or remove banks from the system
               </p>
             </div>
-            <Button onClick={openCreateForm} className="flex items-center gap-2">
+            <Button
+              onClick={openCreateForm}
+              className="flex items-center gap-2"
+            >
               <Plus size={16} /> Add New Bank
             </Button>
           </div>
@@ -281,9 +337,26 @@ export default function BankManagementPage() {
                   </p>
                   <div className="text-xs text-gray-500 mb-4">
                     <p>Established: {bank.established}</p>
-                    <p>Min Deposit: Rs. {Number(bank.minDeposit).toLocaleString()}</p>
-                    <p>Last Updated: {formatDateToLocal(new Date(bank.updatedAt))}</p>
-                    <p>Status: <span className={bank.status === "active" ? "text-green-600" : "text-red-600"}>{bank.status}</span></p>
+                    <p>
+                      Min Deposit: Rs.{" "}
+                      {Number(bank.minDeposit).toLocaleString()}
+                    </p>
+                    <p>
+                      Last Updated:{" "}
+                      {formatDateToLocal(new Date(bank.updatedAt))}
+                    </p>
+                    <p>
+                      Status:{" "}
+                      <span
+                        className={
+                          bank.status === "active"
+                            ? "text-green-600"
+                            : "text-red-600"
+                        }
+                      >
+                        {bank.status}
+                      </span>
+                    </p>
                   </div>
                   <div className="flex justify-between">
                     <Button
@@ -432,13 +505,17 @@ export default function BankManagementPage() {
                 <Button type="button" variant="outline" onClick={closeForm}>
                   Cancel
                 </Button>
-                <Button 
-                  type="submit" 
-                  disabled={createBankMutation.isPending || updateBankMutation.isPending}
+                <Button
+                  type="submit"
+                  disabled={
+                    createBankMutation.isPending || updateBankMutation.isPending
+                  }
                 >
-                  {createBankMutation.isPending || updateBankMutation.isPending 
-                    ? "Saving..." 
-                    : editingBank ? "Update Bank" : "Create Bank"}
+                  {createBankMutation.isPending || updateBankMutation.isPending
+                    ? "Saving..."
+                    : editingBank
+                      ? "Update Bank"
+                      : "Create Bank"}
                 </Button>
               </DialogFooter>
             </form>

@@ -1,6 +1,11 @@
-
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { ChevronRight } from "lucide-react";
@@ -13,20 +18,25 @@ export default function BanksPage() {
   const { data: banks, isLoading } = useQuery<Bank[]>({
     queryKey: ["banks"],
     queryFn: async () => {
-      const response = await fetch('/api/banks');
+      const response = await fetch("/api/banks");
       if (!response.ok) {
-        console.error('Failed to fetch banks:', response.statusText);
-        throw new Error('Failed to fetch banks');
+        console.error("Failed to fetch banks:", response.statusText);
+        throw new Error("Failed to fetch banks");
       }
       return response.json();
-    }
+    },
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    refetchOnWindowFocus: true, // Refetch data when the window is focused
   });
 
   return (
     <>
       <Helmet>
         <title>Banks & Financial Institutions | DepositCompare.lk</title>
-        <meta name="description" content="List of banks and financial institutions in Sri Lanka offering fixed deposit products." />
+        <meta
+          name="description"
+          content="List of banks and financial institutions in Sri Lanka offering fixed deposit products."
+        />
       </Helmet>
       <div className="bg-gradient-to-r from-slate-700 to-slate-900 py-12">
         <div className="container mx-auto px-4">
@@ -34,7 +44,8 @@ export default function BanksPage() {
             Banks & Financial Institutions
           </h1>
           <p className="text-white/90">
-            Find information about banks and financial institutions offering fixed deposits in Sri Lanka
+            Find information about banks and financial institutions offering
+            fixed deposits in Sri Lanka
           </p>
         </div>
       </div>
@@ -61,11 +72,16 @@ export default function BanksPage() {
                   </Card>
                 ))
             : banks?.map((bank) => (
-                <Card key={bank.id} className="group hover:shadow-md transition-shadow">
+                <Card
+                  key={bank.id}
+                  className="group hover:shadow-md transition-shadow"
+                >
                   <CardHeader>
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 bg-gray-100 rounded flex items-center justify-center">
-                        <span className="text-amber-500 font-bold">{bank.shortName}</span>
+                        <span className="text-amber-500 font-bold">
+                          {bank.shortName}
+                        </span>
                       </div>
                       <CardTitle>{bank.name}</CardTitle>
                     </div>
@@ -75,12 +91,17 @@ export default function BanksPage() {
                       {bank.description}
                     </CardDescription>
                     <p className="text-sm text-gray-500 mb-4">
-                      Minimum Deposit: Rs. {Number(bank.minDeposit).toLocaleString()}
+                      Minimum Deposit: Rs.{" "}
+                      {Number(bank.minDeposit).toLocaleString()}
                       <br />
-                      Last Updated: {formatDateToLocal(new Date(bank.updatedAt))}
+                      Last Updated:{" "}
+                      {formatDateToLocal(new Date(bank.updatedAt))}
                     </p>
                     <Link href={`/banks/${bank.id}`}>
-                      <Button variant={"outline"} className="w-full group-hover:bg-primary-600">
+                      <Button
+                        variant={"outline"}
+                        className="w-full group-hover:bg-primary-600"
+                      >
                         View Details{" "}
                         <ChevronRight className="h-4 w-4 ml-2 transition-transform group-hover:translate-x-1" />
                       </Button>

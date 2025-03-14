@@ -1,6 +1,5 @@
-
 import { MongoClient, ServerApiVersion, ObjectId } from "mongodb";
-import { Bank, Rate } from "@shared/types";
+import type { Bank, Rate, Update } from "@shared/types";
 
 // Cache for frequently accessed data
 import NodeCache from "node-cache";
@@ -8,27 +7,16 @@ const cache = new NodeCache({ stdTTL: 300 }); // Cache for 5 minutes
 
 // MongoDB connection string
 const MONGODB_URI = process.env.MONGODB_URI || "";
-const DB_NAME = "depositcompare";
+const DB_NAME = "fd-rates";
 
 if (!MONGODB_URI) {
   console.error("MONGODB_URI is not defined in environment variables");
 }
 
-import { MongoClient, ServerApiVersion,ObjectId} from "mongodb";
 import dotenv from "dotenv";
-import type { Bank, Rate, Update } from "@shared/types";
-import NodeCache from "node-cache";
 
 // Load environment variables
 dotenv.config();
-
-// Cache configuration (30 seconds TTL)
-const cache = new NodeCache({ stdTTL: 30 });
-
-// MongoDB connection URL
-const MONGODB_URI =
-  process.env.MONGODB_URI || "mongodb://localhost:27017/fd_rates";
-const DB_NAME = "fd-rates";
 
 class MongoDBService {
   private client: MongoClient;
@@ -78,91 +66,6 @@ class MongoDBService {
       cache.set("banks", banks);
       return banks;
     } catch (error) {
-
-  async createBank(bankData: any): Promise<any> {
-    try {
-      await this.connect();
-      const collection = this.client.db(DB_NAME).collection("banks");
-      
-      // Add required fields
-      const newBank = {
-        ...bankData,
-        updatedAt: new Date(),
-        minDeposit: bankData.minDeposit || "10000",
-        status: bankData.status || "active"
-      };
-      
-      const result = await collection.insertOne(newBank);
-      
-      if (!result.acknowledged) {
-        throw new Error("Failed to insert bank");
-      }
-      
-      // Return the created bank with id
-      return {
-        id: result.insertedId.toString(),
-        ...newBank
-      };
-    } catch (error) {
-      console.error("Failed to create bank in MongoDB:", error);
-      throw new Error("Failed to create bank");
-    }
-  }
-  
-  async updateBank(id: string, bankData: any): Promise<any> {
-    try {
-      await this.connect();
-      const collection = this.client.db(DB_NAME).collection("banks");
-      
-      // Remove id from update data and set updated time
-      const { id: _, ...updateData } = bankData;
-      const dataToUpdate = {
-        ...updateData,
-        updatedAt: new Date()
-      };
-      
-      const result = await collection.findOneAndUpdate(
-        { _id: new ObjectId(id) },
-        { $set: dataToUpdate },
-        { returnDocument: 'after' }
-      );
-      
-      if (!result) {
-        return null;
-      }
-      
-      // Transform MongoDB _id to id for client consumption
-      const { _id, ...rest } = result;
-      return {
-        id: _id.toString(),
-        ...rest
-      };
-    } catch (error) {
-      console.error("Failed to update bank in MongoDB:", error);
-      throw new Error("Failed to update bank");
-    }
-  }
-  
-  async deleteBank(id: string): Promise<boolean> {
-    try {
-      await this.connect();
-      const collection = this.client.db(DB_NAME).collection("banks");
-      
-      const result = await collection.deleteOne({ _id: new ObjectId(id) });
-      
-      // Also delete related rates
-      if (result.deletedCount > 0) {
-        const ratesCollection = this.client.db(DB_NAME).collection("rates");
-        await ratesCollection.deleteMany({ bankId: id });
-      }
-      
-      return result.deletedCount > 0;
-    } catch (error) {
-      console.error("Failed to delete bank from MongoDB:", error);
-      throw new Error("Failed to delete bank");
-    }
-  }
-
       console.error("Failed to fetch banks from MongoDB:", error);
       throw new Error("Failed to fetch banks data");
     }
@@ -174,7 +77,6 @@ class MongoDBService {
       const collection = this.client.db(DB_NAME).collection("banks");
 
       // Try to convert id to MongoDB ObjectId
-    
       const bankId = new ObjectId(id); // This will throw an error if the ID is invalid
 
       console.log(`Querying bank with ID: ${bankId}`);
@@ -192,6 +94,90 @@ class MongoDBService {
     } catch (error) {
       console.error("Failed to fetch bank from MongoDB:", error);
       throw new Error("Failed to fetch bank data");
+    }
+  }
+
+  async createBank(bankData: any): Promise<any> {
+    try {
+      await this.connect();
+      const collection = this.client.db(DB_NAME).collection("banks");
+
+      // Add required fields
+      const newBank = {
+        ...bankData,
+        updatedAt: new Date(),
+        minDeposit: bankData.minDeposit || "10000",
+        status: bankData.status || "active",
+      };
+
+      const result = await collection.insertOne(newBank);
+
+      if (!result.acknowledged) {
+        throw new Error("Failed to insert bank");
+      }
+
+      // Return the created bank with id
+      return {
+        id: result.insertedId.toString(),
+        ...newBank,
+      };
+    } catch (error) {
+      console.error("Failed to create bank in MongoDB:", error);
+      throw new Error("Failed to create bank");
+    }
+  }
+
+  async updateBank(id: string, bankData: any): Promise<any> {
+    try {
+      await this.connect();
+      const collection = this.client.db(DB_NAME).collection("banks");
+
+      // Remove id from update data and set updated time
+      const { id: _, ...updateData } = bankData;
+      const dataToUpdate = {
+        ...updateData,
+        updatedAt: new Date(),
+      };
+
+      const result = await collection.findOneAndUpdate(
+        { _id: new ObjectId(id) },
+        { $set: dataToUpdate },
+        { returnDocument: "after" },
+      );
+
+      if (!result) {
+        return null;
+      }
+
+      // Transform MongoDB _id to id for client consumption
+      const { _id, ...rest } = result;
+      return {
+        id: _id.toString(),
+        ...rest,
+      };
+    } catch (error) {
+      console.error("Failed to update bank in MongoDB:", error);
+      throw new Error("Failed to update bank");
+    }
+  }
+
+  async deleteBank(id: string): Promise<boolean> {
+    try {
+      await this.connect();
+      const collection = this.client.db(DB_NAME).collection("banks");
+
+      const result = await collection.deleteOne({ _id: new ObjectId(id) });
+
+      // Also delete related rates
+      if (result.deletedCount > 0) {
+        const ratesCollection = this.client.db(DB_NAME).collection("rates");
+        await ratesCollection.deleteMany({ bankId: id });
+      }
+
+      return result.deletedCount > 0;
+    } catch (error) {
+      console.error("Failed to delete bank from MongoDB:", error);
+      throw new Error("Failed to delete bank");
     }
   }
 

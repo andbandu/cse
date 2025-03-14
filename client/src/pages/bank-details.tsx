@@ -87,6 +87,74 @@ export default function BankDetailsPage() {
           </Button>
         </Link>
 
+        {isLoadingRates ? (
+          <div className="space-y-4">
+            <Skeleton className="h-8 w-full" />
+            <Skeleton className="h-64 w-full" />
+          </div>
+        ) : rates && rates.length > 0 ? (
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Fixed Deposit Interest Rates</CardTitle>
+                <CardDescription>
+                  Current rates for different term periods
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <DataTable
+                  data={rates}
+                  columns={[
+                    {
+                      accessorKey: "termMonths",
+                      header: "Term Period",
+                      cell: ({ row }) => (
+                        <div className="font-medium">
+                          {row.getValue("termMonths")} Months
+                        </div>
+                      ),
+                    },
+                    {
+                      accessorKey: "interestRate",
+                      header: "Interest Rate (p.a)",
+                      cell: ({ row }) => (
+                        <div className="text-right font-bold text-green-600">
+                          {Number(row.getValue("interestRate")).toFixed(2)}%
+                        </div>
+                      ),
+                    },
+                    {
+                      accessorKey: "updatedAt",
+                      header: "Last Updated",
+                      cell: ({ row }) => (
+                        <div className="text-right text-sm text-muted-foreground">
+                          {formatDateToLocal(new Date(row.getValue("updatedAt")))}
+                        </div>
+                      ),
+                    },
+                  ]}
+                />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Fixed Deposit Calculator</CardTitle>
+                <CardDescription>
+                  Calculate your potential earnings based on deposit amount and term
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Calculator rates={rates} />
+              </CardContent>
+            </Card>
+          </div>
+        ) : (
+          <div className="text-center py-12 text-muted-foreground">
+            No fixed deposit rates available for this bank at the moment.
+          </div>
+        )}
+
         {isLoadingBank ? (
           <div className="space-y-8">
             <Card>

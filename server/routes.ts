@@ -107,6 +107,8 @@ router.delete('/admin/banks/:id', async (req, res) => {
   }
 });
 
+// End of bank management endpoints
+
   } catch (error) {
     console.error('Error fetching rates:', error);
     res.status(500).json({ error: 'Failed to fetch rates' });
@@ -178,6 +180,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Ensure all routes are properly defined
+  app.use((req, res, next) => {
+    // Handle 404 errors for API routes
+    if (req.path.startsWith(apiPrefix) && !res.headersSent) {
+      res.status(404).json({ error: 'API endpoint not found' });
+    } else {
+      next();
+    }
+  });
 
   const httpServer = createServer(app);
   return httpServer;

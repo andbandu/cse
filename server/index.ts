@@ -1,25 +1,6 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
-import { mongoStorage } from "./mongodb-storage"; // Import MongoDB storage
-
-// Added: Sample data initialization function
-async function initSampleData() {
-  try {
-    // Replace this with your actual sample data insertion logic
-    const sampleBanks = [
-      { name: "Bank A", city: "New York" },
-      { name: "Bank B", city: "London" },
-    ];
-    await mongoStorage.collection('banks').insertMany(sampleBanks);
-    console.log("Sample bank data inserted.");
-
-    // Add sample data for other collections as needed
-  } catch (error) {
-    console.error("Error inserting sample data:", error);
-  }
-}
-
 
 const app = express();
 app.use(express.json());
@@ -56,40 +37,37 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  try {
-    // Connect to MongoDB before registering routes
-    await mongoStorage.connect(); // Connect to MongoDB
+  const server = await registerRoutes(app);
 
-    // Initialize sample data after connecting to MongoDB
-    await initSampleData();
+  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+    const status = err.status || err.statusCode || 500;
+    const message = err.message || "Internal Server Error";
 
-    const server = await registerRoutes(app);
+    res.status(status).json({ message });
+    throw err;
+  });
 
-    app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-      const status = err.status || err.statusCode || 500;
-      const message = err.message || "Internal Server Error";
-
-      res.status(status).json({ message });
-      throw err;
-    });
-
-    if (app.get("env") === "development") {
-      await setupVite(app, server);
-    } else {
-      serveStatic(app);
-    }
-
-    const port = 3000;
-    server.listen(
-      {
-        port,
-      },
-      () => {
-        log(`serving on port ${port}`);
-      },
-    );
-  } catch (error) {
-    console.error("Failed to start server:", error);
-    process.exit(1);
+  // importantly only setup vite in development and after
+  // setting up all the other routes so the catch-all route
+  // doesn't interfere with the other routes
+  if (app.get("env") === "development") {
+    await setupVite(app, server);
+  } else {
+    serveStatic(app);
   }
+
+  // ALWAYS serve the app on port 5000
+  // this serves both the API and the client
+  const port = 3000;
+  server.listen(
+    {
+      port,
+    },
+    () => {
+      log(`serving on port ${port}`);
+    },
+  );
 })();
+
+//     host: "0.0.0.0",
+// reusePort: true,

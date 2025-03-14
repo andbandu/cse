@@ -4,7 +4,7 @@ import { ChevronRight, LineChart, Search } from "lucide-react";
 
 export default function Hero() {
   return (
-    <section className="bg-gradient-to-r from-slate-900 to-slate-600 text-white py-16 md:py-24 relative overflow-hidden">
+    <section className="bg-gradient-to-r from-slate-800 to-slate-900 text-white py-16 md:py-24 relative overflow-hidden">
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzBoMTJWMThIMzZ2MTJ6TTYgMThoMTJ2LTZINnY2eiIvPjwvZz48L2c+PC9zdmc+')] opacity-10"></div>
       
       <div className="container mx-auto px-4 z-10 relative">

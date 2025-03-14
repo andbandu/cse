@@ -1,3 +1,5 @@
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 import HeroSection from "@/components/fd/hero-section";
 import RatesTable from "@/components/fd/rates-table";
 import Calculator from "@/components/fd/calculator";
@@ -18,14 +20,12 @@ export default function FixedDepositPage() {
         <title>Sri Lanka's Best Fixed Deposit Rates </title>
         <meta name="description" content="Compare the best fixed deposit rates from Sri Lanka's leading banks and financial institutions to maximize your returns." />
       </Helmet>
+      <Header />
       <HeroSection />
-      <RatesTable 
-        title="Top Fixed Deposit Rates" 
-        description={`Current best rates for ${filters.term}-month fixed deposits of Rs. ${formattedAmount}`}
-        filters={{ term: filters.term }}
-      />
       <Calculator />
-      <FeaturedBanks />
+      <Footer/>
+      
+      
     </>
   );
 }

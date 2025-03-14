@@ -88,13 +88,13 @@ export default function HeroSection() {
                 <label htmlFor="deposit-term" className="block text-sm font-medium text-gray-700">
                   Term Period
                 </label>
-                <Select 
+                <Select
                   value={filters.term.toString()}
                   onValueChange={(value) => 
                     filters.setFilters({ term: parseInt(value) })
                   }
                 >
-                  <SelectTrigger className=" text-gray-500" id="deposit-term">
+                  <SelectTrigger id="deposit-term">
                     <SelectValue placeholder="Select term" />
                   </SelectTrigger>
                   <SelectContent>

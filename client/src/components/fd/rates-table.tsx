@@ -5,10 +5,8 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { formatDateToLocal } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Rate } from "@shared/types";
-import { Bank } from "@shared/types";
+import { Bank, Rate } from "@shared/schema";
 import { PayoutOption } from "@/lib/utils/calculator";
-import React, { useMemo } from "react";
 
 interface RateWithBank extends Rate {
   bank?: Bank;
@@ -24,7 +22,6 @@ interface RatesTableProps {
     payoutOption?: PayoutOption;
   };
   showViewAll?: boolean;
-  rates?: RateWithBank[]; // Added rates prop for potential passing from parent
 }
 
 export default function RatesTable({
@@ -33,33 +30,21 @@ export default function RatesTable({
   description,
   filters,
   showViewAll = true,
-  rates: propsRates, // Renamed prop for clarity
 }: RatesTableProps) {
   // Construct the API endpoint with appropriate query parameters
   let apiEndpoint = '';
-
+  
   if (filters?.term && filters?.amount) {
     apiEndpoint = `/api/rates/filter?term=${filters.term}&amount=${filters.amount}`;
-    
   } else if (filters?.term) {
     apiEndpoint = `/api/rates/filter?term=${filters.term}`;
-    
   } else {
     apiEndpoint = `/api/rates/top?limit=${limit}&term=${filters?.term || 12}`;
-    
   }
 
-  const { data: fetchedRates = [], isLoading } = useQuery<RateWithBank[]>({
-    queryKey: ['topRates', filters?.term || 12],
-    queryFn: async () => {
-      const response = await fetch(apiEndpoint); // Use the dynamically generated endpoint
-      if (!response.ok) throw new Error(`Failed to fetch rates: ${response.status} ${response.statusText}`);
-      return response.json();
-    },
-    enabled: !propsRates, // Don't fetch if rates are provided as props
+  const { data: rates, isLoading } = useQuery<RateWithBank[]>({
+    queryKey: [apiEndpoint],
   });
-
-  const displayRates = propsRates || fetchedRates;
 
   const columns: ColumnDef<RateWithBank>[] = [
     {
@@ -67,17 +52,16 @@ export default function RatesTable({
       header: "Bank / Institution",
       cell: ({ row }) => {
         const bank = row.original.bank;
-        console.log("helow words");
         if (!bank) return null;
         
         return (
           <Link href={`/banks/${row.original.bankId}`} className="cursor-pointer">
             <div className="flex items-center">
               <div className="w-10 h-10 flex-shrink-0 mr-3 bg-gray-100 rounded flex items-center justify-center">
-                <span className="text-amber-500 font-bold text-sm">{bank.shortName}</span>
+                <span className="text-primary font-bold text-sm">{bank.shortName}</span>
               </div>
               <div>
-                <div className="font-medium text-gray-900 transition-colors">{bank.name}</div>
+                <div className="font-medium text-gray-900 hover:text-primary transition-colors">{bank.name}</div>
                 <div className="text-xs text-gray-500">
                   Updated: {formatDateToLocal(new Date(bank.updatedAt))}
                 </div>
@@ -91,7 +75,7 @@ export default function RatesTable({
       accessorKey: "interestRate",
       header: "Interest Rate",
       cell: ({ row }) => (
-        <div className="text-start">
+        <div className="text-center">
           <span className="text-xl font-bold text-green-600">
             {Number(row.original.interestRate).toFixed(2)}%
           </span>
@@ -102,14 +86,14 @@ export default function RatesTable({
       accessorKey: "termMonths",
       header: "Term Period",
       cell: ({ row }) => (
-        <div className="text-start">{row.original.termMonths} Months</div>
+        <div className="text-center">{row.original.termMonths} Months</div>
       ),
     },
     {
       accessorKey: "minDeposit",
       header: "Min. Deposit",
       cell: ({ row }) => (
-        <div className="text-start">
+        <div className="text-center">
           Rs. {Number(row.original.minDeposit).toLocaleString()}
         </div>
       ),
@@ -119,9 +103,9 @@ export default function RatesTable({
       header: "Action",
       cell: ({ row }) => {
         return (
-          <div className="text-start">
+          <div className="text-center">
             <Link href={`/banks/${row.original.bankId}`}>
-              <Button variant="link" className="text-blue-800 hover:text-primary-700">
+              <Button variant="link" className="text-primary hover:text-primary-700">
                 Apply Now
               </Button>
             </Link>
@@ -130,15 +114,6 @@ export default function RatesTable({
       },
     },
   ];
-
-  const data = useMemo(() => 
-    displayRates.map(rate => ({
-      ...rate,
-      // Ensure date is properly formatted for display
-      lastUpdated: rate.lastUpdated instanceof Date ? rate.lastUpdated : new Date(rate.lastUpdated)
-    })) || [], 
-  [displayRates]);
-
 
   return (
     <section className="py-16 bg-white">
@@ -162,7 +137,7 @@ export default function RatesTable({
         ) : (
           <div className="bg-white rounded-lg shadow-md overflow-hidden mb-10">
             <div className="overflow-x-auto">
-              {displayRates && <DataTable columns={columns} data={data} showPagination={false} />}
+              {rates && <DataTable columns={columns} data={rates} showPagination={false} />}
             </div>
           </div>
         )}
@@ -170,7 +145,7 @@ export default function RatesTable({
         {showViewAll && (
           <div className="text-center">
             <Link href="/compare-rates">
-              <Button variant="link" className="text-gray-700 hover:text-gray-900">
+              <Button variant="link" className="text-primary hover:text-primary-700">
                 View all fixed deposit rates
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

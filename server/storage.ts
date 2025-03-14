@@ -4,9 +4,13 @@ import { sheetsService } from './services/googleSheets';
 export interface IStorage {
   getDividendData(): Promise<DividendRecord[]>;
   getAnalytics(): Promise<AnalyticsData>;
+  getBanks(): Promise<any[]>;
 }
 
 export class MemStorage implements IStorage {
+  async getBanks(): Promise<any[]> {
+    return await sheetsService.getBankData();
+  }
   async getDividendData(): Promise<DividendRecord[]> {
     return await sheetsService.getDividendData();
   }

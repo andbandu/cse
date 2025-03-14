@@ -6,7 +6,8 @@ dotenv.config();
 
 
 const SPREADSHEET_ID = '14D2R_AK9ZU0AVnLDMNQCkeElBfzvALz5wLr57kQy0mk';
-const RANGE = 'Sheet1!A2:Z'; // Extended range to capture all years
+const DIVIDEND_RANGE = 'Sheet1!A2:Z';
+const BANKS_RANGE = 'Sheet2!A2:Z';
 
 // Reduce cache time to 30 seconds for more frequent updates
 const cache = new NodeCache({ stdTTL: 30 });
@@ -85,3 +86,28 @@ export class GoogleSheetsService {
 }
 
 export const sheetsService = new GoogleSheetsService();
+  async getBankData() {
+    try {
+      const response = await this.sheets.spreadsheets.values.get({
+        spreadsheetId: SPREADSHEET_ID,
+        range: BANKS_RANGE,
+      });
+
+      const rows = response.data.values;
+      if (!rows) {
+        console.error('No bank data found in Google Sheets');
+        return [];
+      }
+
+      return rows.map(row => ({
+        id: parseInt(row[0]) || 0,
+        name: row[1] || '',
+        code: row[2] || '',
+        description: row[3] || '',
+        logo: row[4] || '',
+      }));
+    } catch (error) {
+      console.error('Failed to fetch bank data from Google Sheets:', error);
+      throw new Error('Failed to fetch bank data');
+    }
+  }

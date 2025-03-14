@@ -1,3 +1,4 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "wouter";
 import {
@@ -43,62 +44,6 @@ export default function BankDetailsPage() {
   const { data: rates, isLoading: isLoadingRates } = useQuery<Rate[]>({
     queryKey: [`/api/banks/${bankId}/rates`],
   });
-
-  // Prepare chart data
-  const chartData =
-    rates?.map((rate) => ({
-      term: `${rate.termMonths} Months`,
-      maturityRate: Number(rate.interestRate),
-      monthlyRate: Number(rate.interestRate) * 0.95, // Use a slightly lower rate for monthly payout (estimated)
-    })) || [];
-
-  const getRate = (baseRate: string, isMonthly: boolean): number => {
-    const rate = Number(baseRate);
-    return isMonthly ? rate * 0.95 : rate; // Monthly rates are typically 5% lower
-  };
-
-  // Generate columns based on selected payout option
-  const getColumns = (): ColumnDef<Rate>[] => [
-    {
-      accessorKey: "termMonths",
-      header: "Term Period",
-      cell: ({ row }) => <div>{row.original.termMonths} Months</div>,
-    },
-    {
-      accessorKey: "interestRate",
-      header:
-        payoutOption === "maturity"
-          ? "At Maturity Rate"
-          : "Monthly Interest Rate",
-      cell: ({ row }) => (
-        <div
-          className={`font-bold ${payoutOption === "maturity" ? "text-green-600" : "text-blue-600"}`}
-        >
-          {getRate(
-            row.original.interestRate,
-            payoutOption === "monthly",
-          ).toFixed(2)}
-          %
-        </div>
-      ),
-    },
-    {
-      accessorKey: "minDeposit",
-      header: "Minimum Deposit",
-      cell: ({ row }) => (
-        <div>Rs. {Number(row.original.minDeposit).toLocaleString()}</div>
-      ),
-    },
-    {
-      accessorKey: "updatedAt",
-      header: "Last Updated",
-      cell: ({ row }) => (
-        <div>{formatDateToLocal(new Date(row.original.updatedAt))}</div>
-      ),
-    },
-  ];
-
-  const columns = getColumns();
 
   return (
     <>
@@ -157,15 +102,6 @@ export default function BankDetailsPage() {
                 </div>
               </CardContent>
             </Card>
-
-            <Card>
-              <CardHeader>
-                <Skeleton className="h-6 w-48" />
-              </CardHeader>
-              <CardContent>
-                <Skeleton className="h-64 w-full" />
-              </CardContent>
-            </Card>
           </div>
         ) : (
           <div className="space-y-8">
@@ -200,131 +136,6 @@ export default function BankDetailsPage() {
                     </Button>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>{bank?.name} Fixed Deposit Rates</CardTitle>
-                <CardDescription>
-                  Current fixed deposit rates offered by {bank?.name}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Tabs defaultValue="table">
-                  <TabsList className="mb-4">
-                    <TabsTrigger value="table">Table View</TabsTrigger>
-                    <TabsTrigger value="chart">Chart View</TabsTrigger>
-                  </TabsList>
-
-                  <TabsContent value="table">
-                    <div className="mb-6">
-                      <h3 className="text-lg font-medium mb-2">
-                        Payout Option
-                      </h3>
-                      <RadioGroup
-                        value={payoutOption}
-                        onValueChange={(value) =>
-                          setPayoutOption(value as PayoutOption)
-                        }
-                        className="flex items-center space-x-4"
-                      >
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem
-                            value="maturity"
-                            id="maturity-table"
-                          />
-                          <Label htmlFor="maturity-table">At Maturity</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="monthly" id="monthly-table" />
-                          <Label htmlFor="monthly-table">
-                            Monthly Interest
-                          </Label>
-                        </div>
-                      </RadioGroup>
-                    </div>
-
-                    {isLoadingRates ? (
-                      <Skeleton className="h-64 w-full" />
-                    ) : (
-                      <DataTable
-                        columns={columns}
-                        data={rates || []}
-                        showPagination={false}
-                      />
-                    )}
-                  </TabsContent>
-
-                  <TabsContent value="chart">
-                    <div className="mb-6">
-                      <h3 className="text-lg font-medium mb-2">
-                        Payout Option
-                      </h3>
-                      <RadioGroup
-                        value={payoutOption}
-                        onValueChange={(value) =>
-                          setPayoutOption(value as PayoutOption)
-                        }
-                        className="flex items-center space-x-4"
-                      >
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="maturity" id="maturity" />
-                          <Label htmlFor="maturity">At Maturity</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="monthly" id="monthly" />
-                          <Label htmlFor="monthly">Monthly Interest</Label>
-                        </div>
-                      </RadioGroup>
-                    </div>
-
-                    <div className="h-72">
-                      {isLoadingRates ? (
-                        <Skeleton className="h-full w-full" />
-                      ) : (
-                        <ResponsiveContainer width="100%" height="100%">
-                          <BarChart
-                            data={chartData}
-                            margin={{
-                              top: 20,
-                              right: 30,
-                              left: 20,
-                              bottom: 30,
-                            }}
-                          >
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="term" />
-                            <YAxis domain={[0, "dataMax + 2"]} />
-                            <Tooltip
-                              formatter={(value: number) => [
-                                `${value.toFixed(2)}%`,
-                                payoutOption === "maturity"
-                                  ? "At Maturity"
-                                  : "Monthly Interest",
-                              ]}
-                            />
-                            {payoutOption === "maturity" ? (
-                              <Bar
-                                dataKey="maturityRate"
-                                fill="#10B981"
-                                name="At Maturity"
-                                radius={[4, 4, 0, 0]}
-                              />
-                            ) : (
-                              <Bar
-                                dataKey="monthlyRate"
-                                fill="#3B82F6"
-                                name="Monthly Interest"
-                                radius={[4, 4, 0, 0]}
-                              />
-                            )}
-                          </BarChart>
-                        </ResponsiveContainer>
-                      )}
-                    </div>
-                  </TabsContent>
-                </Tabs>
               </CardContent>
             </Card>
           </div>

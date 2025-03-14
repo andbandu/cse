@@ -1,3 +1,4 @@
+
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
@@ -41,7 +42,6 @@ router.get('/banks/:id', async (req, res) => {
 
 // ===== RATES ENDPOINTS =====
 router.get('/rates', async (req, res) => {
-  
   try {
     // Parse query parameters
     const termMonths = req.query.term ? parseInt(req.query.term as string) : undefined;
@@ -61,6 +61,34 @@ router.get('/rates', async (req, res) => {
     }
 
     res.json(rates);
+  } catch (error) {
+    console.error('Error fetching rates:', error);
+    res.status(500).json({ error: 'Failed to fetch rates' });
+  }
+});
+
+router.get('/rates/bank/:bankId', async (req, res) => {
+  try {
+    const rates = await mongoDBService.getRatesByBank(req.params.bankId);
+    res.json(rates);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch rates' });
+  }
+});
+
+router.get('/rates/top', async (req, res) => {
+  console.log("buduammo")
+  try {
+    const limit = req.query.limit ? parseInt(req.query.limit as string) : 5;
+    const termMonths = req.query.term ? parseInt(req.query.term as string) : undefined;
+
+    const topRates = await mongoDBService.getTopRates(limit, termMonths);
+    res.json(topRates);
+  } catch (error) {
+    console.error('Error fetching top rates:', error);
+    res.status(500).json({ error: 'Failed to fetch top rates' });
+  }
+});
 
 // ===== BANK MANAGEMENT ENDPOINTS =====
 router.post('/admin/banks', async (req, res) => {
@@ -104,37 +132,6 @@ router.delete('/admin/banks/:id', async (req, res) => {
   } catch (error) {
     console.error('Error deleting bank:', error);
     res.status(500).json({ error: 'Failed to delete bank' });
-  }
-});
-
-// End of bank management endpoints
-
-  } catch (error) {
-    console.error('Error fetching rates:', error);
-    res.status(500).json({ error: 'Failed to fetch rates' });
-  }
-});
-
-router.get('/rates/bank/:bankId', async (req, res) => {
-  try {
-    const rates = await mongoDBService.getRatesByBank(req.params.bankId);
-    res.json(rates);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch rates' });
-  }
-});
-
-router.get('/rates/top', async (req, res) => {
-  console.log("buduammo")
-  try {
-    const limit = req.query.limit ? parseInt(req.query.limit as string) : 5;
-    const termMonths = req.query.term ? parseInt(req.query.term as string) : undefined;
-
-    const topRates = await mongoDBService.getTopRates(limit, termMonths);
-    res.json(topRates);
-  } catch (error) {
-    console.error('Error fetching top rates:', error);
-    res.status(500).json({ error: 'Failed to fetch top rates' });
   }
 });
 

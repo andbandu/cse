@@ -30,7 +30,7 @@ export default function App() {
           component={FixedDepositPage}
         />
         <Route path="/banks" component={BanksPage} />
-        <Route path="/bank/:id" component={BankDetailsPage} />
+        <Route path="/banks/:id" component={BankDetailsPage} />
         <Route path="/compare-rates" component={CompareRatesPage} />
         <Route component={NotFound} />
       </Switch>

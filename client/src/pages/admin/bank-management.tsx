@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { AlertCircle, Edit, Trash, Plus, CheckCircle } from "lucide-react";
 import { Bank } from "@shared/types";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Helmet } from "react-helmet";
 import { Skeleton } from "@/components/ui/skeleton";

@@ -80,6 +80,32 @@ export class GoogleSheetsService {
     }
   }
 
+  async getRatesData() {
+    try {
+      const response = await this.sheets.spreadsheets.values.get({
+        spreadsheetId: SPREADSHEET_ID,
+        range: "Sheet3",
+      });
+
+      const rows = response.data.values;
+      if (!rows) {
+        console.error("No rates data found in Google Sheets");
+        return [];
+      }
+
+      return rows.slice(1).map((row) => ({
+        id: parseInt(row[0]) || 0,
+        bankId: parseInt(row[1]) || 0,
+        termMonths: parseInt(row[2]) || 0,
+        interestRate: parseFloat(row[3]) || 0,
+        updatedAt: row[4] || new Date().toISOString(),
+      }));
+    } catch (error) {
+      console.error("Failed to fetch rates data from Google Sheets:", error);
+      throw new Error("Failed to fetch rates data");
+    }
+  }
+
   async getBankData() {
     try {
       const response = await this.sheets.spreadsheets.values.get({

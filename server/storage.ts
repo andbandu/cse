@@ -11,6 +11,20 @@ export class MemStorage implements IStorage {
   async getBanks(): Promise<any[]> {
     return await sheetsService.getBankData();
   }
+
+  async getBank(id: number): Promise<any | null> {
+    const banks = await this.getBanks();
+    return banks.find(bank => bank.id === id) || null;
+  }
+
+  async getBankRates(bankId: number): Promise<any[]> {
+    const rates = await sheetsService.getRatesData();
+    return rates.filter(rate => rate.bankId === bankId);
+  }
+
+  async getRates(): Promise<any[]> {
+    return await sheetsService.getRatesData();
+  }
   async getDividendData(): Promise<DividendRecord[]> {
     return await sheetsService.getDividendData();
   }

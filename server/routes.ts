@@ -61,6 +61,52 @@ router.get('/rates', async (req, res) => {
     }
 
     res.json(rates);
+
+// ===== BANK MANAGEMENT ENDPOINTS =====
+router.post('/admin/banks', async (req, res) => {
+  try {
+    console.log('Creating new bank:', req.body);
+    const newBank = await mongoDBService.createBank(req.body);
+    console.log(`Successfully created bank with id: ${newBank.id}`);
+    res.status(201).json(newBank);
+  } catch (error) {
+    console.error('Error creating bank:', error);
+    res.status(500).json({ error: 'Failed to create bank' });
+  }
+});
+
+router.put('/admin/banks/:id', async (req, res) => {
+  try {
+    console.log(`Updating bank with id: ${req.params.id}`);
+    const updatedBank = await mongoDBService.updateBank(req.params.id, req.body);
+    if (!updatedBank) {
+      console.log(`Bank with id ${req.params.id} not found`);
+      return res.status(404).json({ error: 'Bank not found' });
+    }
+    console.log(`Successfully updated bank: ${updatedBank.name}`);
+    res.json(updatedBank);
+  } catch (error) {
+    console.error('Error updating bank:', error);
+    res.status(500).json({ error: 'Failed to update bank' });
+  }
+});
+
+router.delete('/admin/banks/:id', async (req, res) => {
+  try {
+    console.log(`Deleting bank with id: ${req.params.id}`);
+    const result = await mongoDBService.deleteBank(req.params.id);
+    if (!result) {
+      console.log(`Bank with id ${req.params.id} not found`);
+      return res.status(404).json({ error: 'Bank not found' });
+    }
+    console.log(`Successfully deleted bank with id: ${req.params.id}`);
+    res.status(204).send();
+  } catch (error) {
+    console.error('Error deleting bank:', error);
+    res.status(500).json({ error: 'Failed to delete bank' });
+  }
+});
+
   } catch (error) {
     console.error('Error fetching rates:', error);
     res.status(500).json({ error: 'Failed to fetch rates' });

@@ -1,9 +1,9 @@
+
 import { google } from 'googleapis';
 import NodeCache from 'node-cache';
 import type { DividendRecord } from '@shared/types';
 import dotenv from 'dotenv';
 dotenv.config();
-
 
 const SPREADSHEET_ID = '14D2R_AK9ZU0AVnLDMNQCkeElBfzvALz5wLr57kQy0mk';
 const DIVIDEND_RANGE = 'Sheet1!A2:Z';
@@ -39,7 +39,7 @@ export class GoogleSheetsService {
       console.log('Fetching fresh data from Google Sheets...');
       const response = await this.sheets.spreadsheets.values.get({
         spreadsheetId: SPREADSHEET_ID,
-        range: RANGE,
+        range: DIVIDEND_RANGE,
       });
 
       const rows = response.data.values;
@@ -51,20 +51,17 @@ export class GoogleSheetsService {
       console.log(`Found ${rows.length} rows of data`);
 
       const records: DividendRecord[] = rows.map(row => {
-        // Extract basic company information from fixed columns
         const baseRecord = {
-          company: row[0] || '',    // Column A: Company Name
-          ticker: row[1] || '',     // Column B: Ticker
-          sector: row[2] || '',     // Column C: Sector
-          established: parseInt(row[3]) || 0,  // Column D: Established
-          quotedDate: parseInt(row[4]) || 0,   // Column E: Quoted Date
-          fyEnding: row[5] || '',    // Column F: FY Ending
+          company: row[0] || '',    
+          ticker: row[1] || '',     
+          sector: row[2] || '',     
+          established: parseInt(row[3]) || 0,  
+          quotedDate: parseInt(row[4]) || 0,   
+          fyEnding: row[5] || '',    
           frequency: 'Annual',
           dividends: {}
         };
 
-        // Start from column G (index 6) for dividend years
-        // Calculate the year for each column
         const currentYear = new Date().getFullYear();
         for (let i = 6; i < row.length; i++) {
           const year = (currentYear - (i - 6)).toString();
@@ -83,9 +80,7 @@ export class GoogleSheetsService {
       throw new Error('Failed to fetch dividend data');
     }
   }
-}
 
-export const sheetsService = new GoogleSheetsService();
   async getBankData() {
     try {
       const response = await this.sheets.spreadsheets.values.get({
@@ -111,3 +106,6 @@ export const sheetsService = new GoogleSheetsService();
       throw new Error('Failed to fetch bank data');
     }
   }
+}
+
+export const sheetsService = new GoogleSheetsService();

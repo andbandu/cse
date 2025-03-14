@@ -99,7 +99,7 @@ export class GoogleSheetsService {
         shortName: row[2] || "",
         description: row[3] || "",
         minDeposit: row[4] || "",
-        updatedAt: row[5] ? new Date(row[5]) : "",
+        updatedAt: row[5] ? new Date(row[5]).toISOString() : new Date().toISOString(),
       }));
     } catch (error) {
       console.error("Failed to fetch bank data from Google Sheets:", error);

@@ -85,7 +85,7 @@ export default function BanksPage() {
                       {Number(bank.minDeposit).toLocaleString()}
                       <br />
                       Last Updated:{" "}
-                      {formatDateToLocal(new Date(bank.updatedAt))}
+                      {formatDateToLocal(new Date(Date.parse(bank.updatedAt)))}
                     </p>
                     <Link href={`/banks/${bank.id}`}>
                       <Button

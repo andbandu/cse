@@ -3,7 +3,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { HelmetProvider } from 'react-helmet-async';
 import { queryClient } from "./lib/queryClient";
 import { Toaster } from "@/components/ui/toaster";
-import Dashboard from "@/pages/dashboard";
+import DividentHistoryPage from "./pages/dividend-history";
 import NotFound from "@/pages/not-found";
 import  Footer  from "@/components/layout/Footer";
 
@@ -25,13 +25,13 @@ function Router() {
     <Header/>
     <div className="min-h-screen flex flex-col">
     <Switch>
-      <Route path="/" component={Dashboard} />
+      <Route path="/" component={DividentHistoryPage} />
       <Route path="/about" component={About} />
       <Route path="/contact" component={Contact} />
       <Route path="/terms" component={Terms} />
       <Route path="/privacy" component={Privacy} />
       <Route path="/disclaimer" component={Disclaimer} />
-      <Route path="/cse-dividend-history" component={Dashboard} />
+      <Route path="/cse-dividend-history" component={DividentHistoryPage} />
       <Route path="/sri-lanka-fixed-deposit-interest-rates" component={FixedDepositPage} />
       <Route path="/compare-rates" component={CompareRatesPage} />
       <Route path="/sri-lanka-banks" component={BanksPage} />

@@ -65,7 +65,7 @@ interface FilterState {
   minimumYield: number;
 }
 
-export default function Dashboard() {
+export default function DividentHistoryPage() {
   const currentYear = new Date().getFullYear().toString();
 
   const [filter, setFilter] = useState<FilterState>({

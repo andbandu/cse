@@ -80,8 +80,8 @@ export default function FeaturedBanks() {
                 <CardContent className="p-6">
                   <div className="flex items-center mb-4">
                     <div className="w-12 h-12 bg-gray-100 rounded-md flex items-center justify-center mr-4">
-                      <span className="text-primary font-bold">
-                        {bank.shortName}
+                      <span className="text-amber-500 font-bold">
+                        {bank.shortName.toUpperCase()}
                       </span>
                     </div>
                     <h3 className="text-xl font-semibold text-gray-900">
@@ -133,7 +133,10 @@ export default function FeaturedBanks() {
 
         <div className="text-center mt-10">
           <Link href="/banks">
-            <Button variant="link" className="text-primary hover:text-primary-700">
+            <Button
+              variant="link"
+              className="text-primary hover:text-primary-700"
+            >
               View all banks and financial institutions
               <svg
                 xmlns="http://www.w3.org/2000/svg"

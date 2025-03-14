@@ -1,4 +1,3 @@
-
 import { Route, Switch } from "wouter";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -26,8 +25,11 @@ export default function App() {
         <Route path="/privacy" component={Privacy} />
         <Route path="/disclaimer" component={Disclaimer} />
         <Route path="/cse-dividend-history" component={Dashboard} />
-        <Route path="/sri-lanka-fixed-deposit-interest-rates" component={FixedDepositPage} />
-        <Route path="/sri-lanka-banks" component={BanksPage} />
+        <Route
+          path="/sri-lanka-fixed-deposit-interest-rates"
+          component={FixedDepositPage}
+        />
+        <Route path="/banks" component={BanksPage} />
         <Route path="/bank/:id" component={BankDetailsPage} />
         <Route path="/compare-rates" component={CompareRatesPage} />
         <Route component={NotFound} />

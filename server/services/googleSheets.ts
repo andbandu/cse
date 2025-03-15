@@ -99,7 +99,7 @@ export class GoogleSheetsService {
         bankId: parseInt(row[1]) || 0,
         termMonths: row[3] || "",
         interestRate: parseFloat(row[4]) || 0,
-        minDeposit: row[6] || "",
+        minDeposit: parseInt(row[6]) || 0,
         updatedAt: row[7] || new Date().toISOString(),
       }));
     } catch (error) {

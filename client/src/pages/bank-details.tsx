@@ -49,13 +49,13 @@ export default function BankDetailsPage() {
     enabled: !!bankId,
   });
 
+  const sortedRates = rates?.sort((a, b) => a.termMonths - b.termMonths) || [];
+
   // Prepare chart data
-  const chartData =
-    rates?.map((rate) => ({
-      term: `${rate.termMonths} Months`,
-      maturityRate: Number(rate.interestRate),
-      monthlyRate: Number(rate.interestRate) * 0.95, // Use a slightly lower rate for monthly payout (estimated)
-    })) || [];
+  const chartData = sortedRates.map((rate) => ({
+    term: `${rate.termMonths} Months`,
+    rate: Number(rate.interestRate),
+  }));
 
   const getRate = (baseRate: string, isMonthly: boolean): number => {
     const rate = Number(baseRate);
@@ -251,13 +251,26 @@ export default function BankDetailsPage() {
                     </div>
 
                     {isLoadingRates ? (
-                      <Skeleton className="h-64 w-full" />
+                      <div className="space-y-2">
+                        <Skeleton className="h-10 w-full" />
+                        <Skeleton className="h-10 w-full" />
+                        <Skeleton className="h-10 w-full" />
+                      </div>
+                    ) : sortedRates.length > 0 ? (
+                      <div className="space-y-2">
+                        {sortedRates.map((rate) => (
+                          <div key={rate.id} className="flex justify-between">
+                            <div>
+                              {rate.termMonths} Months
+                            </div>
+                            <div className="font-bold text-green-600">
+                              {rate.interestRate}%
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     ) : (
-                      <DataTable
-                        columns={columns}
-                        data={rates || []}
-                        showPagination={false}
-                      />
+                      <p>No rates found.</p>
                     )}
                   </TabsContent>
 
@@ -304,26 +317,15 @@ export default function BankDetailsPage() {
                             <Tooltip
                               formatter={(value: number) => [
                                 `${value.toFixed(2)}%`,
-                                payoutOption === "maturity"
-                                  ? "At Maturity"
-                                  : "Monthly Interest",
+                                "Interest Rate",
                               ]}
                             />
-                            {payoutOption === "maturity" ? (
-                              <Bar
-                                dataKey="maturityRate"
-                                fill="#10B981"
-                                name="At Maturity"
-                                radius={[4, 4, 0, 0]}
-                              />
-                            ) : (
-                              <Bar
-                                dataKey="monthlyRate"
-                                fill="#3B82F6"
-                                name="Monthly Interest"
-                                radius={[4, 4, 0, 0]}
-                              />
-                            )}
+                            <Bar
+                              dataKey="rate"
+                              fill="#10B981"
+                              name="Interest Rate"
+                              radius={[4, 4, 0, 0]}
+                            />
                           </BarChart>
                         </ResponsiveContainer>
                       )}

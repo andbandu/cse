@@ -22,12 +22,13 @@ import { useQuery } from "@tanstack/react-query";
    const bankId = parseInt(params.id);
    const [payoutOption, setPayoutOption] = useState<PayoutOption>('maturity');
 
-   const { data: bank, isLoading: isLoadingBank } = useQuery<Bank>({
+   const { data: bank, isLoading: isLoadingBank, error: bankError } = useQuery<Bank>({
      queryKey: [`/api/banks/${bankId}`],
    });
 
    const { data: rates, isLoading: isLoadingRates } = useQuery<Rate[]>({
      queryKey: [`/api/banks/${bankId}/rates`],
+     enabled: !!bankId,
    });
 
    // Prepare chart data

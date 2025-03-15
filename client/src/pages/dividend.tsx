@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
 import Hero from "@/components/dividend/Hero";
 import CompanyTable from "@/components/CompanyTable";
 import SearchFilter from "@/components/SearchFilter";
@@ -67,7 +65,7 @@ interface FilterState {
   minimumYield: number;
 }
 
-export default function Dashboard() {
+export default function DividendPage() {
   const currentYear = new Date().getFullYear().toString();
 
   const [filter, setFilter] = useState<FilterState>({
@@ -147,7 +145,7 @@ export default function Dashboard() {
           { name: 'Home', item: '/' }
         ]}
       />
-      <Header />
+      
       <Hero />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-6">
@@ -170,9 +168,7 @@ export default function Dashboard() {
           />
         </div>
       </main>
-      <div className="mt-auto">
-        <Footer />
-      </div>
+      
     </div>
   );
 }

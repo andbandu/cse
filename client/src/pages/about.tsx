@@ -1,6 +1,5 @@
 
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
+
 import SEOHead from "@/components/SEOHead";
 
 export default function About() {
@@ -12,7 +11,7 @@ export default function About() {
         canonical="/about"
         keywords="about CSE dividend tracker, Colombo Stock Exchange information, Sri Lanka stock market data, CSE dividend analysis"
       />
-      <Header />
+      
       <main className="flex-grow container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
           <div className="bg-gradient-to-r from-slate-800 to-slate-900 px-6 py-4">
@@ -95,7 +94,7 @@ export default function About() {
           </div>
         </div>
       </main>
-      <Footer />
+      
     </div>
   );
 }

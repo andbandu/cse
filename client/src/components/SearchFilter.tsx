@@ -50,7 +50,7 @@ export default function SearchFilter({
   };
 
   return (
-    <div className="space-y-4 bg-white p-6 rounded-lg shadow-sm">
+    <div className="space-y-4 border bg-white p-6 rounded-lg shadow-sm">
       <h2 className="text-lg font-semibold mb-4">Search & Filter</h2>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

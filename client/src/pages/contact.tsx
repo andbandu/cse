@@ -1,6 +1,4 @@
 
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,7 +29,7 @@ export default function Contact() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
+      
       <main className="flex-grow container mx-auto px-4 py-12">
         <div className="max-w-5xl mx-auto">
           <h1 className="text-4xl font-bold mb-8 text-center">Get in Touch</h1>
@@ -187,7 +185,7 @@ export default function Contact() {
           </div>
         </div>
       </main>
-      <Footer />
+
     </div>
   );
 }

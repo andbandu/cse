@@ -20,7 +20,7 @@ export default function Hero() {
           
           <div className="flex flex-col sm:flex-row gap-5">
             <a 
-              href="#compare-rates" 
+              href="/cse-dividend-history/#com-dividend" 
               className="group bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-medium px-7 py-3.5 rounded-lg text-center transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
             >
               <Search className="h-5 w-5" />

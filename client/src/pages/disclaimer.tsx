@@ -1,11 +1,9 @@
 
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
 
 export default function Disclaimer() {
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
+     
       <main className="flex-grow container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
           <div className="bg-gradient-to-r from-slate-800 to-slate-900 px-6 py-4">
@@ -100,7 +98,7 @@ export default function Disclaimer() {
           </div>
         </div>
       </main>
-      <Footer />
+   
     </div>
   );
 }

@@ -9,7 +9,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { ChevronRight } from "lucide-react";
-import { formatDateToLocal } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Bank } from "@shared/fd-schema";
 import { Helmet } from "react-helmet";
@@ -85,7 +84,7 @@ export default function BanksPage() {
                       <br />
                       Last Updated: {bank.updatedAt}
                     </p>
-                    <Link href={`/banks/${bank.id}`}>
+                    <Link href={`/sri-lanka-banks/${bank.id}`}>
                       <Button
                         variant={"outline"}
                         className="w-full group-hover:bg-primary-600"

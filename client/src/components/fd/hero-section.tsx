@@ -94,10 +94,11 @@ export default function HeroSection() {
                     filters.setFilters({ term: parseInt(value) })
                   }
                 >
-                  <SelectTrigger id="deposit-term">
+                  <SelectTrigger id="deposit-term" className="text-gray-500">
                     <SelectValue placeholder="Select term" />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="1">1 Months</SelectItem>
                     <SelectItem value="3">3 Months</SelectItem>
                     <SelectItem value="6">6 Months</SelectItem>
                     <SelectItem value="12">12 Months</SelectItem>

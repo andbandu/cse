@@ -77,7 +77,7 @@ export default function RatesTable({
 
         return (
           <Link
-            href={`/banks/${row.original.bankId}`}
+            href={`/sri-lanka-banks/${row.original.bankId}`}
             className="cursor-pointer"
           >
             <div className="flex items-center">
@@ -87,7 +87,7 @@ export default function RatesTable({
                 </span>
               </div>
               <div>
-                <div className="font-medium text-gray-900 hover:text-primary transition-colors">
+                <div className="font-medium text-gray-900 hover:text-slate-700 transition-colors">
                   {bank.name}
                 </div>
                 <div className="text-xs text-gray-500">
@@ -140,7 +140,7 @@ export default function RatesTable({
             <Link href={`/banks/${row.original.bankId}`}>
               <Button
                 variant="link"
-                className="text-primary hover:text-primary-700"
+                className="text-blue-700 hover:text-primary-700"
               >
                 Apply Now
               </Button>
@@ -189,7 +189,7 @@ export default function RatesTable({
             <Link href="/compare-rates">
               <Button
                 variant="link"
-                className="text-primary hover:text-primary-700"
+                className="text-gray-700 hover:text-primary-700"
               >
                 View all fixed deposit rates
                 <svg

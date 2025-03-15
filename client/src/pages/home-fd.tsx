@@ -1,5 +1,4 @@
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
+
 import HeroSection from "@/components/fd/hero-section";
 import RatesTable from "@/components/fd/rates-table";
 import Calculator from "@/components/fd/calculator";
@@ -23,7 +22,7 @@ export default function FixedDepositPage() {
           content="Compare the best fixed deposit rates from Sri Lanka's leading banks and financial institutions to maximize your returns."
         />
       </Helmet>
-      <Header />
+     
       <HeroSection />
       <RatesTable
         title="Top Maturity Interest Banks"
@@ -36,7 +35,7 @@ export default function FixedDepositPage() {
       />
       <Calculator />
       <FeaturedBanks />
-      <Footer />
+      
     </>
   );
 }

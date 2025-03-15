@@ -45,7 +45,7 @@ export default function FeaturedBanks() {
 
         {isLoading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[1, 2, 3].map((i) => (
+            {Array(3).fill(0).map((_, i) => (
               <Card key={i} className="overflow-hidden">
                 <CardContent className="p-0">
                   <Skeleton className="h-3 w-full" />

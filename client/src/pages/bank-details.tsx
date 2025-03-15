@@ -118,7 +118,7 @@ export default function BankDetailsPage() {
                         {Number(bank?.minDeposit).toLocaleString()}
                       </p>
                       <p>
-                        <strong>Last Updated:</strong> {bank.updatedAt}
+                        <strong>Last Updated:</strong> {bank?.updatedAt || 'N/A'}
                       </p>
                     </div>
                   </div>

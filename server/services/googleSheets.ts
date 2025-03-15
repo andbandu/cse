@@ -121,7 +121,7 @@ export class GoogleSheetsService {
       }
 
       return rows.map((row) => ({
-        id: parseInt(row[0]) || 0,
+        id: parseInt(row[0]),
         name: row[1] || "",
         shortName: row[2] || "",
         description: row[3] || "",

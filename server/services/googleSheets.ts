@@ -7,6 +7,7 @@ dotenv.config();
 const SPREADSHEET_ID = "14D2R_AK9ZU0AVnLDMNQCkeElBfzvALz5wLr57kQy0mk";
 const DIVIDEND_RANGE = "Sheet1!A2:Z";
 const BANKS_RANGE = "Sheet2!A2:Z";
+const RATES_RANGE = "Sheet3!A2:Z";
 
 // Reduce cache time to 30 seconds for more frequent updates
 const cache = new NodeCache({ stdTTL: 30 });
@@ -84,7 +85,7 @@ export class GoogleSheetsService {
     try {
       const response = await this.sheets.spreadsheets.values.get({
         spreadsheetId: SPREADSHEET_ID,
-        range: BANKS_RANGE,
+        range: RATES_RANGE,
       });
 
       const rows = response.data.values;
@@ -95,7 +96,7 @@ export class GoogleSheetsService {
 
       return rows.slice(1).map((row) => ({
         id: parseInt(row[0]) || 0,
-        bankId: parseInt(row[0]) || 0,
+        bankId: parseInt(row[1]) || 0,
         termMonths: parseInt(row[2]) || 0,
         interestRate: parseFloat(row[3]) || 0,
         updatedAt: row[4] || new Date().toISOString(),

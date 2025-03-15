@@ -1,50 +1,93 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <meta name="description" content="Track and analyze dividend history of Colombo Stock Exchange (CSE). Get detailed insights into dividend payouts, yields, and historical trends for informed investment decisions in the Sri Lankan market." />
-    <meta name="keywords" content="Colombo Stock Exchange, CSE, Sri Lanka stock market dividend, CSE dividend history, CSE dividend tracker, stock dividends, Sri Lanka stocks, dividend yield, investment tools, CSE dividend data, Sri Lanka investments, CSE stock prices, Colombo bourse, CSE listed companies, Sri Lanka equity market, CSE market analysis" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1"
+    />
+    <meta
+      name="description"
+      content="Track and analyze dividend history of Colombo Stock Exchange (CSE). Get detailed insights into dividend payouts, yields, and historical trends for informed investment decisions in the Sri Lankan market."
+    />
+    <meta
+      name="keywords"
+      content="Colombo Stock Exchange, CSE, Sri Lanka stock market dividend, CSE dividend history, CSE dividend tracker, stock dividends, Sri Lanka stocks, dividend yield, investment tools, CSE dividend data, Sri Lanka investments, CSE stock prices, Colombo bourse, CSE listed companies, Sri Lanka equity market, CSE market analysis"
+    />
     <meta name="author" content="CSE Dividend Tracker" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Colombo Stock Exchange Dividend History Tracker | CSE Dividends" />
-    <meta property="og:description" content="Track and analyze dividend history of Colombo Stock Exchange (CSE). Get detailed insights into dividend payouts, yields, and trends for better investment decisions in the Sri Lankan market." />
-    <meta property="og:image" content="https://your-deployed-replit-url.repl.co/logo.png" />
-    <meta property="og:url" content="https://your-deployed-replit-url.repl.co" />
+    <meta
+      property="og:title"
+      content="Colombo Stock Exchange Dividend History Tracker | CSE Dividends"
+    />
+    <meta
+      property="og:description"
+      content="Track and analyze dividend history of Colombo Stock Exchange (CSE). Get detailed insights into dividend payouts, yields, and trends for better investment decisions in the Sri Lankan market."
+    />
+    <meta
+      property="og:image"
+      content="https://your-deployed-replit-url.repl.co/logo.png"
+    />
+    <meta
+      property="og:url"
+      content="https://your-deployed-replit-url.repl.co"
+    />
     <meta property="og:site_name" content="CSE Dividend Tracker" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Sri Lanka Stock Market Dividend History Tracker | CSE Dividends" />
-    <meta name="twitter:description" content="Track and analyze dividend history of Sri Lanka Stock Market. Get detailed insights into dividend payouts, yields, and trends for better investment decisions." />
-    <meta name="twitter:image" content="https://your-deployed-replit-url.repl.co/logo.png" />
+    <meta
+      name="twitter:title"
+      content="Sri Lanka Stock Market Dividend History Tracker | CSE Dividends"
+    />
+    <meta
+      name="twitter:description"
+      content="Track and analyze dividend history of Sri Lanka Stock Market. Get detailed insights into dividend payouts, yields, and trends for better investment decisions."
+    />
+    <meta
+      name="twitter:image"
+      content="https://your-deployed-replit-url.repl.co/logo.png"
+    />
     <meta name="robots" content="index, follow" />
     <meta name="googlebot" content="index, follow" />
     <link rel="canonical" href="https://your-deployed-replit-url.repl.co" />
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CLCSLE43DV"></script>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=%VITE_GA_ID%"
+    ></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+      // Access the environment variable for Google Analytics ID
+      const gaId = "%VITE_GA_ID%";
 
-      gtag('config', 'G-CLCSLE43DV');
+      // Initialize Google Analytics
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      // Configure Google Analytics with the environment variable
+      gtag("config", gaId);
     </script>
-    <title>Colombo Stock Exchange (CSE) Dividend | CSE Dividend History & Yield Tracker</title>
-    
+    <title>
+      Colombo Stock Exchange (CSE) Dividend | CSE Dividend History & Yield
+      Tracker
+    </title>
+
     <!-- Structured Data for Rich Snippets -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FinancialProduct",
-      "name": "Colombo Stock Exchange Dividend Tracker",
-      "description": "Track and analyze dividend history of Colombo Stock Exchange (CSE). Get detailed insights into dividend payouts, yields, and trends for better investment decisions in the Sri Lankan market.",
-      "provider": {
-        "@type": "Organization",
-        "name": "CSE Dividend Tracker",
-        "url": "https://your-deployed-replit-url.repl.co"
-      },
-      "keywords": "Colombo Stock Exchange, CSE, Sri Lanka stock market, dividend tracking, investment analysis",
-      "category": "Financial Analysis Tool"
-    }
+      {
+        "@context": "https://schema.org",
+        "@type": "FinancialProduct",
+        "name": "Colombo Stock Exchange Dividend Tracker",
+        "description": "Track and analyze dividend history of Colombo Stock Exchange (CSE). Get detailed insights into dividend payouts, yields, and trends for better investment decisions in the Sri Lankan market.",
+        "provider": {
+          "@type": "Organization",
+          "name": "CSE Dividend Tracker",
+          "url": "https://your-deployed-replit-url.repl.co"
+        },
+        "keywords": "Colombo Stock Exchange, CSE, Sri Lanka stock market, dividend tracking, investment analysis",
+        "category": "Financial Analysis Tool"
+      }
     </script>
   </head>
   <body>

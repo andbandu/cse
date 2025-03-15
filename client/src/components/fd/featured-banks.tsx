@@ -5,6 +5,7 @@ import { Link } from "wouter";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDateToLocal } from "@/lib/utils";
 import { Bank, Rate } from "@shared/schema";
+import { formatTerm } from "@/lib/utils/format-term";
 
 interface BankWithRates extends Bank {
   rates?: Rate[];
@@ -45,29 +46,31 @@ export default function FeaturedBanks() {
 
         {isLoading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {Array(3).fill(0).map((_, i) => (
-              <Card key={i} className="overflow-hidden">
-                <CardContent className="p-0">
-                  <Skeleton className="h-3 w-full" />
-                  <div className="p-6">
-                    <div className="flex items-center mb-4">
-                      <Skeleton className="h-12 w-12 rounded-md mr-4" />
-                      <Skeleton className="h-6 w-48" />
+            {Array(3)
+              .fill(0)
+              .map((_, i) => (
+                <Card key={i} className="overflow-hidden">
+                  <CardContent className="p-0">
+                    <Skeleton className="h-3 w-full" />
+                    <div className="p-6">
+                      <div className="flex items-center mb-4">
+                        <Skeleton className="h-12 w-12 rounded-md mr-4" />
+                        <Skeleton className="h-6 w-48" />
+                      </div>
+                      <div className="space-y-2 mb-4">
+                        <Skeleton className="h-4 w-full" />
+                        <Skeleton className="h-4 w-full" />
+                        <Skeleton className="h-4 w-full" />
+                      </div>
+                      <Skeleton className="h-20 w-full mb-6" />
+                      <div className="flex justify-between items-center">
+                        <Skeleton className="h-8 w-24" />
+                        <Skeleton className="h-10 w-24" />
+                      </div>
                     </div>
-                    <div className="space-y-2 mb-4">
-                      <Skeleton className="h-4 w-full" />
-                      <Skeleton className="h-4 w-full" />
-                      <Skeleton className="h-4 w-full" />
-                    </div>
-                    <Skeleton className="h-20 w-full mb-6" />
-                    <div className="flex justify-between items-center">
-                      <Skeleton className="h-8 w-24" />
-                      <Skeleton className="h-10 w-24" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                  </CardContent>
+                </Card>
+              ))}
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -99,10 +102,10 @@ export default function FeaturedBanks() {
                           className="flex justify-between mb-1"
                         >
                           <span className="text-sm font-medium text-gray-700">
-                            {rate.termMonths} Month Rate:
+                            {formatTerm(rate.termMonths)} (P.A.%):
                           </span>
                           <span className="text-sm font-bold text-green-600">
-                            {Number(rate.interestRate).toFixed(2)}%
+                            {Number(rate.maturityRate).toFixed(2)}%
                           </span>
                         </div>
                       ))}

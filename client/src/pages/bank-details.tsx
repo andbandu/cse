@@ -21,6 +21,7 @@ import { PayoutOption } from "@/lib/utils/calculator";
 import { useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { formatTerm } from "@/lib/utils/format-term";
 import {
   BarChart,
   Bar,
@@ -53,13 +54,16 @@ export default function BankDetailsPage() {
   const chartData =
     rates?.map((rate) => ({
       term: `${rate.termMonths} Months`,
-      maturityRate: Number(rate.interestRate),
-      monthlyRate: Number(rate.interestRate) * 0.95, // Use a slightly lower rate for monthly payout (estimated)
+      maturityRate: Number(rate.maturityRate),
+      monthlyRate: Number(rate.monthlyRate),
     })) || [];
 
-  const getRate = (baseRate: string, isMonthly: boolean): number => {
-    const rate = Number(baseRate);
-    return isMonthly ? rate * 0.95 : rate; // Monthly rates are typically 5% lower
+  const getRate = (
+    baseRate: string,
+    monthlyRate: string,
+    isMonthly: boolean,
+  ): number => {
+    return isMonthly ? Number(monthlyRate) : Number(baseRate);
   };
 
   // Generate columns based on selected payout option
@@ -67,7 +71,7 @@ export default function BankDetailsPage() {
     {
       accessorKey: "termMonths",
       header: "Term Period",
-      cell: ({ row }) => <div>{row.original.termMonths} Months</div>,
+      cell: ({ row }) => <div>{formatTerm(row.original.termMonths)}</div>,
     },
     {
       accessorKey: "interestRate",
@@ -80,7 +84,8 @@ export default function BankDetailsPage() {
           className={`font-bold ${payoutOption === "maturity" ? "text-green-600" : "text-blue-600"}`}
         >
           {getRate(
-            row.original.interestRate,
+            row.original.maturityRate,
+            row.original.monthlyRate,
             payoutOption === "monthly",
           ).toFixed(2)}
           %

@@ -97,10 +97,11 @@ export class GoogleSheetsService {
       return rows.map((row) => ({
         id: parseInt(row[0]) || 0,
         bankId: parseInt(row[1]) || 0,
-        termMonths: row[3] || "",
-        interestRate: parseFloat(row[4]) || 0,
-        minDeposit: parseInt(row[6]) || 0,
-        updatedAt: row[7] || new Date().toISOString(),
+        termMonths: parseInt(row[2]) || 0,
+        monthlyRate: parseFloat(row[3]) || 0,
+        maturityRate: parseFloat(row[4]) || 0,
+        minDeposit: parseInt(row[5]) || 0,
+        updatedAt: row[6] || new Date().toISOString(),
       }));
     } catch (error) {
       console.error("Failed to fetch rates data from Google Sheets:", error);

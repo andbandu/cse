@@ -43,6 +43,39 @@ export async function registerRoutes(app: Express) {
     }
   });
 
+  app.get("/api/rates/filter", async (req, res) => {
+    try {
+      const term = parseInt(req.query.term as string);
+      const amount = parseInt(req.query.amount as string);
+      const rates = await storage.getRatesByFilter(term, amount);
+      res.json(rates);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to filter rates" });
+    }
+  });
+
+  app.get("/api/rates/top", async (req, res) => {
+    try {
+      const limit = parseInt(req.query.limit as string) || 5;
+      const term = parseInt(req.query.term as string) || 12;
+      const rates = await storage.getRates();
+      const banks = await storage.getBanks();
+      
+      const filtered = rates
+        .filter(rate => rate.termMonths === term)
+        .sort((a, b) => b.maturityRate - a.maturityRate)
+        .slice(0, limit)
+        .map(rate => ({
+          ...rate,
+          bank: banks.find(bank => bank.id === rate.bankId)
+        }));
+      
+      res.json(filtered);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch top rates" });
+    }
+  });
+
   app.get("/api/dividends", async (_req, res) => {
     try {
       const data = await storage.getDividendData();

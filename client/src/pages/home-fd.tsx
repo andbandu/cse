@@ -25,7 +25,15 @@ export default function FixedDepositPage() {
       </Helmet>
       <Header />
       <HeroSection />
-      <RatesTable />
+      <RatesTable
+        title="Top Maturity Interest Banks"
+        description="Compare the highest maturity interest rates from leading banks and financial institutions"
+        limit={5}
+        filters={{
+          term: 12,
+          payoutOption: "maturity"
+        }}
+      />
       <Calculator />
       <FeaturedBanks />
       <Footer />

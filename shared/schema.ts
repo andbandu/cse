@@ -13,6 +13,16 @@ export const companies = pgTable("companies", {
   lastUpdated: timestamp("last_updated").defaultNow()
 });
 
+export interface Rate {
+  id: number;
+  bankId: number;
+  termMonths: number;
+  monthlyRate: number;
+  maturityRate: number;
+  minDeposit: number;
+  updatedAt: string;
+}
+
 export const dividends = pgTable("dividends", {
   id: serial("id").primaryKey(),
   companyId: numeric("company_id").notNull(),

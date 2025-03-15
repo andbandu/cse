@@ -119,7 +119,7 @@ export default function FeaturedBanks() {
                     <Link href={`/banks/${bank.id}`}>
                       <Button
                         variant="link"
-                        className="text-primary hover:text-primary-600"
+                        className="text-slate-700 px-0 hover:text-slate-900"
                       >
                         View Details
                       </Button>

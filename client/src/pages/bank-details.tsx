@@ -36,7 +36,7 @@ export default function BankDetailsPage() {
   const bankId = parseInt(params.id);
   const [payoutOption, setPayoutOption] = useState<PayoutOption>("maturity");
 
-  const { data: bank, isLoading: isLoadingBank } = useQuery<Bank>({
+  const { data: bank, isLoading: isLoadingBank, error: bankError } = useQuery<Bank>({
     queryKey: [`/api/banks/${bankId}`],
   });
 
@@ -81,7 +81,17 @@ export default function BankDetailsPage() {
       </div>
 
       <div className="container mx-auto px-4 py-10">
-        <Link href="/sri-lanka-banks">
+        {bankError ? (
+          <div className="text-center py-12">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Bank Not Found</h2>
+            <p className="text-gray-600 mb-6">The bank you're looking for doesn't exist or has been removed.</p>
+            <Link href="/banks">
+              <Button>Return to Banks List</Button>
+            </Link>
+          </div>
+        ) : (
+          <>
+            <Link href="/sri-lanka-banks">
           <Button variant="outline" className="mb-6">
             <ArrowLeft className="h-4 w-4 mr-2" /> Back to all banks
           </Button>
@@ -137,6 +147,8 @@ export default function BankDetailsPage() {
               </CardContent>
             </Card>
           </div>
+        )}
+      </>
         )}
       </div>
     </>

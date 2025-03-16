@@ -20,15 +20,17 @@ export default function FeaturedBanks() {
     queryKey: ["/api/rates"],
   });
 
-  // Combine banks with their rates
+  // Combine banks with their rates and calculate highest rate
   const banksWithRates: BankWithRates[] = banks
     ? banks.map((bank) => ({
         ...bank,
         rates: rates
           ? rates
               .filter((rate) => rate.bankId === bank.id)
-              .sort((a, b) => a.termMonths - b.termMonths)
-          : [],
+              .sort((a, b) => a.termMonths - b.termMonths),
+        highestRate: rates
+          ? Math.max(...rates.filter((rate) => rate.bankId === bank.id).map((rate) => parseFloat(rate.maturityRate)))
+          : 0,
       }))
     : [];
 
@@ -78,62 +80,72 @@ export default function FeaturedBanks() {
               .sort(() => Math.random() - 0.5)
               .slice(0, 3)
               .map((bank) => (
-              <Card
-                key={bank.id}
-                className="overflow-hidden transform transition-transform hover:scale-105 hover:shadow-lg"
-              >
-                <div className="h-3 bg-slate-700"></div>
-                <CardContent className="p-6">
-                  <div className="flex items-center mb-4">
-                    <div className="w-12 h-12 bg-gray-100 rounded-md flex items-center justify-center mr-4">
-                      <span className="text-amber-500 font-bold">
-                        {bank.shortName.toUpperCase()}
-                      </span>
-                    </div>
-                    <h3 className="text-xl font-semibold text-gray-900">
-                      {bank.name}
-                    </h3>
-                  </div>
-
-                  <div className="mb-4">
-                    {bank.rates
-                      ?.filter((rate) => [12, 6, 3].includes(rate.termMonths))
-                      .sort((a, b) => b.termMonths - a.termMonths)
-                      .map((rate) => (
-                        <div
-                          key={rate.id}
-                          className="flex justify-between mb-1"
-                        >
-                          <span className="text-sm font-medium text-gray-700">
-                            {formatTerm(rate.termMonths)} (P.A.%):
-                          </span>
-                          <span className="text-sm font-bold text-green-600">
-                            {Number(rate.maturityRate).toFixed(2)}%
+                <Card
+                  key={bank.id}
+                  className="overflow-hidden transform transition-transform hover:scale-105 hover:shadow-lg"
+                >
+                  <div className="h-3 bg-slate-700"></div>
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center">
+                        <div className="w-12 h-12 bg-gray-100 rounded-md flex items-center justify-center mr-4">
+                          <span className="text-amber-500 font-bold">
+                            {bank.shortName.toUpperCase()}
                           </span>
                         </div>
-                      ))}
-                  </div>
+                        <h3 className="text-lg font-semibold text-gray-900">
+                          {bank.name}
+                        </h3>
+                      </div>
+                      {bank.highestRate > 0 && (
+                        <div className="flex flex-col items-end">
+                          <span className="text-sm text-gray-600">Highest Rate</span>
+                          <span className="text-xl font-bold text-green-600">
+                            {bank.highestRate.toFixed(2)}%
+                          </span>
+                        </div>
+                      )}
+                    </div>
 
-                  <div className="text-sm text-gray-600 mb-6">
-                    {bank.description || "No description available."}
-                  </div>
+                    <div className="mb-4">
+                      {bank.rates
+                        ?.filter((rate) => [12, 6, 3].includes(rate.termMonths))
+                        .sort((a, b) => b.termMonths - a.termMonths)
+                        .map((rate) => (
+                          <div
+                            key={rate.id}
+                            className="flex justify-between mb-1"
+                          >
+                            <span className="text-sm font-medium text-gray-700">
+                              {formatTerm(rate.termMonths)} (P.A.%):
+                            </span>
+                            <span className="text-sm font-bold text-green-600">
+                              {Number(rate.maturityRate).toFixed(2)}%
+                            </span>
+                          </div>
+                        ))}
+                    </div>
 
-                  <div className="flex justify-between items-center">
-                    <Link href={`/sri-lanka-banks/${bank.id}`}>
-                      <Button
-                        variant="link"
-                        className="text-slate-700 px-0 hover:text-slate-900"
-                      >
-                        View Details
-                      </Button>
-                    </Link>
-                    <Link href={`/sri-lanka-banks/${bank.id}`}>
-                      <Button>Apply Now</Button>
-                    </Link>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                    <div className="text-sm text-gray-600 mb-6">
+                      {bank.description || "No description available."}
+                    </div>
+
+                    <div className="flex justify-between items-center">
+                      <Link href={`/sri-lanka-banks/${bank.id}`}>
+                        <Button
+                          variant="link"
+                          className="text-slate-700 px-0 hover:text-slate-900"
+                        >
+                          View Details
+                        </Button>
+                      </Link>
+                      <Link href={`/sri-lanka-banks/${bank.id}`}>
+                        <Button>Apply Now</Button>
+                      </Link>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
           </div>
         )}
 

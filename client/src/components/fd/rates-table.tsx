@@ -64,12 +64,13 @@ export default function RatesTable({
       bank: banks?.find((bank) => bank.id === rate.bankId),
     })) || [];
 
-  // Filter rates based on payout option
+  // Filter rates based on payout option and remove 0% rates
   const filteredRates = ratesWithBanks.sort((a, b) =>
     filters?.payoutOption === "maturity"
       ? b.maturityRate - a.maturityRate
       : b.monthlyRate - a.monthlyRate,
-  );
+  ).filter(rate => (filters?.payoutOption === "monthly" ? rate.monthlyRate : rate.maturityRate) > 0);
+
 
   const columns: ColumnDef<RateWithBank>[] = [
     {

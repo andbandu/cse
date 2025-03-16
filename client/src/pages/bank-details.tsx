@@ -18,7 +18,6 @@ import { DataTable } from "@/components/ui/data-table";
 import { ColumnDef } from "@tanstack/react-table";
 import { Helmet } from "react-helmet";
 import { PayoutOption } from "@/lib/utils/calculator";
-import { BreadcrumbStructuredData } from "@/components/StructuredData";
 import { useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -35,7 +34,7 @@ import {
 
 export default function BankDetailsPage() {
   const params = useParams<{ id: string }>();
-  const bankId = params.id;
+  const bankId = parseInt(params.id);
   const [payoutOption, setPayoutOption] = useState<PayoutOption>("maturity");
 
   const {
@@ -44,18 +43,15 @@ export default function BankDetailsPage() {
     error: bankError,
   } = useQuery<Bank>({
     queryKey: [`/api/banks/${bankId}`],
-    enabled: !!bankId,
   });
 
   const { data: rates, isLoading: isLoadingRates } = useQuery<Rate[]>({
     queryKey: [`/api/banks/${bankId}/rates`],
-    enabled: !!bankId && !isNaN(parseInt(bankId)),
+    enabled: !!bankId,
     select: (data) =>
-      data?.filter(
-        (rate) =>
-          (payoutOption === "monthly" ? rate.monthlyRate : rate.maturityRate) >
-          0,
-      ) || [],
+      data.filter((rate) =>
+        (payoutOption === "monthly" ? rate.monthlyRate : rate.maturityRate) > 0,
+      ),
   });
 
   // Prepare chart data
@@ -123,49 +119,21 @@ export default function BankDetailsPage() {
       <Helmet>
         <title>
           {bank
-            ? `${bank.name} Fixed Deposit Interest Rates & Details ${new Date().getFullYear()} | Sri Lanka`
+            ? `${bank.name} Fixed Deposits Rates | Sri Lanka`
             : "Fixed Deposits Rates | Sri Lanka"}
         </title>
         <meta
           name="description"
           content={
             bank
-              ? `Compare ${bank.name} fixed deposit rates, terms, and investment options. Get latest FD rates, minimum deposit requirements, and maturity periods for ${bank.name} Sri Lanka.`
+              ? `View fixed deposit rates and details for ${bank.name} in Sri Lanka.`
               : "Bank fixed deposit details"
-          }
-        />
-        <meta
-          name="keywords"
-          content={
-            bank
-              ? `${bank.name}, fixed deposit, FD rates, Sri Lanka banks, term deposits, ${bank.name} interest rates`
-              : "fixed deposit rates, Sri Lanka banks"
           }
         />
         <link
           rel="canonical"
-          href={
-            bank
-              ? `/banks/${bank.name.toLowerCase().replace(/ /g, "-")}-fd-rates`
-              : "/banks/fd-rates"
-          }
+          href={bank ? `/banks/${bank.name.toLowerCase().replace(/ /g, "-")}-fd-rates` : "/banks/fd-rates"}
         />
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "FinancialProduct",
-            name: bank ? `${bank.name} Fixed Deposit` : "Fixed Deposit",
-            description: bank?.description,
-            provider: {
-              "@type": "BankOrCreditUnion",
-              name: bank?.name,
-              url: window.location.href,
-            },
-            minimumDeposit: bank?.minDeposit,
-            category: "Fixed Deposit",
-            dateModified: bank?.updatedAt,
-          })}
-        </script>
       </Helmet>
 
       <div className="bg-gradient-to-r from-slate-700 to-slate-900 py-12">

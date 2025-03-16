@@ -85,7 +85,7 @@ export default function BanksPage() {
                       <br />
                       Last Updated: {bank.updatedAt}
                     </p>
-                    <Link href={`/sri-lanka-banks/${bank.name.toLowerCase().replace(/\s+/g, '-')}-fixed-deposit-rates`}>
+                    <Link href={`/sri-lanka-banks/${bank.id}`}>
                       <Button
                         variant={"outline"}
                         className="w-full group-hover:bg-primary-600"

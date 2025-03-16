@@ -36,7 +36,7 @@ export default function App() {
         />
         <Route path="/sri-lanka-banks" component={BanksPage} />
         <Route path="/sri-lanka-banks/:id" component={BankDetailsPage} />
-        <Route path="/compare-rates" component={CompareRatesPage} />
+        <Route path="/compare-fd-rates" component={CompareRatesPage} />
         <Route path="/fd-calculator" component={FdCal} />
         <Route component={NotFound} />
       </Switch>

@@ -16,11 +16,16 @@ export default function FixedDepositPage() {
   return (
     <>
       <Helmet>
-        <title>Sri Lanka's Best Fixed Deposit Rates </title>
+        <title>Sri Lanka's Best Fixed Deposit Rates</title>
         <meta
           name="description"
           content="Compare the best fixed deposit rates from Sri Lanka's leading banks and financial institutions to maximize your returns."
         />
+        <meta
+          name="keywords"
+          content="Sri Lanka fixed deposit rates, best fixed deposit rates Sri Lanka, fixed deposit interest rates, Sri Lanka banks, financial institutions Sri Lanka"
+        />
+        <link rel="canonical" href="/sri-lanka-fixed-deposit-interest-rates" />
       </Helmet>
      
       <HeroSection />

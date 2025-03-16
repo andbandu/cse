@@ -186,7 +186,7 @@ export default function RatesTable({
 
         {showViewAll && (
           <div className="text-center">
-            <Link href="/compare-rates">
+            <Link href="/compare-fd-rates">
               <Button
                 variant="link"
                 className="text-gray-700 hover:text-primary-700"

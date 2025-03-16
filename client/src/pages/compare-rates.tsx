@@ -56,11 +56,16 @@ export default function CompareRatesPage() {
   return (
     <>
       <Helmet>
-        <title>Compare Rates | DepositCompare.lk</title>
+        <title>Compare Sri Lanka FD Rates | Colombostockexchange.info</title>
         <meta
           name="description"
           content="Find and compare the best fixed deposit rates from Sri Lankan banks and financial institutions."
         />
+        <meta
+          name="keywords"
+          content="Sri Lanka FD rates, compare fixed deposit rates Sri Lanka, best FD rates Sri Lanka, Sri Lankan banks fixed deposits, financial institutions Sri Lanka, fixed deposit interest rates, Colombostockexchange"
+        />
+        <link rel="canonical" href="/compare-fd-rates" />
       </Helmet>
 
       <div className="bg-gradient-to-r from-slate-700 to-slate-900 py-12">

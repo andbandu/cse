@@ -1,16 +1,24 @@
+import { Helmet } from "react-helmet";
 
 
-import SEOHead from "@/components/SEOHead";
+
 
 export default function About() {
   return (
     <div className="min-h-screen flex flex-col">
-      <SEOHead
-        title="Sri Lanka Stock Dividend & FD Rate Tracker | ColomboStockexchange.info"
-        description="Explore comprehensive dividend history for companies listed on the Colombo Stock Exchange (CSE) and compare fixed deposit (FD) rates in Sri Lanka. Get accurate, data-driven insights to make informed investment decisions."
-        canonical="/"
-        keywords="Sri Lanka stock dividend history, Colombo Stock Exchange data, CSE dividend tracker, Sri Lanka FD rates, fixed deposit rates Sri Lanka, Sri Lanka investment tools, Colombo Stock Exchange dividend analysis, Sri Lanka stock market trends"
+      
+      <Helmet>
+      <title>About Us | Colombostockexchange.info</title>
+      <meta
+        name="description"
+        content="Learn more about Colombostockexchange.info, your trusted source for financial information, market insights, and investment opportunities in Sri Lanka."
       />
+      <link rel="canonical" href="/about" />
+      <meta
+        name="keywords"
+        content="about Colombostockexchange, about us, Sri Lanka financial information, market insights Sri Lanka, investment opportunities Sri Lanka, Colombostockexchange mission, Sri Lanka stock market"
+      />
+    </Helmet>
       
       <main className="flex-grow container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">

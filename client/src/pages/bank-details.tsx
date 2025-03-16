@@ -126,6 +126,10 @@ export default function BankDetailsPage() {
               : "Bank fixed deposit details"
           }
         />
+        <link
+          rel="canonical"
+          href={bank ? `/banks/${bank.name.toLowerCase().replace(/ /g, "-")}-fd-rates` : "/banks/fd-rates"}
+        />
       </Helmet>
 
       <div className="bg-gradient-to-r from-slate-700 to-slate-900 py-12">

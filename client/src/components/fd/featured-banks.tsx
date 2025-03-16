@@ -116,7 +116,7 @@ export default function FeaturedBanks() {
                   </div>
 
                   <div className="flex justify-between items-center">
-                    <Link href={`/banks/${bank.id}`}>
+                    <Link href={`/sri-lanka-banks/${bank.id}`}>
                       <Button
                         variant="link"
                         className="text-slate-700 px-0 hover:text-slate-900"
@@ -124,7 +124,7 @@ export default function FeaturedBanks() {
                         View Details
                       </Button>
                     </Link>
-                    <Link href={`/banks/${bank.id}`}>
+                    <Link href={`/sri-lanka-banks/${bank.id}`}>
                       <Button>Apply Now</Button>
                     </Link>
                   </div>
@@ -135,7 +135,7 @@ export default function FeaturedBanks() {
         )}
 
         <div className="text-center mt-10">
-          <Link href="/banks">
+          <Link href="/sri-lanka-banks">
             <Button
               variant="link"
               className="text-gray-700 hover:text-primary-700"

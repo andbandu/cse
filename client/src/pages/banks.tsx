@@ -26,6 +26,7 @@ export default function BanksPage() {
           name="description"
           content="List of banks and financial institutions in Sri Lanka offering fixed deposit products."
         />
+        <link rel="canonical" href="/sri-lanka-banks" />
       </Helmet>
       <div className="bg-gradient-to-r from-slate-700 to-slate-900 py-12">
         <div className="container mx-auto px-4">

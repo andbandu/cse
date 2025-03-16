@@ -31,6 +31,7 @@ export default function HomePage() {
           name="description"
           content="Explore historical stock dividend data and compare fixed deposit rates in Sri Lanka"
         />
+        <link rel="canonical" href="/" />
     </Helmet>
     <div className="min-h-screen flex flex-col">
       

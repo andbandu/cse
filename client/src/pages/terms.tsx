@@ -1,16 +1,19 @@
 
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
-import SEOHead from "@/components/SEOHead";
+
+import { Helmet } from "react-helmet";
 
 export default function Terms() {
   return (
     <div className="min-h-screen flex flex-col">
-      <SEOHead 
-        title="Terms of Service" 
-        description="Terms and conditions for using the Colombo Stock Exchange dividend data and information services."
-        canonical="/terms"
+      
+      <Helmet>
+      <title>Terms of Service | Colombostockexchange.info</title>
+      <meta
+        name="description"
+        content="Terms and conditions for using the Colombo Stock Exchange dividend data and information services."
       />
+      <link rel="canonical" href="/terms" />
+      </Helmet>
 
       <main className="flex-grow container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">

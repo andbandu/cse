@@ -49,7 +49,7 @@ export default function HeroSection() {
       amount: numAmount
     });
     
-    navigate("/compare-rates");
+    navigate("/compare-fd-rates");
   };
 
   return (

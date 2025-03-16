@@ -17,13 +17,6 @@ export default function FdCal() {
         content="Calculate fixed deposit (FD) interest earnings and compare rates from top banks in Sri Lanka. Use our free FD financial calculator to plan your investments and maximize returns."
       />
       <link rel="canonical" href="https://colombostockexchange.info/fd-calculator" />
-      <meta property="og:title" content="Sri Lanka FD Financial Calculator | Colombostockexchange.info" />
-      <meta property="og:description" content="Calculate fixed deposit (FD) interest earnings and compare rates from top banks in Sri Lanka. Use our free FD financial calculator to plan your investments and maximize returns." />
-      <meta property="og:type" content="website" />
-      <meta property="og:url" content="https://colombostockexchange.info/fd-calculator" />
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content="Sri Lanka FD Financial Calculator | Colombostockexchange.info" />
-      <meta name="twitter:description" content="Calculate fixed deposit (FD) interest earnings and compare rates from top banks in Sri Lanka. Use our free FD financial calculator to plan your investments and maximize returns." />
       <meta name="keywords" content="Sri Lanka FD calculator, fixed deposit calculator Sri Lanka, FD interest rates Sri Lanka, compare FD rates Sri Lanka, financial calculator Sri Lanka" />
     </Helmet>
       <div className="bg-gradient-to-r from-slate-700 to-slate-900 py-12">

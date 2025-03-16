@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 
@@ -60,37 +59,6 @@ export function BreadcrumbStructuredData({
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     'itemListElement': itemListElement
-  };
-
-  return (
-    <Helmet>
-      <script type="application/ld+json">
-        {JSON.stringify(structuredData)}
-      </script>
-    </Helmet>
-  );
-}
-import { Helmet } from "react-helmet-async";
-
-interface BreadcrumbItem {
-  name: string;
-  item: string;
-}
-
-interface BreadcrumbStructuredDataProps {
-  items: BreadcrumbItem[];
-}
-
-export function BreadcrumbStructuredData({ items }: BreadcrumbStructuredDataProps) {
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": items.map((item, index) => ({
-      "@type": "ListItem",
-      "position": index + 1,
-      "name": item.name,
-      "item": `${window.location.origin}${item.item}`
-    }))
   };
 
   return (

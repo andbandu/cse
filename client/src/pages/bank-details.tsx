@@ -49,8 +49,10 @@ export default function BankDetailsPage() {
     queryKey: [`/api/banks/${bankId}/rates`],
     enabled: !!bankId,
     select: (data) =>
-      data.filter((rate) =>
-        (payoutOption === "monthly" ? rate.monthlyRate : rate.maturityRate) > 0,
+      data.filter(
+        (rate) =>
+          (payoutOption === "monthly" ? rate.monthlyRate : rate.maturityRate) >
+          0,
       ),
   });
 
@@ -119,27 +121,49 @@ export default function BankDetailsPage() {
       <Helmet>
         <title>
           {bank
-            ? `${bank.name} Fixed Deposit Rates & Interest Rates ${new Date().getFullYear()} | Sri Lanka`
+            ? `${bank.name} Fixed Deposit Rates & Interest Rates ${new Date().getFullYear()} | ${bank.shortName} Fd Rates ${new Date().getFullYear()}`
             : "Fixed Deposit Rates | Sri Lanka"}
         </title>
         <meta
           name="description"
           content={
             bank
-              ? `Compare ${bank.name} fixed deposit rates, terms, and interest rates. Find the best FD rates up to ${Math.max(...(rates || []).map(r => Number(r.maturityRate))).toFixed(2)}% p.a. Updated ${formatDateToLocal(new Date(bank.updatedAt))}.`
+              ? `Compare ${bank.name} ${bank.shortName} fixed deposit rates and interest rates. Find the best FD rates up to ${Math.max(...(rates || []).map((r) => Number(r.maturityRate))).toFixed(2)}% p.a. Updated ${formatDateToLocal(new Date(bank.updatedAt))}.`
               : "Compare fixed deposit rates and investment options from Sri Lankan banks"
           }
         />
         <meta
           name="keywords"
-          content={bank ? `${bank.name} fixed deposit, ${bank.name} FD rates, fixed deposit Sri Lanka, ${bank.name} interest rates, best FD rates Sri Lanka` : "fixed deposit rates, Sri Lanka FD rates"}
+          content={
+            bank
+              ? `${bank.name} fixed deposit, ${bank.name} FD rates,${bank.shortName} FD rates,  fixed deposit Sri Lanka, ${bank.name} interest rates, best FD rates Sri Lanka`
+              : "fixed deposit rates, Sri Lanka FD rates"
+          }
         />
-        <meta property="og:title" content={bank ? `${bank.name} Fixed Deposit Rates ${new Date().getFullYear()} | Sri Lanka` : "Fixed Deposit Rates | Sri Lanka"} />
-        <meta property="og:description" content={bank ? `Compare ${bank.name} fixed deposit rates and terms. Best FD rates up to ${Math.max(...(rates || []).map(r => Number(r.maturityRate))).toFixed(2)}% p.a.` : "Compare fixed deposit rates in Sri Lanka"} />
+        <meta
+          property="og:title"
+          content={
+            bank
+              ? `${bank.name} Fixed Deposit Rates ${new Date().getFullYear()} | Sri Lanka`
+              : "Fixed Deposit Rates | Sri Lanka"
+          }
+        />
+        <meta
+          property="og:description"
+          content={
+            bank
+              ? `Compare ${bank.name} fixed deposit rates and terms. Best FD rates up to ${Math.max(...(rates || []).map((r) => Number(r.maturityRate))).toFixed(2)}% p.a.`
+              : "Compare fixed deposit rates in Sri Lanka"
+          }
+        />
         <meta property="og:type" content="website" />
         <link
           rel="canonical"
-          href={bank ? `/sri-lanka-banks/${bank.name.toLowerCase().replace(/ /g, "-")}-fixed-deposit-rates` : "/sri-lanka-banks"}
+          href={
+            bank
+              ? `/sri-lanka-banks/${bank.name.toLowerCase().replace(/ /g, "-")}-fixed-deposit-rates`
+              : "/sri-lanka-banks-fd-rates"
+          }
         />
         <meta name="robots" content="index, follow" />
       </Helmet>

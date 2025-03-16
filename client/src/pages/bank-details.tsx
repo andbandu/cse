@@ -35,7 +35,7 @@ import {
 
 export default function BankDetailsPage() {
   const params = useParams<{ id: string }>();
-  const bankId = parseInt(params.id);
+  const bankId = params.id;
   const [payoutOption, setPayoutOption] = useState<PayoutOption>("maturity");
 
   const {
@@ -44,17 +44,18 @@ export default function BankDetailsPage() {
     error: bankError,
   } = useQuery<Bank>({
     queryKey: [`/api/banks/${bankId}`],
+    enabled: !!bankId,
   });
 
   const { data: rates, isLoading: isLoadingRates } = useQuery<Rate[]>({
     queryKey: [`/api/banks/${bankId}/rates`],
-    enabled: !!bankId,
+    enabled: !!bankId && !isNaN(parseInt(bankId)),
     select: (data) =>
-      data.filter(
+      data?.filter(
         (rate) =>
           (payoutOption === "monthly" ? rate.monthlyRate : rate.maturityRate) >
           0,
-      ),
+      ) || [],
   });
 
   // Prepare chart data

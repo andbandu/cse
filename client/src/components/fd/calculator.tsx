@@ -8,6 +8,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 
 export default function Calculator() {
+  const params = new URLSearchParams(window.location.search);
   const {
     amount,
     interestRate,

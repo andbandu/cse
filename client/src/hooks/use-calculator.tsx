@@ -2,11 +2,12 @@ import { useState } from "react";
 import { PayoutOption, calculateFixedDeposit } from "@/lib/utils/calculator";
 
 export function useCalculator() {
-  const [amount, setAmount] = useState<number>(100000);
-  const [interestRate, setInterestRate] = useState<string>("7.5");
-  const [term, setTerm] = useState<number>(12);
+  const params = new URLSearchParams(window.location.search);
+  const [amount, setAmount] = useState<number>(Number(params.get('amount')) || 100000);
+  const [interestRate, setInterestRate] = useState<string>(params.get('rate') || "7.5");
+  const [term, setTerm] = useState<number>(Number(params.get('term')) || 12);
   const [tax, setTax] = useState<string>("15.0");
-  const [payoutOption, setPayoutOption] = useState<PayoutOption>("maturity");
+  const [payoutOption, setPayoutOption] = useState<PayoutOption>((params.get('payout') as PayoutOption) || "maturity");
   
   const [totalInterest, setTotalInterest] = useState<number>(0);
   const [finalAmount, setFinalAmount] = useState<number>(0);

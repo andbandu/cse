@@ -25,6 +25,10 @@ interface RatesTableProps {
   showViewAll?: boolean;
 }
 
+const getRate = (maturityRate: number, monthlyRate: number, isMonthly: boolean) => {
+  return isMonthly ? monthlyRate : maturityRate;
+};
+
 export default function RatesTable({
   limit,
   title,
@@ -133,21 +137,14 @@ export default function RatesTable({
     },
     {
       id: "actions",
-      header: "Action",
-      cell: ({ row }) => {
-        return (
-          <div className="text-start">
-            <Link href={`/banks/${row.original.bankId}`}>
-              <Button
-                variant="link"
-                className="text-blue-700 hover:text-primary-700"
-              >
-                Apply Now
-              </Button>
-            </Link>
-          </div>
-        );
-      },
+      header: "Actions",
+      cell: ({ row }) => (
+        <Link to={`/fd-calculator?rate=${getRate(row.original.maturityRate, row.original.monthlyRate, filters?.payoutOption === "monthly")}&term=${row.original.termMonths}&amount=${filters?.amount || ""}&payout=${filters?.payoutOption || "maturity"}`}>
+          <Button variant="outline" size="sm">
+            Calculate
+          </Button>
+        </Link>
+      ),
     },
   ];
 

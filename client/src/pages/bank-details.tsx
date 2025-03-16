@@ -119,21 +119,29 @@ export default function BankDetailsPage() {
       <Helmet>
         <title>
           {bank
-            ? `${bank.name} Fixed Deposits Rates | Sri Lanka`
-            : "Fixed Deposits Rates | Sri Lanka"}
+            ? `${bank.name} Fixed Deposit Rates & Interest Rates ${new Date().getFullYear()} | Sri Lanka`
+            : "Fixed Deposit Rates | Sri Lanka"}
         </title>
         <meta
           name="description"
           content={
             bank
-              ? `View fixed deposit rates and details for ${bank.name} in Sri Lanka.`
-              : "Bank fixed deposit details"
+              ? `Compare ${bank.name} fixed deposit rates, terms, and interest rates. Find the best FD rates up to ${Math.max(...(rates || []).map(r => Number(r.maturityRate))).toFixed(2)}% p.a. Updated ${formatDateToLocal(new Date(bank.updatedAt))}.`
+              : "Compare fixed deposit rates and investment options from Sri Lankan banks"
           }
         />
+        <meta
+          name="keywords"
+          content={bank ? `${bank.name} fixed deposit, ${bank.name} FD rates, fixed deposit Sri Lanka, ${bank.name} interest rates, best FD rates Sri Lanka` : "fixed deposit rates, Sri Lanka FD rates"}
+        />
+        <meta property="og:title" content={bank ? `${bank.name} Fixed Deposit Rates ${new Date().getFullYear()} | Sri Lanka` : "Fixed Deposit Rates | Sri Lanka"} />
+        <meta property="og:description" content={bank ? `Compare ${bank.name} fixed deposit rates and terms. Best FD rates up to ${Math.max(...(rates || []).map(r => Number(r.maturityRate))).toFixed(2)}% p.a.` : "Compare fixed deposit rates in Sri Lanka"} />
+        <meta property="og:type" content="website" />
         <link
           rel="canonical"
-          href={bank ? `/banks/${bank.name.toLowerCase().replace(/ /g, "-")}-fd-rates` : "/banks/fd-rates"}
+          href={bank ? `/sri-lanka-banks/${bank.name.toLowerCase().replace(/ /g, "-")}-fixed-deposit-rates` : "/sri-lanka-banks"}
         />
+        <meta name="robots" content="index, follow" />
       </Helmet>
 
       <div className="bg-gradient-to-r from-slate-700 to-slate-900 py-12">

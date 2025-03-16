@@ -16,7 +16,7 @@ import { ExternalLink, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
 import { DataTable } from "@/components/ui/data-table";
 import { ColumnDef } from "@tanstack/react-table";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { PayoutOption } from "@/lib/utils/calculator";
 import { BreadcrumbStructuredData } from "@/components/StructuredData";
 import { useState } from "react";

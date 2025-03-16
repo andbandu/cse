@@ -7,6 +7,7 @@ import FeaturesSection from "@/components/FeaturesSection";
 import CTASection from "@/components/CTASection";
 import DividendsPreview from "@/components/DividendsPreview";
 import FDRatesPreview from "@/components/FDRatesPreview";
+import { Helmet } from "react-helmet";
 
 export default function HomePage() {
     const heroData = {
@@ -22,6 +23,15 @@ export default function HomePage() {
         },
       };
   return (
+    <>
+
+    <Helmet>
+        <title>Your Gateway to Sri Lanka’s Stock Dividend History and FD Rates | Colombostockexchange.info</title>
+        <meta
+          name="description"
+          content="Explore historical stock dividend data and compare fixed deposit rates in Sri Lanka"
+        />
+    </Helmet>
     <div className="min-h-screen flex flex-col">
       
 
@@ -40,5 +50,6 @@ export default function HomePage() {
       </main>
       
     </div>
+    </>
   );
 }

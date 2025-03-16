@@ -21,17 +21,22 @@ export default function Header() {
       <div className="container mx-auto px-4 py-4">
         <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center">
+          <Link
+              href="/"
+            >
+              <div className="flex items-center">
               <div className="bg-white text-primary-800 p-1.5 rounded-lg mr-2 shadow-sm">
                 <Building className="h-5 w-5 fill-primary-800 text-black" />
               </div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
+              <h1 className="text-xl  font-bold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
                 ColomboStockExchange
               </h1>
               <span className="ml-2 text-xs font-semibold bg-gradient-to-r from-amber-500 to-amber-600 text-white px-2 py-0.5 rounded-full shadow-sm">
                 .info
               </span>
-            </div>
+              </div>
+            </Link>
+            
             <button className="md:hidden" onClick={toggleMenu}>
               <Menu className="h-6 w-6" />
             </button>
@@ -104,13 +109,13 @@ export default function Header() {
               <span>FD Rates</span>
             </Link>
             <Link
-              href="#calculator"
+              href="/fd-calculator"
               className={`font-medium hover:text-amber-400 transition-colors flex items-center gap-1.5 ${
-                location === "/calculator" ? "border-b-2 border-amber-500" : ""
+                location === "/fd-calculator" ? "border-b-2 border-amber-500" : ""
               }`}
             >
               <Calculator className="h-4 w-4" />
-              <span>Calculator</span>
+              <span>FD Calculator</span>
             </Link>
             <Link
               href="/about"

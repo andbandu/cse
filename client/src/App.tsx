@@ -16,6 +16,7 @@ import CompareRatesPage from "@/pages/compare-rates";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
 import HomePage from "./pages/homepage";
+import FdCal from "./pages/fd-cal";
 
 export default function App() {
   return (
@@ -36,6 +37,7 @@ export default function App() {
         <Route path="/sri-lanka-banks" component={BanksPage} />
         <Route path="/sri-lanka-banks/:id" component={BankDetailsPage} />
         <Route path="/compare-rates" component={CompareRatesPage} />
+        <Route path="/fd-calculator" component={FdCal} />
         <Route component={NotFound} />
       </Switch>
       <Footer /> {/* Add Footer here */}

@@ -21,7 +21,7 @@ export default function BanksPage() {
   return (
     <>
       <Helmet>
-        <title>Banks & Financial Institutions | DepositCompare.lk</title>
+        <title>Banks & Financial Institutions of Sri Lanka | Colombostockexchange.info</title>
         <meta
           name="description"
           content="List of banks and financial institutions in Sri Lanka offering fixed deposit products."

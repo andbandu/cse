@@ -7,8 +7,8 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { formatDateToLocal } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Bank, Rate } from "@shared/fd-schema";
@@ -35,7 +35,7 @@ import {
 
 export default function BankDetailsPage() {
   const params = useParams<{ id: string }>();
-  const bankId = parseInt(params.id);
+  const bankId = params.id;
   const [payoutOption, setPayoutOption] = useState<PayoutOption>("maturity");
 
   const {
@@ -44,17 +44,18 @@ export default function BankDetailsPage() {
     error: bankError,
   } = useQuery<Bank>({
     queryKey: [`/api/banks/${bankId}`],
+    enabled: !!bankId,
   });
 
   const { data: rates, isLoading: isLoadingRates } = useQuery<Rate[]>({
     queryKey: [`/api/banks/${bankId}/rates`],
-    enabled: !!bankId,
+    enabled: !!bankId && !isNaN(parseInt(bankId)),
     select: (data) =>
-      data.filter(
+      data?.filter(
         (rate) =>
           (payoutOption === "monthly" ? rate.monthlyRate : rate.maturityRate) >
           0,
-      ),
+      ) || [],
   });
 
   // Prepare chart data
@@ -122,14 +123,14 @@ export default function BankDetailsPage() {
       <Helmet>
         <title>
           {bank
-            ? `${bank.name} FD Rates ${new Date().getFullYear()} |${bank.shortName} FD Rates ${new Date().getFullYear()} Sri Lanka `
+            ? `${bank.name} Fixed Deposit Interest Rates & Details ${new Date().getFullYear()} | Sri Lanka`
             : "Fixed Deposits Rates | Sri Lanka"}
         </title>
         <meta
           name="description"
           content={
             bank
-              ? `Compare ${bank.name} fixed deposit rates, terms, and investment options.${bank.shortName} FD Rates ${new Date().getFullYear()}, Get latest FD rates, minimum deposit requirements, and maturity periods for ${bank.name} Sri Lanka.`
+              ? `Compare ${bank.name} fixed deposit rates, terms, and investment options. Get latest FD rates, minimum deposit requirements, and maturity periods for ${bank.name} Sri Lanka.`
               : "Bank fixed deposit details"
           }
         />
@@ -137,7 +138,7 @@ export default function BankDetailsPage() {
           name="keywords"
           content={
             bank
-              ? `${bank.name}, fixed deposit,${bank.shortName} FD rates, Sri Lanka banks, term deposits, ${bank.name} interest rates`
+              ? `${bank.name}, fixed deposit, FD rates, Sri Lanka banks, term deposits, ${bank.name} interest rates`
               : "fixed deposit rates, Sri Lanka banks"
           }
         />
@@ -186,15 +187,11 @@ export default function BankDetailsPage() {
       </div>
 
       <div className="container mx-auto px-4 py-10">
-        <div className="mb-6">
-          <Breadcrumb
-            items={[
-              { label: "Home", href: "/" },
-              { label: "Banks", href: "/sri-lanka-banks" },
-              { label: bank?.name || "Bank Details", href: "" },
-            ]}
-          />
-        </div>
+        <Link href="/sri-lanka-banks">
+          <Button variant="outline" className="mb-6">
+            <ArrowLeft className="h-4 w-4 mr-2" /> Back to all banks
+          </Button>
+        </Link>
 
         {isLoadingBank ? (
           <div className="space-y-8">
@@ -260,7 +257,7 @@ export default function BankDetailsPage() {
               <CardHeader>
                 <CardTitle>{bank?.name} Fixed Deposit Rates</CardTitle>
                 <CardDescription>
-                  Current fixed deposit rates offered by {bank?.shortName}
+                  Current fixed deposit rates offered by {bank?.name}
                 </CardDescription>
               </CardHeader>
               <CardContent>

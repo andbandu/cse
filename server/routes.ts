@@ -12,9 +12,20 @@ export async function registerRoutes(app: Express) {
     }
   });
 
-  app.get("/api/banks/:id", async (req, res) => {
+  app.get("/api/banks/:identifier", async (req, res) => {
     try {
-      const bank = await storage.getBank(parseInt(req.params.id));
+      const identifier = req.params.identifier;
+      let bank;
+      
+      if (!isNaN(parseInt(identifier))) {
+        bank = await storage.getBank(parseInt(identifier));
+      } else {
+        const banks = await storage.getBanks();
+        bank = banks.find(b => 
+          b.name.toLowerCase().replace(/[^a-z0-9]+/g, "-") === identifier
+        );
+      }
+      
       if (!bank) {
         res.status(404).json({ message: "Bank not found" });
         return;

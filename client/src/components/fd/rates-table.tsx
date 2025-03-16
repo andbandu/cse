@@ -82,7 +82,7 @@ export default function RatesTable({
 
         return (
           <Link
-            href={`/sri-lanka-banks/${row.original.bankId}`}
+            href={`/sri-lanka-banks/${bank.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-fixed-deposit-rates`}
             className="cursor-pointer"
           >
             <div className="flex items-center">

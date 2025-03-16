@@ -24,13 +24,8 @@ export default function FeaturedBanks() {
   const banksWithRates: BankWithRates[] = banks
     ? banks.map((bank) => ({
         ...bank,
-        rates: rates
-          ? rates
-              .filter((rate) => rate.bankId === bank.id)
-              .sort((a, b) => a.termMonths - b.termMonths),
-        highestRate: rates
-          ? Math.max(...rates.filter((rate) => rate.bankId === bank.id).map((rate) => parseFloat(rate.maturityRate)))
-          : 0,
+        rates: rates ? rates.filter((rate) => rate.bankId === bank.id).sort((a, b) => a.termMonths - b.termMonths) : [],
+        highestRate: rates ? Math.max(...rates.filter((rate) => rate.bankId === bank.id).map((rate) => parseFloat(rate.maturityRate))) : 0,
       }))
     : [];
 

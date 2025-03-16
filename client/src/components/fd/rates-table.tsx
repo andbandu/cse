@@ -139,11 +139,18 @@ export default function RatesTable({
       id: "actions",
       header: "Actions",
       cell: ({ row }) => (
-        <Link to={`/fd-calculator?rate=${getRate(row.original.maturityRate, row.original.monthlyRate, filters?.payoutOption === "monthly")}&term=${row.original.termMonths}&amount=${filters?.amount || ""}&payout=${filters?.payoutOption || "maturity"}`}>
-          <Button variant="outline" size="sm">
-            Calculate
-          </Button>
-        </Link>
+        <div className="flex gap-2">
+          <Link to={`/fd-calculator?rate=${getRate(row.original.maturityRate, row.original.monthlyRate, filters?.payoutOption === "monthly")}&term=${row.original.termMonths}&amount=${filters?.amount || ""}&payout=${filters?.payoutOption || "maturity"}`}>
+            <Button variant="outline" size="sm">
+              Calculate
+            </Button>
+          </Link>
+          <Link href={`/banks/${row.original.bankId}`}>
+            <Button variant="default" size="sm">
+              Apply Now
+            </Button>
+          </Link>
+        </div>
       ),
     },
   ];

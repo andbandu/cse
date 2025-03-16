@@ -7,8 +7,8 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { formatDateToLocal } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Bank, Rate } from "@shared/fd-schema";
@@ -186,11 +186,15 @@ export default function BankDetailsPage() {
       </div>
 
       <div className="container mx-auto px-4 py-10">
-        <Link href="/sri-lanka-banks">
-          <Button variant="outline" className="mb-6">
-            <ArrowLeft className="h-4 w-4 mr-2" /> Back to all banks
-          </Button>
-        </Link>
+        <div className="mb-6">
+          <Breadcrumb
+            items={[
+              { label: "Home", href: "/" },
+              { label: "Banks", href: "/sri-lanka-banks" },
+              { label: bank?.name || "Bank Details", href: "" },
+            ]}
+          />
+        </div>
 
         {isLoadingBank ? (
           <div className="space-y-8">

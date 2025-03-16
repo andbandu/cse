@@ -20,8 +20,9 @@ import { PayoutOption } from "@/lib/utils/calculator";
 
 export default function CompareRatesPage() {
   const filters = useFilters();
-  const [amount, setAmount] = useState(filters.amount.toString());
+  const [amount, setAmount] = useState("100000");
   const [formattedAmount, setFormattedAmount] = useState("");
+  const [error, setError] = useState("");
   const { toast } = useToast();
 
   // Format amount with commas
@@ -106,6 +107,7 @@ export default function CompareRatesPage() {
                     onChange={(e) => setAmount(e.target.value)}
                     placeholder="100,000"
                   />
+                  {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
                 </div>
               </div>
 
@@ -129,7 +131,7 @@ export default function CompareRatesPage() {
                     <SelectValue placeholder="Select term" />
                   </SelectTrigger>
                   <SelectContent>
-                  <SelectItem value="1">1 Months</SelectItem>
+                    <SelectItem value="1">1 Months</SelectItem>
                     <SelectItem value="3">3 Months</SelectItem>
                     <SelectItem value="6">6 Months</SelectItem>
                     <SelectItem value="12">12 Months</SelectItem>

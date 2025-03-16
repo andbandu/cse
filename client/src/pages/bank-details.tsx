@@ -168,8 +168,60 @@ export default function BankDetailsPage() {
         <meta name="robots" content="index, follow" />
       </Helmet>
 
+      {/* Add structured data for SEO */}
+      {bank && (
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Banks",
+                "item": "/sri-lanka-banks"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": bank.name,
+                "item": `/sri-lanka-banks/${bank.id}`
+              }
+            ]
+          })}
+        </script>
+      )}
+
       <div className="bg-gradient-to-r from-slate-700 to-slate-900 py-12">
         <div className="container mx-auto px-4">
+          {/* Visual breadcrumbs */}
+          <nav className="flex mb-4 text-sm" aria-label="Breadcrumb">
+            <ol className="flex items-center space-x-2">
+              <li>
+                <Link href="/" className="text-white/70 hover:text-white">
+                  Home
+                </Link>
+              </li>
+              <li className="text-white/50">/</li>
+              <li>
+                <Link href="/sri-lanka-banks" className="text-white/70 hover:text-white">
+                  Banks
+                </Link>
+              </li>
+              <li className="text-white/50">/</li>
+              <li>
+                <span className="text-white" aria-current="page">
+                  {bank?.name || 'Loading...'}
+                </span>
+              </li>
+            </ol>
+          </nav>
           {isLoadingBank ? (
             <div>
               <Skeleton className="h-8 w-64 bg-white/20 mb-2" />

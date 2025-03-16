@@ -34,7 +34,7 @@ import {
 
 export default function BankDetailsPage() {
   const params = useParams<{ id: string }>();
-  const bankId = parseInt(params.id);
+  const bankId = params.id;
   const [payoutOption, setPayoutOption] = useState<PayoutOption>("maturity");
 
   const {

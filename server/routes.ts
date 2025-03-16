@@ -14,7 +14,7 @@ export async function registerRoutes(app: Express) {
 
   app.get("/api/banks/:id", async (req, res) => {
     try {
-      const bank = await storage.getBank(parseInt(req.params.id));
+      const bank = await storage.getBank(req.params.id);
       if (!bank) {
         res.status(404).json({ message: "Bank not found" });
         return;

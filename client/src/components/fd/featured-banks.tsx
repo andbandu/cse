@@ -74,7 +74,10 @@ export default function FeaturedBanks() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {banksWithRates.slice(0, 3).map((bank) => (
+            {banksWithRates
+              .sort(() => Math.random() - 0.5)
+              .slice(0, 3)
+              .map((bank) => (
               <Card
                 key={bank.id}
                 className="overflow-hidden transform transition-transform hover:scale-105 hover:shadow-lg"

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import Hero from "@/components/dividend/Hero";
+import Hero from "@/components/Hero";
 import CompanyTable from "@/components/CompanyTable";
 import SearchFilter from "@/components/SearchFilter";
 import Analytics from "@/components/Analytics";
@@ -122,15 +122,27 @@ export default function DividendPage() {
     return 0;
   });
 
-  // Set the page title for SEO
-  const pageTitle = setPageTitle("Dividend Dashboard");
+  const heroData = {
+    title: "Compare Sri Lanka's Stock Dividend History",
+    description: "Track and analyze Sri Lanka Stock dividend payments from various companies across different sectors.",
+    primaryButton: {
+      text: "Compare Dividends",
+      link: "/cse-dividend-history/#com-dividend",
+    },
+    secondaryButton: {
+      text: "Calculate Returns",
+      link: "#calculator",
+    },
+  };
+
+
 
   return (
     <div className="min-h-screen flex flex-col">
       <SEOHead 
         title="Dividend History & Yield Tracker" 
         description="Track and analyze dividend history, yields and payouts of companies listed on the Colombo Stock Exchange (CSE)."
-        canonical="/"
+        canonical="/cse-dividend-history"
         keywords="CSE dividends, Colombo Stock Exchange dividends, Sri Lanka stock dividends, CSE dividend history, dividend yield, Sri Lanka investments"
       />
       <FinancialToolStructuredData
@@ -146,7 +158,12 @@ export default function DividendPage() {
         ]}
       />
       
-      <Hero />
+      <Hero
+        title={heroData.title}
+        description={heroData.description}
+        primaryButton={heroData.primaryButton}
+        secondaryButton={heroData.secondaryButton}
+      />
       <main className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-6">
           {!isAnalyticsLoading && analyticsData && (

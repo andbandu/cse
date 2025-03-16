@@ -26,7 +26,7 @@ interface RatesTableProps {
 }
 
 export default function RatesTable({
-  limit = 5,
+  limit,
   title,
   description,
   filters,

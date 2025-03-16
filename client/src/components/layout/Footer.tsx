@@ -218,7 +218,7 @@ export default function Footer() {
                     />
                   </svg>
                 </div>
-                <span className="text-slate-300 text-sm">
+                <span className="text-slate-300 text-sm break-all">
                   hello@colombostockexchange.info
                 </span>
               </li>

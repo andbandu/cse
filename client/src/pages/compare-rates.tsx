@@ -180,6 +180,7 @@ export default function CompareRatesPage() {
             amount: filters.amount,
             payoutOption: filters.payoutOption,
           }}
+          limit={10}
           showViewAll={false}
         />
       </div>

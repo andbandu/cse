@@ -5,11 +5,11 @@ import SEOHead from "@/components/SEOHead";
 export default function About() {
   return (
     <div className="min-h-screen flex flex-col">
-      <SEOHead 
-        title="About Us" 
-        description="Learn about our mission to provide comprehensive dividend data for companies listed on the Colombo Stock Exchange."
-        canonical="/about"
-        keywords="about CSE dividend tracker, Colombo Stock Exchange information, Sri Lanka stock market data, CSE dividend analysis"
+      <SEOHead
+        title="Sri Lanka Stock Dividend & FD Rate Tracker | ColomboStockexchange.info"
+        description="Explore comprehensive dividend history for companies listed on the Colombo Stock Exchange (CSE) and compare fixed deposit (FD) rates in Sri Lanka. Get accurate, data-driven insights to make informed investment decisions."
+        canonical="/"
+        keywords="Sri Lanka stock dividend history, Colombo Stock Exchange data, CSE dividend tracker, Sri Lanka FD rates, fixed deposit rates Sri Lanka, Sri Lanka investment tools, Colombo Stock Exchange dividend analysis, Sri Lanka stock market trends"
       />
       
       <main className="flex-grow container mx-auto px-4 py-12">

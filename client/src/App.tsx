@@ -15,13 +15,14 @@ import BankDetailsPage from "@/pages/bank-details";
 import CompareRatesPage from "@/pages/compare-rates";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
+import HomePage from "./pages/homepage";
 
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Header /> {/* Add Header here */}
       <Switch>
-        <Route path="/" component={FixedDepositPage} />
+        <Route path="/" component={HomePage} />
         <Route path="/about" component={About} />
         <Route path="/contact" component={Contact} />
         <Route path="/terms" component={Terms} />

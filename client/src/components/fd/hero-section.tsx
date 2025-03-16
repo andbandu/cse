@@ -6,6 +6,7 @@ import { Search } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useFilters } from "@/hooks/use-filters";
 import { useLocation } from "wouter";
+import { motion } from "framer-motion";
 
 export default function HeroSection() {
   const filters = useFilters();
@@ -54,17 +55,29 @@ export default function HeroSection() {
   return (
     <section className="bg-gradient-to-r  from-slate-700 to-slate-900 text-white ">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="max-w-4xl mx-auto text-center">
+        <motion.div className="max-w-4xl mx-auto text-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        >
           <h1 className="text-3xl md:text-5xl font-bold mb-6">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-100">
               Find the Best Fixed Deposit Rates in Sri Lanka
             </span>
           </h1>
-          <p className="text-lg md:text-xl mb-10 opacity-90">
+          <motion.p className="text-lg md:text-xl mb-10 opacity-90"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          >
             Compare rates from leading banks and financial institutions to maximize your returns
-          </p>
+          </motion.p>
           
-          <div className="bg-white p-6 rounded-lg shadow-lg">
+          <motion.div className="bg-white p-6 rounded-lg shadow-lg"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          >
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
               <div className="space-y-2">
                 <label htmlFor="deposit-amount" className="block text-sm font-medium text-gray-700">
@@ -117,8 +130,8 @@ export default function HeroSection() {
                 </Button>
               </div>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );

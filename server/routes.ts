@@ -12,13 +12,9 @@ export async function registerRoutes(app: Express) {
     }
   });
 
-  app.get("/api/banks/:idOrSlug", async (req, res) => {
+  app.get("/api/banks/:id", async (req, res) => {
     try {
-      const param = req.params.idOrSlug;
-      const bank = isNaN(parseInt(param)) 
-        ? await storage.getBankBySlug(param)
-        : await storage.getBank(parseInt(param));
-      
+      const bank = await storage.getBank(parseInt(req.params.id));
       if (!bank) {
         res.status(404).json({ message: "Bank not found" });
         return;

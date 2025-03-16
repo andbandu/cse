@@ -25,7 +25,11 @@ interface RatesTableProps {
   showViewAll?: boolean;
 }
 
-const getRate = (maturityRate: number, monthlyRate: number, isMonthly: boolean) => {
+const getRate = (
+  maturityRate: number,
+  monthlyRate: number,
+  isMonthly: boolean,
+) => {
   return isMonthly ? monthlyRate : maturityRate;
 };
 
@@ -65,12 +69,18 @@ export default function RatesTable({
     })) || [];
 
   // Filter rates based on payout option and remove 0% rates
-  const filteredRates = ratesWithBanks.sort((a, b) =>
-    filters?.payoutOption === "maturity"
-      ? b.maturityRate - a.maturityRate
-      : b.monthlyRate - a.monthlyRate,
-  ).filter(rate => (filters?.payoutOption === "monthly" ? rate.monthlyRate : rate.maturityRate) > 0);
-
+  const filteredRates = ratesWithBanks
+    .sort((a, b) =>
+      filters?.payoutOption === "maturity"
+        ? b.maturityRate - a.maturityRate
+        : b.monthlyRate - a.monthlyRate,
+    )
+    .filter(
+      (rate) =>
+        (filters?.payoutOption === "monthly"
+          ? rate.monthlyRate
+          : rate.maturityRate) > 0,
+    );
 
   const columns: ColumnDef<RateWithBank>[] = [
     {
@@ -141,13 +151,19 @@ export default function RatesTable({
       header: "Actions",
       cell: ({ row }) => (
         <div className="flex gap-2">
-          <Link to={`/fd-calculator?rate=${getRate(row.original.maturityRate, row.original.monthlyRate, filters?.payoutOption === "monthly")}&term=${row.original.termMonths}&amount=${filters?.amount || ""}&payout=${filters?.payoutOption || "maturity"}`}>
+          <Link
+            to={`/fd-calculator?rate=${getRate(row.original.maturityRate, row.original.monthlyRate, filters?.payoutOption === "monthly")}&term=${row.original.termMonths}&amount=${filters?.amount || ""}&payout=${filters?.payoutOption || "maturity"}`}
+          >
             <Button variant="outline" size="sm">
               Calculate
             </Button>
           </Link>
           <Link href={`/banks/${row.original.bankId}`}>
-            <Button variant="default" size="sm">
+            <Button
+              className="text-blue-700 hover:text-blue-700"
+              variant="ghost"
+              size="sm"
+            >
               Apply Now
             </Button>
           </Link>

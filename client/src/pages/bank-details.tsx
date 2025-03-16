@@ -48,6 +48,10 @@ export default function BankDetailsPage() {
   const { data: rates, isLoading: isLoadingRates } = useQuery<Rate[]>({
     queryKey: [`/api/banks/${bankId}/rates`],
     enabled: !!bankId,
+    select: (data) =>
+      data.filter((rate) =>
+        (payoutOption === "monthly" ? rate.monthlyRate : rate.maturityRate) > 0,
+      ),
   });
 
   // Prepare chart data

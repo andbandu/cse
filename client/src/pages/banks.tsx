@@ -12,6 +12,8 @@ import { ChevronRight } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Bank } from "@shared/fd-schema";
 import { Helmet } from "react-helmet";
+import { formatTerm } from "@/lib/utils/format-term";
+import { Rate } from "@shared/schema";
 
 export default function BanksPage() {
   const { data: banks, isLoading } = useQuery<Bank[]>({

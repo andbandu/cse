@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatDateToLocal } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Bank, Rate } from "@shared/fd-schema";
-import { ExternalLink, ArrowLeft } from "lucide-react";
+import { ExternalLink, ArrowLeft, ChevronRight } from "lucide-react";
 import { Link } from "wouter";
 import { DataTable } from "@/components/ui/data-table";
 import { ColumnDef } from "@tanstack/react-table";
@@ -187,11 +187,31 @@ export default function BankDetailsPage() {
       </div>
 
       <div className="container mx-auto px-4 py-10">
-        <Link href="/sri-lanka-banks">
-          <Button variant="outline" className="mb-6">
-            <ArrowLeft className="h-4 w-4 mr-2" /> Back to all banks
-          </Button>
-        </Link>
+        <nav className="flex mb-6" aria-label="Breadcrumb">
+          <ol className="inline-flex items-center space-x-1 md:space-x-3">
+            <li className="inline-flex items-center">
+              <Link href="/" className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900">
+                Home
+              </Link>
+            </li>
+            <li>
+              <div className="flex items-center">
+                <ChevronRight className="w-4 h-4 text-gray-400" />
+                <Link href="/sri-lanka-banks" className="ml-1 text-sm text-gray-600 hover:text-gray-900">
+                  Banks
+                </Link>
+              </div>
+            </li>
+            <li>
+              <div className="flex items-center">
+                <ChevronRight className="w-4 h-4 text-gray-400" />
+                <span className="ml-1 text-sm text-gray-500" aria-current="page">
+                  {bank?.name || 'Bank Details'}
+                </span>
+              </div>
+            </li>
+          </ol>
+        </nav>
 
         {isLoadingBank ? (
           <div className="space-y-8">

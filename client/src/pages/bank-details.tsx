@@ -33,13 +33,8 @@ import {
 } from "recharts";
 
 export default function BankDetailsPage() {
-  const params = useParams<{ slug: string }>();
-  const { data: banks } = useQuery<Bank[]>({
-    queryKey: ["/api/banks"],
-  });
-  const bankId = !isNaN(parseInt(params.slug)) ? 
-    parseInt(params.slug) : 
-    banks?.find(b => b.name.toLowerCase().replace(/[^a-z0-9]+/g, "-") === params.slug)?.id;
+  const params = useParams<{ id: string }>();
+  const bankId = parseInt(params.id);
   const [payoutOption, setPayoutOption] = useState<PayoutOption>("maturity");
 
   const {

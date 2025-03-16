@@ -16,9 +16,8 @@ import { ExternalLink, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
 import { DataTable } from "@/components/ui/data-table";
 import { ColumnDef } from "@tanstack/react-table";
-import { Helmet } from "react-helmet-async";
+import { Helmet } from "react-helmet";
 import { PayoutOption } from "@/lib/utils/calculator";
-import { BreadcrumbStructuredData } from "@/components/StructuredData";
 import { useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -120,38 +119,21 @@ export default function BankDetailsPage() {
       <Helmet>
         <title>
           {bank
-            ? `${bank.name} Fixed Deposit Interest Rates & Details ${new Date().getFullYear()} | Sri Lanka`
+            ? `${bank.name} Fixed Deposits Rates | Sri Lanka`
             : "Fixed Deposits Rates | Sri Lanka"}
         </title>
         <meta
           name="description"
           content={
             bank
-              ? `Compare ${bank.name} fixed deposit rates, terms, and investment options. Get latest FD rates, minimum deposit requirements, and maturity periods for ${bank.name} Sri Lanka.`
+              ? `View fixed deposit rates and details for ${bank.name} in Sri Lanka.`
               : "Bank fixed deposit details"
           }
         />
-        <meta name="keywords" content={bank ? `${bank.name}, fixed deposit, FD rates, Sri Lanka banks, term deposits, ${bank.name} interest rates` : "fixed deposit rates, Sri Lanka banks"} />
         <link
           rel="canonical"
           href={bank ? `/banks/${bank.name.toLowerCase().replace(/ /g, "-")}-fd-rates` : "/banks/fd-rates"}
         />
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "FinancialProduct",
-            "name": bank ? `${bank.name} Fixed Deposit` : "Fixed Deposit",
-            "description": bank?.description,
-            "provider": {
-              "@type": "BankOrCreditUnion",
-              "name": bank?.name,
-              "url": window.location.href
-            },
-            "minimumDeposit": bank?.minDeposit,
-            "category": "Fixed Deposit",
-            "dateModified": bank?.updatedAt
-          })}
-        </script>
       </Helmet>
 
       <div className="bg-gradient-to-r from-slate-700 to-slate-900 py-12">
@@ -173,13 +155,6 @@ export default function BankDetailsPage() {
       </div>
 
       <div className="container mx-auto px-4 py-10">
-        <BreadcrumbStructuredData
-          items={[
-            { name: "Home", item: "/" },
-            { name: "Banks", item: "/sri-lanka-banks" },
-            { name: bank?.name || "", item: window.location.pathname }
-          ]}
-        />
         <Link href="/sri-lanka-banks">
           <Button variant="outline" className="mb-6">
             <ArrowLeft className="h-4 w-4 mr-2" /> Back to all banks

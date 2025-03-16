@@ -18,6 +18,7 @@ import { DataTable } from "@/components/ui/data-table";
 import { ColumnDef } from "@tanstack/react-table";
 import { Helmet } from "react-helmet";
 import { PayoutOption } from "@/lib/utils/calculator";
+import { BreadcrumbStructuredData } from "@/components/StructuredData";
 import { useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -49,8 +50,10 @@ export default function BankDetailsPage() {
     queryKey: [`/api/banks/${bankId}/rates`],
     enabled: !!bankId,
     select: (data) =>
-      data.filter((rate) =>
-        (payoutOption === "monthly" ? rate.monthlyRate : rate.maturityRate) > 0,
+      data.filter(
+        (rate) =>
+          (payoutOption === "monthly" ? rate.monthlyRate : rate.maturityRate) >
+          0,
       ),
   });
 
@@ -119,21 +122,49 @@ export default function BankDetailsPage() {
       <Helmet>
         <title>
           {bank
-            ? `${bank.name} Fixed Deposits Rates | Sri Lanka`
+            ? `${bank.name} Fixed Deposit Interest Rates & Details ${new Date().getFullYear()} | Sri Lanka`
             : "Fixed Deposits Rates | Sri Lanka"}
         </title>
         <meta
           name="description"
           content={
             bank
-              ? `View fixed deposit rates and details for ${bank.name} in Sri Lanka.`
+              ? `Compare ${bank.name} fixed deposit rates, terms, and investment options. Get latest FD rates, minimum deposit requirements, and maturity periods for ${bank.name} Sri Lanka.`
               : "Bank fixed deposit details"
+          }
+        />
+        <meta
+          name="keywords"
+          content={
+            bank
+              ? `${bank.name}, fixed deposit, FD rates, Sri Lanka banks, term deposits, ${bank.name} interest rates`
+              : "fixed deposit rates, Sri Lanka banks"
           }
         />
         <link
           rel="canonical"
-          href={bank ? `/banks/${bank.name.toLowerCase().replace(/ /g, "-")}-fd-rates` : "/banks/fd-rates"}
+          href={
+            bank
+              ? `/banks/${bank.name.toLowerCase().replace(/ /g, "-")}-fd-rates`
+              : "/banks/fd-rates"
+          }
         />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FinancialProduct",
+            name: bank ? `${bank.name} Fixed Deposit` : "Fixed Deposit",
+            description: bank?.description,
+            provider: {
+              "@type": "BankOrCreditUnion",
+              name: bank?.name,
+              url: window.location.href,
+            },
+            minimumDeposit: bank?.minDeposit,
+            category: "Fixed Deposit",
+            dateModified: bank?.updatedAt,
+          })}
+        </script>
       </Helmet>
 
       <div className="bg-gradient-to-r from-slate-700 to-slate-900 py-12">

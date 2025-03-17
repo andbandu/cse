@@ -15,21 +15,21 @@ interface BankRatingProps {
 
 export function BankRating({ rating }: BankRatingProps) {
   return (
-    <Card className="bg-gradient-to-br from-slate-50 to-white shadow-md border-none">
-      <div className="p-6">
-        <div className="flex flex-col">
-          <div className="flex items-baseline gap-2 mb-1">
-            <span className={`text-4xl font-bold ${getRatingColor(rating)}`}>
-              {rating}
-            </span>
-            <div className="flex flex-col">
-              <span className="text-xs text-slate-500 font-medium">FITCH</span>
-              <span className="text-xs text-slate-400">RATING</span>
-            </div>
+    <div className="flex items-center gap-4 p-4 bg-slate-50/50 rounded-lg">
+      <div className="flex-1">
+        <div className="flex items-baseline gap-3">
+          <span className={`text-3xl font-bold tracking-tight ${getRatingColor(rating)}`}>
+            {rating}
+          </span>
+          <div className="flex flex-col">
+            <span className="text-xs font-semibold text-slate-600">FITCH RATING</span>
+            <span className="text-xs text-slate-500">National Long-Term</span>
           </div>
-          <span className="text-sm text-slate-600 mt-2">National Long-Term Rating</span>
         </div>
+        <p className="mt-2 text-sm text-slate-600">
+          Credit rating assigned by Fitch Ratings, reflecting the bank's creditworthiness
+        </p>
       </div>
-    </Card>
+    </div>
   );
 }

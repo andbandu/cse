@@ -245,15 +245,46 @@ export default function BankDetailsPage() {
                 {bank?.name}
               </h1>
               <p className="text-white/90">Fixed deposit rates and details</p>
-              {bank?.fitchRatings && (
-                <BankRating rating={bank.fitchRatings} />
-              )} {/* Added BankRating component */}
             </>
           )}
         </div>
       </div>
 
       <div className="container mx-auto px-4 py-10">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          <div className="lg:col-span-2">
+            <Card className="border-none shadow-md bg-white/50 backdrop-blur">
+              <CardHeader>
+                <CardTitle>About {bank?.name}</CardTitle>
+                <CardDescription>Bank overview and key information</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-slate-600">{bank?.description}</p>
+                {bank?.fitchRatings && <BankRating rating={bank.fitchRatings} />}
+              </CardContent>
+            </Card>
+          </div>
+          <div>
+            <Card className="border-none shadow-md bg-white/50 backdrop-blur">
+              <CardHeader>
+                <CardTitle>Quick Facts</CardTitle>
+                <CardDescription>Key financial indicators</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center py-2 border-b border-slate-100">
+                    <span className="text-sm text-slate-600">Minimum Deposit</span>
+                    <span className="font-medium">Rs. {Number(bank?.minDeposit).toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between items-center py-2 border-b border-slate-100">
+                    <span className="text-sm text-slate-600">Last Updated</span>
+                    <span className="font-medium">{formatDateToLocal(bank?.updatedAt)}</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
         <div className="mb-8">
           <Link href="/sri-lanka-banks" className="inline-flex items-center">
             <ArrowLeft className="w-4 h-4 mr-2" />

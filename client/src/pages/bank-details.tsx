@@ -22,6 +22,7 @@ import { useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { formatTerm } from "@/lib/utils/format-term";
+import { BankRating } from "@/components/bank/BankRating"; // Import BankRating component
 import {
   BarChart,
   Bar,
@@ -31,7 +32,6 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { BankRating } from "@/components/bank/BankRating"; // Import BankRating component
 
 const getRatingColor = (rating: string): string => {
   // Implement logic to determine color based on rating value.  Example:
@@ -42,7 +42,6 @@ const getRatingColor = (rating: string): string => {
   // Add more conditions as needed
   return "text-red-600"; // Default to red for lower ratings
 };
-
 
 export default function BankDetailsPage() {
   const params = useParams<{ id: string }>();
@@ -186,26 +185,26 @@ export default function BankDetailsPage() {
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "BreadcrumbList",
-            "itemListElement": [
+            itemListElement: [
               {
                 "@type": "ListItem",
-                "position": 1,
-                "name": "Home",
-                "item": "/"
+                position: 1,
+                name: "Home",
+                item: "/",
               },
               {
                 "@type": "ListItem",
-                "position": 2,
-                "name": "Banks",
-                "item": "/sri-lanka-banks"
+                position: 2,
+                name: "Banks",
+                item: "/sri-lanka-banks",
               },
               {
                 "@type": "ListItem",
-                "position": 3,
-                "name": bank.name,
-                "item": `/sri-lanka-banks/${bank.id}`
-              }
-            ]
+                position: 3,
+                name: bank.name,
+                item: `/sri-lanka-banks/${bank.id}`,
+              },
+            ],
           })}
         </script>
       )}
@@ -222,18 +221,22 @@ export default function BankDetailsPage() {
               </li>
               <li className="text-white/50">/</li>
               <li>
-                <Link href="/sri-lanka-banks" className="text-white/70 hover:text-white">
+                <Link
+                  href="/sri-lanka-banks"
+                  className="text-white/70 hover:text-white"
+                >
                   Banks
                 </Link>
               </li>
               <li className="text-white/50">/</li>
               <li>
                 <span className="text-white" aria-current="page">
-                  {bank?.name || 'Loading...'}
+                  {bank?.name || "Loading..."}
                 </span>
               </li>
             </ol>
           </nav>
+
           {isLoadingBank ? (
             <div>
               <Skeleton className="h-8 w-64 bg-white/20 mb-2" />
@@ -251,16 +254,28 @@ export default function BankDetailsPage() {
       </div>
 
       <div className="container mx-auto px-4 py-10">
+        <div className="mb-8">
+          <Link href="/sri-lanka-banks" className="inline-flex  items-center">
+            <buttton className="flex items-center justify-center  bg-gray-400">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Banks
+            </buttton>
+          </Link>
+        </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           <div className="lg:col-span-2">
             <Card className="border-none shadow-md bg-white/50 backdrop-blur">
               <CardHeader>
                 <CardTitle>About {bank?.name}</CardTitle>
-                <CardDescription>Bank overview and key information</CardDescription>
+                <CardDescription>
+                  Bank overview and key information
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-slate-600">{bank?.description}</p>
-                {bank?.fitchRatings && <BankRating rating={bank.fitchRatings} />}
+                {bank?.fitchRatings && (
+                  <BankRating rating={bank.fitchRatings} />
+                )}
               </CardContent>
             </Card>
           </div>
@@ -273,14 +288,23 @@ export default function BankDetailsPage() {
               <CardContent>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center py-2 border-b border-slate-100">
-                    <span className="text-sm text-slate-600">Minimum Deposit</span>
-                    <span className="font-medium">Rs. {Number(bank?.minDeposit).toLocaleString()}</span>
+                    <span className="text-sm text-slate-600">
+                      Minimum Deposit
+                    </span>
+                    <span className="font-medium">
+                      Rs. {Number(bank?.minDeposit).toLocaleString()}
+                    </span>
                   </div>
                   <div className="flex justify-between items-center py-2 border-b border-slate-100">
                     <span className="text-sm text-slate-600">Last Updated</span>
-                    <span className="font-medium">{formatDateToLocal(bank?.updatedAt)}</span>
+                    <span className="font-medium">
+                      {formatDateToLocal(bank?.updatedAt)}
+                    </span>
                   </div>
-                  <Button className="w-full bg-green-600 hover:bg-green-700 text-white font-medium" onClick={() => window.open(bank?.website || '', '_blank')}>
+                  <Button
+                    className="w-full bg-green-600 hover:bg-green-700 text-white font-medium"
+                    onClick={() => window.open(bank?.website || "", "_blank")}
+                  >
                     Apply Online
                   </Button>
                 </div>
@@ -288,28 +312,9 @@ export default function BankDetailsPage() {
             </Card>
           </div>
         </div>
-        <div className="mb-8">
-          <Link href="/sri-lanka-banks" className="inline-flex items-center">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Banks
-          </Link>
-        </div>
 
         {isLoadingBank ? (
           <div className="space-y-8">
-            <Card>
-              <CardHeader>
-                <Skeleton className="h-6 w-48" />
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-4 w-3/4" />
-                </div>
-              </CardContent>
-            </Card>
-
             <Card>
               <CardHeader>
                 <Skeleton className="h-6 w-48" />
@@ -321,40 +326,6 @@ export default function BankDetailsPage() {
           </div>
         ) : (
           <div className="space-y-8">
-            <Card>
-              <CardHeader>
-                <CardTitle>About {bank?.name}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-col md:flex-row gap-6">
-                  <div className="flex-1">
-                    <p className="mb-4">{bank?.description}</p>
-                    <div className="space-y-2 text-sm text-gray-500">
-                      <p>
-                        <strong>Minimum Deposit:</strong> Rs.{" "}
-                        {Number(bank?.minDeposit).toLocaleString()}
-                      </p>
-                      <p>
-                        <strong>Last Updated:</strong>{" "}
-                        {formatDateToLocal(new Date(bank?.updatedAt || ""))}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="w-full md:w-64 flex flex-col gap-2">
-                    <Button className="w-full">
-                      Apply Online <ExternalLink className="h-4 w-4 ml-2" />
-                    </Button>
-                    <Button variant="outline" className="w-full">
-                      Download Form
-                    </Button>
-                    <Button variant="outline" className="w-full">
-                      Contact Bank
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
             <Card>
               <CardHeader>
                 <CardTitle>{bank?.name} Fixed Deposit Rates</CardTitle>

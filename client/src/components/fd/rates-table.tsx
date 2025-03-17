@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Bank, Rate } from "@shared/schema";
 import { PayoutOption } from "@/lib/utils/calculator";
 import { formatTerm } from "@/lib/utils/format-term";
+import { ChevronRight, ArrowUpDown } from "lucide-react"; // Added ArrowUpDown import
 
 interface RateWithBank extends Rate {
   bank?: Bank;

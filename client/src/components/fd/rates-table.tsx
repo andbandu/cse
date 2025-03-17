@@ -195,7 +195,15 @@ export default function RatesTable({
     },
     {
       id: "aer",
-      header: "AER %",
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          AER %
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
       enableSorting: true,
       sortingFn: (rowA, rowB) => {
         const aerA = filters?.payoutOption === "monthly" 

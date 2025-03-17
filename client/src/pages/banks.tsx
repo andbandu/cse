@@ -85,45 +85,59 @@ export default function BanksPage() {
             : banksWithRates?.map((bank) => (
                 <Card
                   key={bank.id}
-                  className="group hover:shadow-md transition-shadow"
+                  className="group hover:shadow-xl transition-all duration-300 overflow-hidden"
                 >
-                  <CardHeader>
+                  <div className="h-2 bg-gradient-to-r from-amber-400 to-amber-600"></div>
+                  <CardHeader className="pt-6">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-gray-100 rounded flex items-center justify-center">
-                        <span className="text-amber-500 font-bold">
+                      <div className="w-14 h-14 bg-gradient-to-br from-slate-50 to-slate-100 rounded-lg shadow-sm flex items-center justify-center border border-slate-100">
+                        <span className="text-amber-600 font-bold text-lg">
                           {bank.shortName}
                         </span>
                       </div>
-                      <CardTitle>{bank.name}</CardTitle>
+                      <div>
+                        <CardTitle className="text-slate-800">{bank.name}</CardTitle>
+                        <CardDescription className="text-sm text-slate-500 mt-1">Banking & Financial Services</CardDescription>
+                      </div>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="flex items-center justify-between mb-6 border-b pb-4">
-                      <div>
-                        <h4 className="text-sm font-medium text-gray-500 mb-1">Highest Interest Rate</h4>
-                        {bank.highestRate !== null ? (
-                          <div className="flex items-baseline">
-                            <span className="text-3xl font-bold text-green-600">{bank.highestRate.toFixed(2)}</span>
-                            <span className="text-sm text-gray-500 ml-1">P.A%</span>
-                          </div>
-                        ) : (
-                          <p className="text-gray-500">No rate data</p>
-                        )}
+                    <div className="bg-slate-50 rounded-lg p-4 mb-6">
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <h4 className="text-sm font-medium text-slate-600">Highest Interest Rate</h4>
+                          {bank.highestRate !== null ? (
+                            <div className="flex items-baseline mt-1">
+                              <span className="text-4xl font-bold bg-gradient-to-r from-green-600 to-green-500 bg-clip-text text-transparent">
+                                {bank.highestRate.toFixed(2)}
+                              </span>
+                              <span className="text-sm text-slate-600 ml-1 font-medium">P.A%</span>
+                            </div>
+                          ) : (
+                            <p className="text-slate-500">No rate data</p>
+                          )}
+                        </div>
+                        <div className="w-px h-12 bg-slate-200"></div>
+                        <div>
+                          <h4 className="text-sm font-medium text-slate-600">Min. Deposit</h4>
+                          <p className="text-lg font-semibold text-slate-700 mt-1">
+                            Rs. {Number(bank.minDeposit).toLocaleString()}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                    <CardDescription className="text-sm text-gray-600">{bank.description}</CardDescription>
-                    <p className="text-sm text-gray-500 mb-4">
-                      Minimum Deposit: Rs.{" "}
-                      {Number(bank.minDeposit).toLocaleString()}
-                      <br />
-                      Last Updated: {bank.updatedAt}
-                    </p>
-                    <Link href={`/sri-lanka-banks/${bank.id}`}>
+                    <div className="space-y-4">
+                      <p className="text-sm text-slate-600 leading-relaxed">{bank.description}</p>
+                      <div className="flex items-center text-xs text-slate-500 mt-2">
+                        <span>Last Updated: {bank.updatedAt}</span>
+                      </div>
+                    </div>
+                    <Link href={`/sri-lanka-banks/${bank.id}`} className="block mt-6">
                       <Button
-                        variant={"outline"}
-                        className="w-full group-hover:bg-primary-600"
+                        className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-sm group"
                       >
-                        View Details{" "}
+                        View Details & Rates
+                        <ChevronRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
                         <ChevronRight className="h-4 w-4 ml-2 transition-transform group-hover:translate-x-1" />
                       </Button>
                     </Link>

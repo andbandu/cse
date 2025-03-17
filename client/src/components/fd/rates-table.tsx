@@ -132,8 +132,10 @@ export default function RatesTable({
       },
     },
     {
-      accessorKey: "interestRate",
+      id: "interestRate",
       header: `Interest Rate (${filters?.payoutOption === "monthly" ? "Monthly" : "At Maturity"})`,
+      accessorFn: (row) =>
+        getRate(row.maturityRate, row.monthlyRate, filters?.payoutOption === "monthly"),
       cell: ({ row }) => (
         <div className="text-start">
           <span className="text-lg font-bold text-blue-500">

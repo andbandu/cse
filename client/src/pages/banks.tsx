@@ -150,10 +150,12 @@ export default function BanksPage() {
                       href={`/sri-lanka-banks/${bank.id}`}
                       className="block mt-6"
                     >
-                      <Button className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-sm group">
+                      <Button
+                        variant="outline"
+                        className="w-full  shadow-sm group"
+                      >
                         View Details & Rates
                         <ChevronRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
-                        <ChevronRight className="h-4 w-4 ml-2 transition-transform group-hover:translate-x-1" />
                       </Button>
                     </Link>
                   </CardContent>

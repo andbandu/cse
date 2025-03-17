@@ -255,8 +255,8 @@ export default function BankDetailsPage() {
 
       <div className="container mx-auto px-4 py-10">
         <div className="mb-8">
-          <Link 
-            href="/sri-lanka-banks" 
+          <Link
+            href="/sri-lanka-banks"
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white/50 hover:bg-white/80 transition-all shadow-sm text-slate-700 hover:text-slate-900"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -265,10 +265,22 @@ export default function BankDetailsPage() {
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           <div className="lg:col-span-2">
-            <Card className="border-none shadow-md bg-white/50 backdrop-blur">
+            <Card className="border shadow-md bg-white/50 backdrop-blur">
               <CardHeader>
-                <CardTitle>{isLoadingBank ? <Skeleton className="h-7 w-48" /> : `About ${bank?.name}`}</CardTitle>
-                <CardDescription>{isLoadingBank ? <Skeleton className="h-5 w-40" /> : "Bank overview and key information"}</CardDescription>
+                <CardTitle>
+                  {isLoadingBank ? (
+                    <Skeleton className="h-7 w-48" />
+                  ) : (
+                    `About ${bank?.name}`
+                  )}
+                </CardTitle>
+                <CardDescription>
+                  {isLoadingBank ? (
+                    <Skeleton className="h-5 w-40" />
+                  ) : (
+                    "Bank overview and key information"
+                  )}
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 {isLoadingBank ? (
@@ -279,17 +291,31 @@ export default function BankDetailsPage() {
                 ) : (
                   <>
                     <p className="text-slate-600">{bank?.description}</p>
-                    {bank?.fitchRatings && <BankRating rating={bank.fitchRatings} />}
+                    {bank?.fitchRatings && (
+                      <BankRating rating={bank.fitchRatings} />
+                    )}
                   </>
                 )}
               </CardContent>
             </Card>
           </div>
           <div>
-            <Card className="border-none shadow-md bg-white/50 backdrop-blur">
+            <Card className="border shadow-md bg-white/50 backdrop-blur">
               <CardHeader>
-                <CardTitle>{isLoadingBank ? <Skeleton className="h-7 w-32" /> : "Quick Facts"}</CardTitle>
-                <CardDescription>{isLoadingBank ? <Skeleton className="h-5 w-40" /> : "Key financial indicators"}</CardDescription>
+                <CardTitle>
+                  {isLoadingBank ? (
+                    <Skeleton className="h-7 w-32" />
+                  ) : (
+                    "Quick Facts"
+                  )}
+                </CardTitle>
+                <CardDescription>
+                  {isLoadingBank ? (
+                    <Skeleton className="h-5 w-40" />
+                  ) : (
+                    "Key financial indicators"
+                  )}
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 {isLoadingBank ? (
@@ -301,14 +327,25 @@ export default function BankDetailsPage() {
                 ) : (
                   <div className="space-y-3">
                     <div className="flex justify-between items-center py-2 border-b border-slate-100">
-                      <span className="text-sm text-slate-600">Minimum Deposit</span>
-                      <span className="font-medium">Rs. {Number(bank?.minDeposit).toLocaleString()}</span>
+                      <span className="text-sm text-slate-600">
+                        Minimum Deposit
+                      </span>
+                      <span className="font-medium">
+                        Rs. {Number(bank?.minDeposit).toLocaleString()}
+                      </span>
                     </div>
                     <div className="flex justify-between items-center py-2 border-b border-slate-100">
-                      <span className="text-sm text-slate-600">Last Updated</span>
-                      <span className="font-medium">{formatDateToLocal(bank?.updatedAt)}</span>
+                      <span className="text-sm text-slate-600">
+                        Last Updated
+                      </span>
+                      <span className="font-medium">
+                        {formatDateToLocal(bank?.updatedAt)}
+                      </span>
                     </div>
-                    <Button className="w-full bg-green-600 hover:bg-green-700 text-white font-medium" onClick={() => window.open(bank?.website || '', '_blank')}>
+                    <Button
+                      className="w-full bg-green-600 hover:bg-green-700 text-white font-medium"
+                      onClick={() => window.open(bank?.website || "", "_blank")}
+                    >
                       Apply Online
                     </Button>
                   </div>

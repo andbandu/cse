@@ -31,6 +31,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { BankRating } from "@/components/bank/BankRating"; // Import BankRating component
 
 const getRatingColor = (rating: string): string => {
   // Implement logic to determine color based on rating value.  Example:
@@ -244,6 +245,9 @@ export default function BankDetailsPage() {
                 {bank?.name}
               </h1>
               <p className="text-white/90">Fixed deposit rates and details</p>
+              {bank?.fitchRatings && (
+                <BankRating rating={bank.fitchRatings} />
+              )} {/* Added BankRating component */}
             </>
           )}
         </div>
@@ -256,26 +260,6 @@ export default function BankDetailsPage() {
             Back to Banks
           </Link>
         </div>
-        {bank?.fitchRatings && (
-          <Card className="mb-8 bg-white/50 backdrop-blur border-none shadow-sm">
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-4">
-                <div className="p-3 rounded-lg bg-white shadow-sm">
-                  <img src="https://www.fitchratings.com/images/favicon.ico" alt="Fitch Ratings" className="w-8 h-8" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-slate-800 mb-1">Fitch Rating</h3>
-                  <div className="flex items-baseline gap-2">
-                    <span className={`text-3xl font-bold ${getRatingColor(bank.fitchRatings)}`}>
-                      {bank.fitchRatings}
-                    </span>
-                    <span className="text-sm text-slate-600">(National Long-Term Rating)</span>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
 
         {isLoadingBank ? (
           <div className="space-y-8">

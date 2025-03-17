@@ -141,6 +141,7 @@ export default function RatesTable({
     {
       accessorKey: "bank",
       header: "Bank / Institution",
+      enableSorting: true,
       cell: ({ row }) => {
         const bank = row.original.bank;
         if (!bank) return null;
@@ -172,6 +173,7 @@ export default function RatesTable({
     {
       id: "interestRate",
       header: `Interest Rate (${filters?.payoutOption === "monthly" ? "Monthly" : "At Maturity"})`,
+      enableSorting: true,
       accessorFn: (row) =>
         getRate(
           row.maturityRate,
@@ -194,6 +196,7 @@ export default function RatesTable({
     {
       id: "aer",
       header: "AER %",
+      enableSorting: true,
       sortingFn: (rowA, rowB) => {
         const aerA = filters?.payoutOption === "monthly" 
           ? rowA.original.monthlyAer || 0
@@ -219,6 +222,7 @@ export default function RatesTable({
     {
       accessorKey: "termMonths",
       header: "Term Period",
+      enableSorting: true,
       cell: ({ row }) => (
         <div className="text-start">{formatTerm(row.original.termMonths)}</div>
       ),
@@ -226,6 +230,7 @@ export default function RatesTable({
     {
       accessorKey: "minDeposit",
       header: "Min. Deposit",
+      enableSorting: true,
       cell: ({ row }) => (
         <div className="text-start">
           Rs. {Number(row.original.minDeposit).toLocaleString()}
@@ -235,6 +240,7 @@ export default function RatesTable({
     {
       accessorKey: "bank.fitchRatings",
       header: "Fitch Rating",
+      enableSorting: true,
       sortingFn: (rowA, rowB) => {
         const ratingA = rowA.original.bank?.fitchRatings;
         const ratingB = rowB.original.bank?.fitchRatings;
@@ -254,6 +260,7 @@ export default function RatesTable({
     {
       id: "actions",
       header: "Actions",
+      enableSorting: false, // Actions column shouldn't be sortable
       cell: ({ row }) => (
         <div className="flex gap-2">
           <Link

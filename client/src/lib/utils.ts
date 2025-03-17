@@ -5,9 +5,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function formatDateToLocal(date: Date | null | undefined): string {
+export function formatDateToLocal(date: Date | string | null | undefined): string {
   if (!date) return 'N/A';
-  return date.toLocaleDateString('en-LK', {
+  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  return dateObj.toLocaleDateString('en-LK', {
     year: 'numeric',
     month: 'short',
     day: 'numeric',

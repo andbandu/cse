@@ -104,8 +104,8 @@ export class GoogleSheetsService {
         yearlyAer: parseFloat(row[6]) || 0,
         maturityRate: parseFloat(row[7]) || 0,
         maturityAer: parseFloat(row[8]) || 0,
-        minDeposit: parseInt(row[5]) || 0,
-        updatedAt: row[6] || new Date().toISOString(),
+        minDeposit: parseInt(row[9]) || 0,
+        updatedAt: row[10] || new Date().toISOString(),
       }));
     } catch (error) {
       console.error("Failed to fetch rates data from Google Sheets:", error);

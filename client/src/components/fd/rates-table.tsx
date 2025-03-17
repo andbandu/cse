@@ -21,6 +21,7 @@ interface RatesTableProps {
     term?: number;
     amount?: number;
     payoutOption?: PayoutOption;
+    institutionType?: string; // Added institutionType filter
   };
   showViewAll?: boolean;
 }
@@ -28,9 +29,11 @@ interface RatesTableProps {
 const getRate = (
   maturityRate: number,
   monthlyRate: number,
+  yearlyRate: number, // Added yearlyRate
   isMonthly: boolean,
+  isYearly: boolean, // Added isYearly
 ) => {
-  return isMonthly ? monthlyRate : maturityRate;
+  return isMonthly ? monthlyRate : isYearly ? yearlyRate : maturityRate;
 };
 
 const getRatingValue = (rating: string | null): number => {
@@ -123,18 +126,27 @@ export default function RatesTable({
       bank: banks?.find((bank) => bank.id === rate.bankId),
     })) || [];
 
-  // Filter rates based on payout option and remove 0% rates
+  // Filter rates based on payout option, institution type and remove 0% rates
   const filteredRates = ratesWithBanks
     .sort((a, b) =>
       filters?.payoutOption === "maturity"
         ? b.maturityRate - a.maturityRate
+        : filters?.payoutOption === "yearly"
+        ? b.yearlyRate - a.yearlyRate //Added yearly rate sorting
         : b.monthlyRate - a.monthlyRate,
     )
     .filter(
-      (rate) =>
-        (filters?.payoutOption === "monthly"
+      (rate) => {
+        const rateValue = filters?.payoutOption === "monthly"
           ? rate.monthlyRate
-          : rate.maturityRate) > 0,
+          : filters?.payoutOption === "yearly"
+          ? rate.yearlyRate
+          : rate.maturityRate;
+        return rateValue > 0 &&
+          (!filters?.institutionType ||
+            filters?.institutionType === "all" ||
+            (rate.bank && rate.bank.type === filters.institutionType));
+      },
     );
 
   const columns: ColumnDef<RateWithBank>[] = [
@@ -171,20 +183,30 @@ export default function RatesTable({
     },
     {
       id: "interestRate",
-      header: `Interest Rate (${filters?.payoutOption === "monthly" ? "Monthly" : "At Maturity"})`,
+      header: (filters?.payoutOption === "maturity"
+        ? "At Maturity Rate"
+        : filters?.payoutOption === "monthly"
+        ? "Monthly Interest Rate"
+        : "Yearly Interest Rate"),
       accessorFn: (row) =>
         getRate(
           row.maturityRate,
           row.monthlyRate,
+          row.yearlyRate, // Added yearlyRate
           filters?.payoutOption === "monthly",
+          filters?.payoutOption === "yearly", // Added isYearly
         ),
       cell: ({ row }) => (
         <div className="text-start flex flex-col">
           <span className="text-lg font-bold text-blue-500">
             {Number(
-              filters?.payoutOption === "monthly"
-                ? row.original.monthlyRate
-                : row.original.maturityRate,
+              getRate(
+                row.original.maturityRate,
+                row.original.monthlyRate,
+                row.original.yearlyRate, // Added yearlyRate
+                filters?.payoutOption === "monthly",
+                filters?.payoutOption === "yearly", // Added isYearly
+              ),
             ).toFixed(2)}
             %
           </span>
@@ -195,8 +217,10 @@ export default function RatesTable({
       id: "aer",
       header: "AER %",
       cell: ({ row }) => {
-        const aer = filters?.payoutOption === "monthly" 
-          ? row.original.monthlyAer 
+        const aer = filters?.payoutOption === "monthly"
+          ? row.original.monthlyAer
+          : filters?.payoutOption === "yearly"
+          ? row.original.yearlyAer // Added yearlyAer
           : row.original.maturityAer;
         return (
           <div className="text-start">
@@ -248,7 +272,7 @@ export default function RatesTable({
       cell: ({ row }) => (
         <div className="flex gap-2">
           <Link
-            to={`/fd-calculator?rate=${getRate(row.original.maturityRate, row.original.monthlyRate, filters?.payoutOption === "monthly")}&term=${row.original.termMonths}&amount=${filters?.amount || ""}&payout=${filters?.payoutOption || "maturity"}`}
+            to={`/fd-calculator?rate=${getRate(row.original.maturityRate, row.original.monthlyRate, row.original.yearlyRate, filters?.payoutOption === "monthly", filters?.payoutOption === "yearly")}&term=${row.original.termMonths}&amount=${filters?.amount || ""}&payout=${filters?.payoutOption || "maturity"}`}
           >
             <Button variant="outline" size="sm">
               Calculate

@@ -64,6 +64,12 @@ export default function BankDetailsPage() {
   const bankId = parseInt(params.id);
   const [payoutOption, setPayoutOption] = useState<PayoutOption>("maturity");
 
+  const payoutOptions = [
+    { value: "maturity", label: "At Maturity" },
+    { value: "monthly", label: "Monthly" },
+    { value: "yearly", label: "Yearly" }
+  ];
+
   const {
     data: bank,
     isLoading: isLoadingBank,
@@ -76,28 +82,31 @@ export default function BankDetailsPage() {
     queryKey: [`/api/banks/${bankId}/rates`],
     enabled: !!bankId,
     select: (data) =>
-      data.filter(
-        (rate) =>
-          (payoutOption === "monthly" ? rate.monthlyRate : rate.maturityRate) >
-          0,
-      ),
+      data.filter((rate) => {
+        if (payoutOption === "monthly") return Number(rate.monthlyRate) > 0;
+        if (payoutOption === "yearly") return Number(rate.yearlyRate) > 0;
+        return Number(rate.maturityRate) > 0;
+      }),
   });
 
-  // Prepare chart data
-  const chartData =
-    rates?.map((rate) => ({
-      term: `${rate.termMonths} Months`,
-      maturityRate: Number(rate.maturityRate),
-      monthlyRate: Number(rate.monthlyRate),
-    })) || [];
-
-  const getRate = (
-    baseRate: string,
-    monthlyRate: string,
-    isMonthly: boolean,
-  ): number => {
-    return isMonthly ? Number(monthlyRate) : Number(baseRate);
+  const getRate = (rate: Rate, payoutOption: PayoutOption): number => {
+    switch (payoutOption) {
+      case "monthly":
+        return Number(rate.monthlyRate);
+      case "yearly":
+        return Number(rate.yearlyRate);
+      default:
+        return Number(rate.maturityRate);
+    }
   };
+
+  // Prepare chart data
+  const chartData = rates?.map((rate) => ({
+    term: `${rate.termMonths} Months`,
+    maturityRate: Number(rate.maturityRate),
+    monthlyRate: Number(rate.monthlyRate),
+    yearlyRate: Number(rate.yearlyRate)
+  })) || [];
 
   // Generate columns based on selected payout option
   const getColumns = (): ColumnDef<Rate>[] => [
@@ -107,21 +116,18 @@ export default function BankDetailsPage() {
       cell: ({ row }) => <div>{formatTerm(row.original.termMonths)}</div>,
     },
     {
-      accessorKey: "interestRate",
+      accessorKey: payoutOption === "monthly" ? "monthlyRate" : (payoutOption === "yearly" ? "yearlyRate" : "maturityRate"),
       header:
-        payoutOption === "maturity"
-          ? "At Maturity Rate"
-          : "Monthly Interest Rate",
+        payoutOption === "monthly"
+          ? "Monthly Interest Rate"
+          : payoutOption === "yearly"
+          ? "Yearly Interest Rate"
+          : "At Maturity Rate",
       cell: ({ row }) => (
         <div
           className={`font-bold ${payoutOption === "maturity" ? "text-green-600" : "text-blue-600"}`}
         >
-          {getRate(
-            row.original.maturityRate,
-            row.original.monthlyRate,
-            payoutOption === "monthly",
-          ).toFixed(2)}
-          %
+          {getRate(row.original, payoutOption).toFixed(2)}%
         </div>
       ),
     },
@@ -423,6 +429,12 @@ export default function BankDetailsPage() {
                             Monthly Interest
                           </Label>
                         </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="yearly" id="yearly-table" />
+                          <Label htmlFor="yearly-table">
+                            Yearly Interest
+                          </Label>
+                        </div>
                       </RadioGroup>
                     </div>
 
@@ -485,18 +497,27 @@ export default function BankDetailsPage() {
                                   : "Monthly Interest",
                               ]}
                             />
-                            {payoutOption === "maturity" ? (
+                            {payoutOption === "maturity" && (
                               <Bar
                                 dataKey="maturityRate"
                                 fill="#10B981"
                                 name="At Maturity"
                                 radius={[4, 4, 0, 0]}
                               />
-                            ) : (
+                            )}
+                            {payoutOption === "monthly" && (
                               <Bar
                                 dataKey="monthlyRate"
                                 fill="#3B82F6"
                                 name="Monthly Interest"
+                                radius={[4, 4, 0, 0]}
+                              />
+                            )}
+                            {payoutOption === "yearly" && (
+                              <Bar
+                                dataKey="yearlyRate"
+                                fill="#2563EB"
+                                name="Yearly Interest"
                                 radius={[4, 4, 0, 0]}
                               />
                             )}

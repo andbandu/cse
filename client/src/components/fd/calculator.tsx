@@ -1,6 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useCalculator } from "@/hooks/use-calculator";
 import { Card, CardContent } from "@/components/ui/card";
 import { Printer } from "lucide-react";
@@ -20,13 +26,14 @@ export default function Calculator() {
     afterTaxAmount,
     taxAmount,
     monthlyInterest,
+    yearlyInterest, // Added yearlyInterest
     setAmount,
     setInterestRate,
     setTerm,
     setTax,
     setPayoutOption,
     calculate,
-    formatCurrency
+    formatCurrency,
   } = useCalculator();
 
   const handlePrint = () => {
@@ -50,7 +57,10 @@ export default function Calculator() {
                 <CardContent className="p-6">
                   <div className="space-y-4">
                     <div>
-                      <label htmlFor="calc-amount" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="calc-amount"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         Deposit Amount (LKR)
                       </label>
                       <div className="relative">
@@ -74,7 +84,10 @@ export default function Calculator() {
                     </div>
 
                     <div>
-                      <label htmlFor="calc-interest" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="calc-interest"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         Interest Rate (%)
                       </label>
                       <div className="relative">
@@ -85,7 +98,10 @@ export default function Calculator() {
                           value={interestRate}
                           onChange={(e) => {
                             const value = e.target.value;
-                            if (value === "" || (!isNaN(Number(value)) && Number(value) <= 100)) {
+                            if (
+                              value === "" ||
+                              (!isNaN(Number(value)) && Number(value) <= 100)
+                            ) {
                               setInterestRate(value);
                             }
                           }}
@@ -97,7 +113,10 @@ export default function Calculator() {
                     </div>
 
                     <div>
-                      <label htmlFor="calc-term" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="calc-term"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         Term (Months)
                       </label>
                       <Select
@@ -119,7 +138,10 @@ export default function Calculator() {
                     </div>
 
                     <div>
-                      <label htmlFor="calc-tax" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="calc-tax"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         Withholding Tax (%)
                       </label>
                       <div className="relative">
@@ -130,7 +152,10 @@ export default function Calculator() {
                           value={tax}
                           onChange={(e) => {
                             const value = e.target.value;
-                            if (value === "" || (!isNaN(Number(value)) && Number(value) <= 100)) {
+                            if (
+                              value === "" ||
+                              (!isNaN(Number(value)) && Number(value) <= 100)
+                            ) {
                               setTax(value);
                             }
                           }}
@@ -140,32 +165,40 @@ export default function Calculator() {
                         </div>
                       </div>
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Payout Option
                       </label>
-                      <RadioGroup 
-                        value={payoutOption} 
-                        onValueChange={(value) => setPayoutOption(value as 'maturity' | 'monthly')}
+                      <RadioGroup
+                        value={payoutOption}
+                        onValueChange={(value) =>
+                          setPayoutOption(
+                            value as "maturity" | "monthly" | "yearly",
+                          )
+                        } // Added 'yearly'
                         className="flex space-x-4"
                       >
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="maturity" id="payout-maturity" />
+                          <RadioGroupItem
+                            value="maturity"
+                            id="payout-maturity"
+                          />
                           <Label htmlFor="payout-maturity">At Maturity</Label>
                         </div>
                         <div className="flex items-center space-x-2">
                           <RadioGroupItem value="monthly" id="payout-monthly" />
                           <Label htmlFor="payout-monthly">Monthly</Label>
                         </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="yearly" id="payout-yearly" />
+                          <Label htmlFor="payout-yearly">Yearly</Label>
+                        </div>
                       </RadioGroup>
                     </div>
 
                     <div className="pt-2">
-                      <Button
-                        className="w-full"
-                        onClick={calculate}
-                      >
+                      <Button className="w-full" onClick={calculate}>
                         Calculate
                       </Button>
                     </div>
@@ -219,17 +252,32 @@ export default function Calculator() {
                     Tax amount: {formatCurrency(taxAmount)}
                   </div>
                 </div>
-                
-                {payoutOption === 'monthly' && (
+
+                {payoutOption === "monthly" && (
                   <div className="bg-blue-50 rounded-lg p-4 text-center">
                     <div className="text-sm text-gray-600 mb-1">
                       Monthly Interest Payout
                     </div>
                     <div className="text-xl font-bold text-blue-600">
-                      {formatCurrency(monthlyInterest)}
+                      {formatCurrency(
+                        monthlyInterest * (1 - Number(tax) / 100),
+                      )}
                     </div>
                     <div className="text-xs text-gray-500">
-                      Before tax: {formatCurrency(monthlyInterest * (1 + (Number(tax) / 100)))}
+                      Before tax: {formatCurrency(monthlyInterest)}
+                    </div>
+                  </div>
+                )}
+                {payoutOption === "yearly" && (
+                  <div className="bg-blue-50 rounded-lg p-4 text-center">
+                    <div className="text-sm text-gray-600 mb-1">
+                      Yearly Interest Payout
+                    </div>
+                    <div className="text-xl font-bold text-blue-600">
+                      {formatCurrency(yearlyInterest * (1 - Number(tax) / 100))}
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      Before tax: {formatCurrency(yearlyInterest)}
                     </div>
                   </div>
                 )}

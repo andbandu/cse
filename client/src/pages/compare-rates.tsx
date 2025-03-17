@@ -23,6 +23,7 @@ export default function CompareRatesPage() {
   const [amount, setAmount] = useState("100000");
   const [formattedAmount, setFormattedAmount] = useState("");
   const [error, setError] = useState("");
+  const [institutionType, setInstitutionType] = useState("all"); // Added state for institution type
   const { toast } = useToast();
 
   // Format amount with commas
@@ -51,6 +52,7 @@ export default function CompareRatesPage() {
       term: filters.term,
       amount: depositAmount,
       payoutOption: filters.payoutOption,
+      institutionType: institutionType, // Added institutionType to filters
     });
   };
 
@@ -87,7 +89,7 @@ export default function CompareRatesPage() {
             <CardTitle>Filter Rates</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6"> {/* Changed to 4 columns */}
               <div className="space-y-2">
                 <label
                   htmlFor="deposit-amount"
@@ -124,6 +126,7 @@ export default function CompareRatesPage() {
                     filters.setFilters({
                       term: parseInt(value),
                       amount: filters.amount,
+                      institutionType: institutionType, //Added here too
                     })
                   }
                 >
@@ -138,6 +141,20 @@ export default function CompareRatesPage() {
                     <SelectItem value="24">24 Months</SelectItem>
                     <SelectItem value="36">36 Months</SelectItem>
                     <SelectItem value="60">60 Months</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label>Institution Type</Label>
+                <Select value={institutionType} onValueChange={setInstitutionType}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Institutions</SelectItem>
+                    <SelectItem value="bank">Banks</SelectItem>
+                    <SelectItem value="finance">Finance Companies</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -159,7 +176,7 @@ export default function CompareRatesPage() {
               <RadioGroup
                 value={filters.payoutOption}
                 onValueChange={(value) =>
-                  filters.setFilters({ payoutOption: value as PayoutOption })
+                  filters.setFilters({ payoutOption: value as PayoutOption, institutionType: institutionType })
                 }
                 className="flex space-x-4"
               >
@@ -174,6 +191,10 @@ export default function CompareRatesPage() {
                   <RadioGroupItem value="monthly" id="compare-payout-monthly" />
                   <Label htmlFor="compare-payout-monthly">Monthly</Label>
                 </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="yearly" id="compare-payout-yearly" />
+                  <Label htmlFor="compare-payout-yearly">Yearly</Label>
+                </div>
               </RadioGroup>
             </div>
           </CardContent>
@@ -186,6 +207,7 @@ export default function CompareRatesPage() {
             term: filters.term,
             amount: filters.amount,
             payoutOption: filters.payoutOption,
+            institutionType: institutionType, // Pass institutionType to RatesTable
           }}
           limit={10}
           showViewAll={false}

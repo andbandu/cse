@@ -129,6 +129,7 @@ export class GoogleSheetsService {
         description: row[3] || "",
         minDeposit: row[4] || "",
         updatedAt: row[5] || "",
+        fitchRatings: row[6] || "",
       }));
     } catch (error) {
       console.error("Failed to fetch bank data from Google Sheets:", error);

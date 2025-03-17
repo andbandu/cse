@@ -34,13 +34,29 @@ import {
 } from "recharts";
 
 const getRatingColor = (rating: string): string => {
-  // Implement logic to determine color based on rating value.  Example:
-  if (rating.startsWith("AAA")) return "text-green-500";
-  if (rating.startsWith("AA")) return "text-green-600";
-  if (rating.startsWith("A")) return "text-blue-600";
-  if (rating.startsWith("BBB")) return "text-yellow-600";
-  // Add more conditions as needed
-  return "text-red-600"; // Default to red for lower ratings
+  if (rating.startsWith("AAA")) return "text-emerald-600";
+  if (rating.startsWith("AA+")) return "text-green-600";
+  if (rating.startsWith("AA")) return "text-green-500";
+  if (rating.startsWith("AA-")) return "text-green-400";
+  if (rating.startsWith("A+")) return "text-yellow-700";
+  if (rating.startsWith("A")) return "text-yellow-600";
+  if (rating.startsWith("A-")) return "text-yellow-500";
+  if (rating.startsWith("BBB+")) return "text-yellow-400";
+  if (rating.startsWith("BBB")) return "text-yellow-300";
+  if (rating.startsWith("BBB-")) return "text-yellow-200";
+  if (rating.startsWith("BB+")) return "text-orange-600";
+  if (rating.startsWith("BB")) return "text-orange-500";
+  if (rating.startsWith("BB-")) return "text-orange-400";
+  if (rating.startsWith("B+")) return "text-red-600";
+  if (rating.startsWith("B")) return "text-red-500";
+  if (rating.startsWith("B-")) return "text-red-400";
+  if (rating.startsWith("CCC+")) return "text-red-300";
+  if (rating.startsWith("CCC")) return "text-red-200";
+  if (rating.startsWith("CCC-")) return "text-red-100";
+  if (rating.startsWith("CC")) return "text-red-100";
+  if (rating.startsWith("C")) return "text-red-100";
+  if (rating.startsWith("D")) return "text-red-100";
+  return "text-gray-500"; // Default color for unknown ratings
 };
 
 export default function BankDetailsPage() {

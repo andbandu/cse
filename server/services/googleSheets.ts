@@ -99,7 +99,11 @@ export class GoogleSheetsService {
         bankId: parseInt(row[1]) || 0,
         termMonths: parseInt(row[2]) || 0,
         monthlyRate: parseFloat(row[3]) || 0,
-        maturityRate: parseFloat(row[4]) || 0,
+        monthlyAer: parseFloat(row[4]) || 0,
+        yearlyRate: parseFloat(row[5]) || 0,
+        yearlyAer: parseFloat(row[6]) || 0,
+        maturityRate: parseFloat(row[7]) || 0,
+        maturityAer: parseFloat(row[8]) || 0,
         minDeposit: parseInt(row[5]) || 0,
         updatedAt: row[6] || new Date().toISOString(),
       }));

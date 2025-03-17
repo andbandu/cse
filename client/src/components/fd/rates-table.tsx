@@ -35,19 +35,57 @@ const getRate = (
 
 const getRatingValue = (rating: string | null): number => {
   if (!rating) return -1;
-  if (rating.startsWith("AAA")) return 5;
-  if (rating.startsWith("AA")) return 4;
-  if (rating.startsWith("A")) return 3;
-  if (rating.startsWith("BBB")) return 2;
-  return 1;
+
+  if (rating.startsWith("AAA")) return 22;
+  if (rating.startsWith("AA+")) return 21;
+  if (rating.startsWith("AA")) return 20;
+  if (rating.startsWith("AA-")) return 19;
+  if (rating.startsWith("A+")) return 18;
+  if (rating.startsWith("A")) return 17;
+  if (rating.startsWith("A-")) return 16;
+  if (rating.startsWith("BBB+")) return 15;
+  if (rating.startsWith("BBB")) return 14;
+  if (rating.startsWith("BBB-")) return 13;
+  if (rating.startsWith("BB+")) return 12;
+  if (rating.startsWith("BB")) return 11;
+  if (rating.startsWith("BB-")) return 10;
+  if (rating.startsWith("B+")) return 9;
+  if (rating.startsWith("B")) return 8;
+  if (rating.startsWith("B-")) return 7;
+  if (rating.startsWith("CCC+")) return 6;
+  if (rating.startsWith("CCC")) return 5;
+  if (rating.startsWith("CCC-")) return 4;
+  if (rating.startsWith("CC")) return 3;
+  if (rating.startsWith("C")) return 2;
+  if (rating.startsWith("D")) return 1;
+
+  return -1; // Default for unknown ratings
 };
 
 const getRatingColor = (rating: string): string => {
   if (rating.startsWith("AAA")) return "text-emerald-600";
-  if (rating.startsWith("AA")) return "text-green-600";
-  if (rating.startsWith("A")) return "text-blue-600";
-  if (rating.startsWith("BBB")) return "text-yellow-600";
-  return "text-red-600";
+  if (rating.startsWith("AA+")) return "text-green-600";
+  if (rating.startsWith("AA")) return "text-green-500";
+  if (rating.startsWith("AA-")) return "text-green-400";
+  if (rating.startsWith("A+")) return "text-yellow-700";
+  if (rating.startsWith("A")) return "text-yellow-600";
+  if (rating.startsWith("A-")) return "text-yellow-500";
+  if (rating.startsWith("BBB+")) return "text-yellow-400";
+  if (rating.startsWith("BBB")) return "text-yellow-300";
+  if (rating.startsWith("BBB-")) return "text-yellow-200";
+  if (rating.startsWith("BB+")) return "text-orange-600";
+  if (rating.startsWith("BB")) return "text-orange-500";
+  if (rating.startsWith("BB-")) return "text-orange-400";
+  if (rating.startsWith("B+")) return "text-red-600";
+  if (rating.startsWith("B")) return "text-red-500";
+  if (rating.startsWith("B-")) return "text-red-400";
+  if (rating.startsWith("CCC+")) return "text-red-300";
+  if (rating.startsWith("CCC")) return "text-red-200";
+  if (rating.startsWith("CCC-")) return "text-red-100";
+  if (rating.startsWith("CC")) return "text-red-100";
+  if (rating.startsWith("C")) return "text-red-100";
+  if (rating.startsWith("D")) return "text-red-100";
+  return "text-gray-500"; // Default color for unknown ratings
 };
 
 export default function RatesTable({
@@ -135,7 +173,11 @@ export default function RatesTable({
       id: "interestRate",
       header: `Interest Rate (${filters?.payoutOption === "monthly" ? "Monthly" : "At Maturity"})`,
       accessorFn: (row) =>
-        getRate(row.maturityRate, row.monthlyRate, filters?.payoutOption === "monthly"),
+        getRate(
+          row.maturityRate,
+          row.monthlyRate,
+          filters?.payoutOption === "monthly",
+        ),
       cell: ({ row }) => (
         <div className="text-start">
           <span className="text-lg font-bold text-blue-500">
@@ -176,7 +218,9 @@ export default function RatesTable({
       cell: ({ row }) => {
         const bank = row.original.bank;
         return (
-          <span className={`font-medium ${bank?.fitchRatings ? getRatingColor(bank.fitchRatings) : "text-slate-400"}`}>
+          <span
+            className={`font-medium ${bank?.fitchRatings ? getRatingColor(bank.fitchRatings) : "text-slate-400"}`}
+          >
             {bank?.fitchRatings || "-"}
           </span>
         );

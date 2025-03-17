@@ -98,17 +98,20 @@ export default function BanksPage() {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="mb-6">
-                      {bank.highestRate !== null ? (
-                        <p className="text-4xl font-bold text-green-600 mb-2">
-                          {bank.highestRate.toFixed(2)}
-                          <span className="text-sm ml-1">P.A%</span>
-                        </p>
-                      ) : (
-                        <p className="text-gray-500">No interest rate data</p>
-                      )}
-                      <CardDescription>{bank.description}</CardDescription>
+                    <div className="flex items-center justify-between mb-6 border-b pb-4">
+                      <div>
+                        <h4 className="text-sm font-medium text-gray-500 mb-1">Highest Interest Rate</h4>
+                        {bank.highestRate !== null ? (
+                          <div className="flex items-baseline">
+                            <span className="text-3xl font-bold text-green-600">{bank.highestRate.toFixed(2)}</span>
+                            <span className="text-sm text-gray-500 ml-1">P.A%</span>
+                          </div>
+                        ) : (
+                          <p className="text-gray-500">No rate data</p>
+                        )}
+                      </div>
                     </div>
+                    <CardDescription className="text-sm text-gray-600">{bank.description}</CardDescription>
                     <p className="text-sm text-gray-500 mb-4">
                       Minimum Deposit: Rs.{" "}
                       {Number(bank.minDeposit).toLocaleString()}

@@ -33,6 +33,14 @@ const getRate = (
   return isMonthly ? monthlyRate : maturityRate;
 };
 
+const getRatingColor = (rating: string): string => {
+  if (rating.startsWith("AAA")) return "text-emerald-600";
+  if (rating.startsWith("AA")) return "text-green-600";
+  if (rating.startsWith("A")) return "text-blue-600";
+  if (rating.startsWith("BBB")) return "text-yellow-600";
+  return "text-red-600";
+};
+
 export default function RatesTable({
   limit,
   title,
@@ -145,6 +153,18 @@ export default function RatesTable({
           Rs. {Number(row.original.minDeposit).toLocaleString()}
         </div>
       ),
+    },
+    {
+      accessorKey: "bank",
+      header: "Fitch Rating",
+      cell: ({ row }) => {
+        const bank = row.original.bank;
+        return (
+          <span className={`font-medium ${bank?.fitchRatings ? getRatingColor(bank.fitchRatings) : "text-slate-400"}`}>
+            {bank?.fitchRatings || "-"}
+          </span>
+        );
+      },
     },
     {
       id: "actions",

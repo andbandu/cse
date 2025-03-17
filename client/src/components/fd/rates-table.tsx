@@ -33,6 +33,15 @@ const getRate = (
   return isMonthly ? monthlyRate : maturityRate;
 };
 
+const getRatingValue = (rating: string | null): number => {
+  if (!rating) return -1;
+  if (rating.startsWith("AAA")) return 5;
+  if (rating.startsWith("AA")) return 4;
+  if (rating.startsWith("A")) return 3;
+  if (rating.startsWith("BBB")) return 2;
+  return 1;
+};
+
 const getRatingColor = (rating: string): string => {
   if (rating.startsWith("AAA")) return "text-emerald-600";
   if (rating.startsWith("AA")) return "text-green-600";
@@ -155,8 +164,13 @@ export default function RatesTable({
       ),
     },
     {
-      accessorKey: "bank",
+      accessorKey: "bank.fitchRatings",
       header: "Fitch Rating",
+      sortingFn: (rowA, rowB) => {
+        const ratingA = rowA.original.bank?.fitchRatings;
+        const ratingB = rowB.original.bank?.fitchRatings;
+        return getRatingValue(ratingB) - getRatingValue(ratingA);
+      },
       cell: ({ row }) => {
         const bank = row.original.bank;
         return (

@@ -255,26 +255,32 @@ export default function BankDetailsPage() {
 
       <div className="container mx-auto px-4 py-10">
         <div className="mb-8">
-          <Link href="/sri-lanka-banks" className="inline-flex  items-center">
-            <buttton className="flex items-center justify-center  bg-gray-400">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Banks
-            </buttton>
+          <Link 
+            href="/sri-lanka-banks" 
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white/50 hover:bg-white/80 transition-all shadow-sm text-slate-700 hover:text-slate-900"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Banks
           </Link>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           <div className="lg:col-span-2">
             <Card className="border-none shadow-md bg-white/50 backdrop-blur">
               <CardHeader>
-                <CardTitle>About {bank?.name}</CardTitle>
-                <CardDescription>
-                  Bank overview and key information
-                </CardDescription>
+                <CardTitle>{isLoadingBank ? <Skeleton className="h-7 w-48" /> : `About ${bank?.name}`}</CardTitle>
+                <CardDescription>{isLoadingBank ? <Skeleton className="h-5 w-40" /> : "Bank overview and key information"}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <p className="text-slate-600">{bank?.description}</p>
-                {bank?.fitchRatings && (
-                  <BankRating rating={bank.fitchRatings} />
+                {isLoadingBank ? (
+                  <>
+                    <Skeleton className="h-24 w-full" />
+                    <Skeleton className="h-32 w-full" />
+                  </>
+                ) : (
+                  <>
+                    <p className="text-slate-600">{bank?.description}</p>
+                    {bank?.fitchRatings && <BankRating rating={bank.fitchRatings} />}
+                  </>
                 )}
               </CardContent>
             </Card>
@@ -282,32 +288,31 @@ export default function BankDetailsPage() {
           <div>
             <Card className="border-none shadow-md bg-white/50 backdrop-blur">
               <CardHeader>
-                <CardTitle>Quick Facts</CardTitle>
-                <CardDescription>Key financial indicators</CardDescription>
+                <CardTitle>{isLoadingBank ? <Skeleton className="h-7 w-32" /> : "Quick Facts"}</CardTitle>
+                <CardDescription>{isLoadingBank ? <Skeleton className="h-5 w-40" /> : "Key financial indicators"}</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center py-2 border-b border-slate-100">
-                    <span className="text-sm text-slate-600">
-                      Minimum Deposit
-                    </span>
-                    <span className="font-medium">
-                      Rs. {Number(bank?.minDeposit).toLocaleString()}
-                    </span>
+                {isLoadingBank ? (
+                  <div className="space-y-4">
+                    <Skeleton className="h-8 w-full" />
+                    <Skeleton className="h-8 w-full" />
+                    <Skeleton className="h-10 w-full" />
                   </div>
-                  <div className="flex justify-between items-center py-2 border-b border-slate-100">
-                    <span className="text-sm text-slate-600">Last Updated</span>
-                    <span className="font-medium">
-                      {formatDateToLocal(bank?.updatedAt)}
-                    </span>
+                ) : (
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center py-2 border-b border-slate-100">
+                      <span className="text-sm text-slate-600">Minimum Deposit</span>
+                      <span className="font-medium">Rs. {Number(bank?.minDeposit).toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2 border-b border-slate-100">
+                      <span className="text-sm text-slate-600">Last Updated</span>
+                      <span className="font-medium">{formatDateToLocal(bank?.updatedAt)}</span>
+                    </div>
+                    <Button className="w-full bg-green-600 hover:bg-green-700 text-white font-medium" onClick={() => window.open(bank?.website || '', '_blank')}>
+                      Apply Online
+                    </Button>
                   </div>
-                  <Button
-                    className="w-full bg-green-600 hover:bg-green-700 text-white font-medium"
-                    onClick={() => window.open(bank?.website || "", "_blank")}
-                  >
-                    Apply Online
-                  </Button>
-                </div>
+                )}
               </CardContent>
             </Card>
           </div>

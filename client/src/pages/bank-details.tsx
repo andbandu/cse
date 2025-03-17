@@ -280,6 +280,9 @@ export default function BankDetailsPage() {
                     <span className="text-sm text-slate-600">Last Updated</span>
                     <span className="font-medium">{formatDateToLocal(bank?.updatedAt)}</span>
                   </div>
+                  <Button className="w-full bg-green-600 hover:bg-green-700 text-white font-medium" onClick={() => window.open(bank?.website || '', '_blank')}>
+                    Apply Online
+                  </Button>
                 </div>
               </CardContent>
             </Card>

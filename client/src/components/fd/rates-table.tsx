@@ -13,18 +13,15 @@ interface RateWithBank extends Rate {
   bank?: Bank;
 }
 
-interface FiltersProps {
-  term?: number;
-  amount?: number;
-  payoutOption?: PayoutOption;
-  companyType?: 'all' | 'bank' | 'finance';
-}
-
 interface RatesTableProps {
   limit?: number;
   title: string;
   description: string;
-  filters?: FiltersProps;
+  filters?: {
+    term?: number;
+    amount?: number;
+    payoutOption?: PayoutOption;
+  };
   showViewAll?: boolean;
 }
 
@@ -126,7 +123,7 @@ export default function RatesTable({
       bank: banks?.find((bank) => bank.id === rate.bankId),
     })) || [];
 
-  // Filter rates based on payout option, amount, and company type and remove 0% rates
+  // Filter rates based on payout option and remove 0% rates
   const filteredRates = ratesWithBanks
     .sort((a, b) =>
       filters?.payoutOption === "maturity"
@@ -137,9 +134,7 @@ export default function RatesTable({
       (rate) =>
         (filters?.payoutOption === "monthly"
           ? rate.monthlyRate
-          : rate.maturityRate) > 0 &&
-        (!filters?.amount || rate.minDeposit <= filters?.amount) &&
-        (!filters?.companyType || filters?.companyType === 'all' || rate.bank?.type === filters?.companyType),
+          : rate.maturityRate) > 0,
     );
 
   const columns: ColumnDef<RateWithBank>[] = [

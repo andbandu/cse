@@ -113,33 +113,6 @@ export default function CompareRatesPage() {
 
               <div className="space-y-2">
                 <label
-                  htmlFor="company-type"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Institution Type
-                </label>
-                <Select
-                  value={filters.companyType || 'all'}
-                  onValueChange={(value: 'all' | 'bank' | 'finance') =>
-                    filters.setFilters({
-                      ...filters,
-                      companyType: value
-                    })
-                  }
-                >
-                  <SelectTrigger id="company-type" className="text-gray-500">
-                    <SelectValue placeholder="Select type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Institutions</SelectItem>
-                    <SelectItem value="bank">Banks Only</SelectItem>
-                    <SelectItem value="finance">Finance Companies Only</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <label
                   htmlFor="deposit-term"
                   className="block text-sm font-medium text-gray-700"
                 >

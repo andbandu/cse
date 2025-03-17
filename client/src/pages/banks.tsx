@@ -17,7 +17,7 @@ import { Rate } from "@shared/schema";
 
 // Assuming Bank type now includes highestInterestRate
 interface BankWithRates extends Bank {
-  highestInterestRate: Rate | null;
+  highestRate: number | null;
 }
 
 
@@ -26,10 +26,18 @@ export default function BanksPage() {
     queryKey: ["/api/banks"],
   });
 
-  const banksWithRates: BankWithRates[] = banks?.map((bank) => ({
+  const { data: rates } = useQuery<Rate[]>({
+    queryKey: ["/api/rates"],
+  });
+
+  const banksWithRates = banks?.map(bank => ({
     ...bank,
-    highestInterestRate: bank.rates ? bank.rates.reduce((a, b) => (a.rate > b.rate ? a : b), bank.rates[0]) : null,
-  })) || [];
+    highestRate: rates 
+      ? Math.max(...rates
+          .filter(rate => rate.bankId === bank.id)
+          .map(rate => rate.maturityRate)) 
+      : null
+  }));
 
 
   return (
@@ -74,7 +82,7 @@ export default function BanksPage() {
                     </CardContent>
                   </Card>
                 ))
-            : banksWithRates.map((bank) => (
+            : banksWithRates?.map((bank) => (
                 <Card
                   key={bank.id}
                   className="group hover:shadow-md transition-shadow"
@@ -90,10 +98,11 @@ export default function BanksPage() {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="mb-4">
-                      {bank.highestInterestRate ? (
-                        <p className="text-3xl text-green-600 font-bold mb-2">
-                          {bank.highestInterestRate.rate}%
+                    <div className="mb-6">
+                      {bank.highestRate !== null ? (
+                        <p className="text-4xl font-bold text-green-600 mb-2">
+                          {bank.highestRate.toFixed(2)}
+                          <span className="text-sm ml-1">P.A%</span>
                         </p>
                       ) : (
                         <p className="text-gray-500">No interest rate data</p>

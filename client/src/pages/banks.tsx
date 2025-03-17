@@ -15,10 +15,22 @@ import { Helmet } from "react-helmet";
 import { formatTerm } from "@/lib/utils/format-term";
 import { Rate } from "@shared/schema";
 
+// Assuming Bank type now includes highestInterestRate
+interface BankWithRates extends Bank {
+  highestInterestRate: Rate | null;
+}
+
+
 export default function BanksPage() {
   const { data: banks, isLoading } = useQuery<Bank[]>({
     queryKey: ["/api/banks"],
   });
+
+  const banksWithRates: BankWithRates[] = banks?.map((bank) => ({
+    ...bank,
+    highestInterestRate: bank.rates ? bank.rates.reduce((a, b) => (a.rate > b.rate ? a : b), bank.rates[0]) : null,
+  })) || [];
+
 
   return (
     <>
@@ -62,7 +74,7 @@ export default function BanksPage() {
                     </CardContent>
                   </Card>
                 ))
-            : banks?.map((bank) => (
+            : banksWithRates.map((bank) => (
                 <Card
                   key={bank.id}
                   className="group hover:shadow-md transition-shadow"
@@ -78,9 +90,16 @@ export default function BanksPage() {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <CardDescription className="mb-4">
-                      {bank.description}
-                    </CardDescription>
+                    <div className="mb-4">
+                      {bank.highestInterestRate ? (
+                        <p className="text-3xl text-green-600 font-bold mb-2">
+                          {bank.highestInterestRate.rate}%
+                        </p>
+                      ) : (
+                        <p className="text-gray-500">No interest rate data</p>
+                      )}
+                      <CardDescription>{bank.description}</CardDescription>
+                    </div>
                     <p className="text-sm text-gray-500 mb-4">
                       Minimum Deposit: Rs.{" "}
                       {Number(bank.minDeposit).toLocaleString()}

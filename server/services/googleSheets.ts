@@ -130,10 +130,11 @@ export class GoogleSheetsService {
         id: parseInt(row[0]),
         name: row[1] || "",
         shortName: row[2] || "",
-        description: row[3] || "",
-        minDeposit: row[4] || "",
-        updatedAt: row[5] || "",
-        fitchRatings: row[6] || "",
+        type: row[3] || "",
+        description: row[4] || "",
+        minDeposit: row[5] || "",
+        updatedAt: row[6] || "",
+        fitchRatings: row[7] || "",
       }));
     } catch (error) {
       console.error("Failed to fetch bank data from Google Sheets:", error);

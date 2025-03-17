@@ -194,6 +194,15 @@ export default function RatesTable({
     {
       id: "aer",
       header: "AER %",
+      sortingFn: (rowA, rowB) => {
+        const aerA = filters?.payoutOption === "monthly" 
+          ? rowA.original.monthlyAer || 0
+          : rowA.original.maturityAer || 0;
+        const aerB = filters?.payoutOption === "monthly"
+          ? rowB.original.monthlyAer || 0
+          : rowB.original.maturityAer || 0;
+        return aerB - aerA;
+      },
       cell: ({ row }) => {
         const aer = filters?.payoutOption === "monthly" 
           ? row.original.monthlyAer 

@@ -32,6 +32,17 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
+const getRatingColor = (rating: string): string => {
+  // Implement logic to determine color based on rating value.  Example:
+  if (rating.startsWith("AAA")) return "text-green-500";
+  if (rating.startsWith("AA")) return "text-green-600";
+  if (rating.startsWith("A")) return "text-blue-600";
+  if (rating.startsWith("BBB")) return "text-yellow-600";
+  // Add more conditions as needed
+  return "text-red-600"; // Default to red for lower ratings
+};
+
+
 export default function BankDetailsPage() {
   const params = useParams<{ id: string }>();
   const bankId = parseInt(params.id);
@@ -239,11 +250,32 @@ export default function BankDetailsPage() {
       </div>
 
       <div className="container mx-auto px-4 py-10">
-        <Link href="/sri-lanka-banks">
-          <Button variant="outline" className="mb-6">
-            <ArrowLeft className="h-4 w-4 mr-2" /> Back to all banks
-          </Button>
-        </Link>
+        <div className="mb-8">
+          <Link href="/sri-lanka-banks" className="inline-flex items-center">
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Banks
+          </Link>
+        </div>
+        {bank?.fitchRatings && (
+          <Card className="mb-8 bg-white/50 backdrop-blur border-none shadow-sm">
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-4">
+                <div className="p-3 rounded-lg bg-white shadow-sm">
+                  <img src="https://www.fitchratings.com/images/favicon.ico" alt="Fitch Ratings" className="w-8 h-8" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-slate-800 mb-1">Fitch Rating</h3>
+                  <div className="flex items-baseline gap-2">
+                    <span className={`text-3xl font-bold ${getRatingColor(bank.fitchRatings)}`}>
+                      {bank.fitchRatings}
+                    </span>
+                    <span className="text-sm text-slate-600">(National Long-Term Rating)</span>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {isLoadingBank ? (
           <div className="space-y-8">

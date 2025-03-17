@@ -179,7 +179,7 @@ export default function RatesTable({
           filters?.payoutOption === "monthly",
         ),
       cell: ({ row }) => (
-        <div className="text-start">
+        <div className="text-start flex flex-col">
           <span className="text-lg font-bold text-blue-500">
             {Number(
               filters?.payoutOption === "monthly"
@@ -190,6 +190,22 @@ export default function RatesTable({
           </span>
         </div>
       ),
+    },
+    {
+      id: "aer",
+      header: "AER %",
+      cell: ({ row }) => {
+        const aer = filters?.payoutOption === "monthly" 
+          ? row.original.monthlyAer 
+          : row.original.maturityAer;
+        return (
+          <div className="text-start">
+            <span className="text-lg font-medium text-slate-700">
+              {aer ? `${aer.toFixed(2)}%` : "-"}
+            </span>
+          </div>
+        );
+      },
     },
     {
       accessorKey: "termMonths",

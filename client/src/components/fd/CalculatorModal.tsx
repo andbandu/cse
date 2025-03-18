@@ -4,7 +4,7 @@ import {
     DialogHeader,
     DialogTitle,
   } from "@/components/ui/dialog";
-  import Calculator from "@/components/fd/Calculator";
+  import Calculator from "./calculator";
   import { RateWithBank } from "@shared/fd-schema";
   
   interface CalculatorModalProps {

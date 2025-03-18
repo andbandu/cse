@@ -148,7 +148,7 @@ export default function Calculator() {
                         <Input
                           type="text"
                           id="calc-tax"
-                          placeholder="5.0"
+                          placeholder="15.0"
                           value={tax}
                           onChange={(e) => {
                             const value = e.target.value;

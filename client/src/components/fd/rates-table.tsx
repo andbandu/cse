@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { DataTable } from "@/components/ui/data-table";
 import { ColumnDef } from "@tanstack/react-table";
@@ -8,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Bank, Rate } from "@shared/schema";
 import { PayoutOption } from "@/lib/utils/calculator";
 import { formatTerm } from "@/lib/utils/format-term";
+import CalculatorModal from "./CalculatorModal";
 
 interface RateWithBank extends Rate {
   bank?: Bank;
@@ -21,75 +23,10 @@ interface RatesTableProps {
     term?: number;
     amount?: number;
     payoutOption?: PayoutOption;
-    institutionType?: string; // Added institutionType filter
+    institutionType?: string;
   };
   showViewAll?: boolean;
 }
-
-const getRate = (
-  maturityRate: number,
-  monthlyRate: number,
-  yearlyRate: number, // Added yearlyRate
-  isMonthly: boolean,
-  isYearly: boolean, // Added isYearly
-) => {
-  return isMonthly ? monthlyRate : isYearly ? yearlyRate : maturityRate;
-};
-
-const getRatingValue = (rating: string | null): number => {
-  if (!rating) return -1;
-
-  if (rating.startsWith("AAA")) return 22;
-  if (rating.startsWith("AA+")) return 21;
-  if (rating.startsWith("AA")) return 20;
-  if (rating.startsWith("AA-")) return 19;
-  if (rating.startsWith("A+")) return 18;
-  if (rating.startsWith("A")) return 17;
-  if (rating.startsWith("A-")) return 16;
-  if (rating.startsWith("BBB+")) return 15;
-  if (rating.startsWith("BBB")) return 14;
-  if (rating.startsWith("BBB-")) return 13;
-  if (rating.startsWith("BB+")) return 12;
-  if (rating.startsWith("BB")) return 11;
-  if (rating.startsWith("BB-")) return 10;
-  if (rating.startsWith("B+")) return 9;
-  if (rating.startsWith("B")) return 8;
-  if (rating.startsWith("B-")) return 7;
-  if (rating.startsWith("CCC+")) return 6;
-  if (rating.startsWith("CCC")) return 5;
-  if (rating.startsWith("CCC-")) return 4;
-  if (rating.startsWith("CC")) return 3;
-  if (rating.startsWith("C")) return 2;
-  if (rating.startsWith("D")) return 1;
-
-  return -1; // Default for unknown ratings
-};
-
-const getRatingColor = (rating: string): string => {
-  if (rating.startsWith("AAA")) return "text-emerald-600";
-  if (rating.startsWith("AA+")) return "text-green-600";
-  if (rating.startsWith("AA")) return "text-green-500";
-  if (rating.startsWith("AA-")) return "text-green-400";
-  if (rating.startsWith("A+")) return "text-yellow-700";
-  if (rating.startsWith("A")) return "text-yellow-600";
-  if (rating.startsWith("A-")) return "text-yellow-500";
-  if (rating.startsWith("BBB+")) return "text-yellow-400";
-  if (rating.startsWith("BBB")) return "text-yellow-300";
-  if (rating.startsWith("BBB-")) return "text-yellow-200";
-  if (rating.startsWith("BB+")) return "text-orange-600";
-  if (rating.startsWith("BB")) return "text-orange-500";
-  if (rating.startsWith("BB-")) return "text-orange-400";
-  if (rating.startsWith("B+")) return "text-red-600";
-  if (rating.startsWith("B")) return "text-red-500";
-  if (rating.startsWith("B-")) return "text-red-400";
-  if (rating.startsWith("CCC+")) return "text-red-300";
-  if (rating.startsWith("CCC")) return "text-red-200";
-  if (rating.startsWith("CCC-")) return "text-red-100";
-  if (rating.startsWith("CC")) return "text-red-100";
-  if (rating.startsWith("C")) return "text-red-100";
-  if (rating.startsWith("D")) return "text-red-100";
-  return "text-gray-500"; // Default color for unknown ratings
-};
 
 export default function RatesTable({
   limit,
@@ -98,6 +35,9 @@ export default function RatesTable({
   filters,
   showViewAll = true,
 }: RatesTableProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedRate, setSelectedRate] = useState<RateWithBank | null>(null);
+
   // Construct the API endpoint with appropriate query parameters
   let apiEndpoint = "/api/rates";
 
@@ -132,22 +72,23 @@ export default function RatesTable({
       filters?.payoutOption === "maturity"
         ? b.maturityRate - a.maturityRate
         : filters?.payoutOption === "yearly"
-        ? b.yearlyRate - a.yearlyRate //Added yearly rate sorting
-        : b.monthlyRate - a.monthlyRate,
+          ? b.yearlyRate - a.yearlyRate
+          : b.monthlyRate - a.monthlyRate,
     )
-    .filter(
-      (rate) => {
-        const rateValue = filters?.payoutOption === "monthly"
+    .filter((rate) => {
+      const rateValue =
+        filters?.payoutOption === "monthly"
           ? rate.monthlyRate
           : filters?.payoutOption === "yearly"
-          ? rate.yearlyRate
-          : rate.maturityRate;
-        return rateValue > 0 &&
-          (!filters?.institutionType ||
-            filters?.institutionType === "all" ||
-            (rate.bank && rate.bank.type === filters.institutionType));
-      },
-    );
+            ? rate.yearlyRate
+            : rate.maturityRate;
+      return (
+        rateValue > 0 &&
+        (!filters?.institutionType ||
+          filters?.institutionType === "all" ||
+          (rate.bank && rate.bank.type === filters.institutionType))
+      );
+    });
 
   const columns: ColumnDef<RateWithBank>[] = [
     {
@@ -183,18 +124,19 @@ export default function RatesTable({
     },
     {
       id: "interestRate",
-      header: (filters?.payoutOption === "maturity"
-        ? "At Maturity Rate"
-        : filters?.payoutOption === "monthly"
-        ? "Monthly Interest Rate"
-        : "Yearly Interest Rate"),
+      header:
+        filters?.payoutOption === "maturity"
+          ? "At Maturity Rate"
+          : filters?.payoutOption === "monthly"
+            ? "Monthly Interest Rate"
+            : "Yearly Interest Rate",
       accessorFn: (row) =>
         getRate(
           row.maturityRate,
           row.monthlyRate,
-          row.yearlyRate, // Added yearlyRate
+          row.yearlyRate,
           filters?.payoutOption === "monthly",
-          filters?.payoutOption === "yearly", // Added isYearly
+          filters?.payoutOption === "yearly",
         ),
       cell: ({ row }) => (
         <div className="text-start flex flex-col">
@@ -203,9 +145,9 @@ export default function RatesTable({
               getRate(
                 row.original.maturityRate,
                 row.original.monthlyRate,
-                row.original.yearlyRate, // Added yearlyRate
+                row.original.yearlyRate,
                 filters?.payoutOption === "monthly",
-                filters?.payoutOption === "yearly", // Added isYearly
+                filters?.payoutOption === "yearly",
               ),
             ).toFixed(2)}
             %
@@ -216,18 +158,21 @@ export default function RatesTable({
     {
       id: "aer",
       header: "AER %",
-      cell: ({ row }) => {
-        const aer = filters?.payoutOption === "monthly"
-          ? row.original.monthlyAer
+      accessorFn: (row) =>
+        filters?.payoutOption === "monthly"
+          ? row.monthlyAer
           : filters?.payoutOption === "yearly"
-          ? row.original.yearlyAer // Added yearlyAer
-          : row.original.maturityAer;
+            ? row.yearlyAer
+            : row.maturityAer,
+      cell: ({ row }) => {
+        const aer =
+          filters?.payoutOption === "monthly"
+            ? row.original.monthlyAer
+            : filters?.payoutOption === "yearly"
+              ? row.original.yearlyAer
+              : row.original.maturityAer;
         return (
-          <div className="text-start">
-            <span className="text-lg font-medium text-slate-700">
-              {aer ? `${aer.toFixed(2)}%` : "-"}
-            </span>
-          </div>
+          <div className="text-start">{aer ? `${aer.toFixed(2)}%` : "-"}</div>
         );
       },
     },
@@ -271,13 +216,16 @@ export default function RatesTable({
       header: "Actions",
       cell: ({ row }) => (
         <div className="flex gap-2">
-          <Link
-            to={`/fd-calculator?rate=${getRate(row.original.maturityRate, row.original.monthlyRate, row.original.yearlyRate, filters?.payoutOption === "monthly", filters?.payoutOption === "yearly")}&term=${row.original.termMonths}&amount=${filters?.amount || ""}&payout=${filters?.payoutOption || "maturity"}`}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              setSelectedRate(row.original); // Set the selected rate
+              setIsModalOpen(true); // Open the modal
+            }}
           >
-            <Button variant="outline" size="sm">
-              Calculate
-            </Button>
-          </Link>
+            Calculate
+          </Button>
           <Link href={`/banks/${row.original.bankId}`}>
             <Button
               className="text-blue-700 hover:text-blue-700"
@@ -351,7 +299,83 @@ export default function RatesTable({
             </Link>
           </div>
         )}
+
+        {/* Render the CalculatorModal */}
+        <CalculatorModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          rate={selectedRate}
+          term={filters?.term}
+          amount={filters?.amount}
+          payoutOption={filters?.payoutOption}
+        />
       </div>
     </section>
   );
 }
+
+// Helper functions
+const getRate = (
+  maturityRate: number,
+  monthlyRate: number,
+  yearlyRate: number,
+  isMonthly: boolean,
+  isYearly: boolean,
+) => {
+  return isMonthly ? monthlyRate : isYearly ? yearlyRate : maturityRate;
+};
+
+const getRatingValue = (rating: string | null): number => {
+  if (!rating) return -1;
+
+  if (rating.startsWith("AAA")) return 22;
+  if (rating.startsWith("AA+")) return 21;
+  if (rating.startsWith("AA")) return 20;
+  if (rating.startsWith("AA-")) return 19;
+  if (rating.startsWith("A+")) return 18;
+  if (rating.startsWith("A")) return 17;
+  if (rating.startsWith("A-")) return 16;
+  if (rating.startsWith("BBB+")) return 15;
+  if (rating.startsWith("BBB")) return 14;
+  if (rating.startsWith("BBB-")) return 13;
+  if (rating.startsWith("BB+")) return 12;
+  if (rating.startsWith("BB")) return 11;
+  if (rating.startsWith("BB-")) return 10;
+  if (rating.startsWith("B+")) return 9;
+  if (rating.startsWith("B")) return 8;
+  if (rating.startsWith("B-")) return 7;
+  if (rating.startsWith("CCC+")) return 6;
+  if (rating.startsWith("CCC")) return 5;
+  if (rating.startsWith("CCC-")) return 4;
+  if (rating.startsWith("CC")) return 3;
+  if (rating.startsWith("C")) return 2;
+  if (rating.startsWith("D")) return 1;
+
+  return -1; // Default for unknown ratings
+};
+
+const getRatingColor = (rating: string): string => {
+  if (rating.startsWith("AAA")) return "text-emerald-600";
+  if (rating.startsWith("AA+")) return "text-green-600";
+  if (rating.startsWith("AA")) return "text-green-500";
+  if (rating.startsWith("AA-")) return "text-green-400";
+  if (rating.startsWith("A+")) return "text-yellow-700";
+  if (rating.startsWith("A")) return "text-yellow-600";
+  if (rating.startsWith("A-")) return "text-yellow-500";
+  if (rating.startsWith("BBB+")) return "text-yellow-400";
+  if (rating.startsWith("BBB")) return "text-yellow-300";
+  if (rating.startsWith("BBB-")) return "text-yellow-200";
+  if (rating.startsWith("BB+")) return "text-orange-600";
+  if (rating.startsWith("BB")) return "text-orange-500";
+  if (rating.startsWith("BB-")) return "text-orange-400";
+  if (rating.startsWith("B+")) return "text-red-600";
+  if (rating.startsWith("B")) return "text-red-500";
+  if (rating.startsWith("B-")) return "text-red-400";
+  if (rating.startsWith("CCC+")) return "text-red-300";
+  if (rating.startsWith("CCC")) return "text-red-200";
+  if (rating.startsWith("CCC-")) return "text-red-100";
+  if (rating.startsWith("CC")) return "text-red-100";
+  if (rating.startsWith("C")) return "text-red-100";
+  if (rating.startsWith("D")) return "text-red-100";
+  return "text-gray-500"; // Default color for unknown ratings
+};

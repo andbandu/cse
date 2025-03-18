@@ -100,12 +100,24 @@ export default function BankDetailsPage() {
     }
   };
 
+  const getAerRate = (rate: Rate, payoutOption: PayoutOption): number | null => {
+    const aerValue =
+      payoutOption === "monthly"
+        ? rate.monthlyAer
+        : payoutOption === "yearly"
+        ? rate.yearlyAer
+        : rate.maturityAer;
+  
+    // Return null if the AER value is not available or invalid
+    return aerValue && !isNaN(Number(aerValue)) ? Number(aerValue) : null;
+  };
+
   // Prepare chart data
   const chartData = rates?.map((rate) => ({
     term: `${rate.termMonths} Months`,
     maturityRate: Number(rate.maturityRate),
     monthlyRate: Number(rate.monthlyRate),
-    yearlyRate: Number(rate.yearlyRate)
+    yearlyRate: Number(rate.yearlyRate),
   })) || [];
 
   // Generate columns based on selected payout option
@@ -130,6 +142,14 @@ export default function BankDetailsPage() {
           {getRate(row.original, payoutOption).toFixed(2)}%
         </div>
       ),
+    },
+    {
+      accessorKey: payoutOption === "monthly" ? "monthlyAer" : (payoutOption === "yearly" ? "yearlyAer" : "maturityAer"),
+      header: "AER%",
+      cell: ({ row }) => {
+        const aerValue = getAerRate(row.original, payoutOption);
+        return <div>{aerValue !== null ? `${aerValue.toFixed(2)}%` : "-"}</div>;
+      },
     },
     {
       accessorKey: "minDeposit",
@@ -455,21 +475,23 @@ export default function BankDetailsPage() {
                         Payout Option
                       </h3>
                       <RadioGroup
-                        value={payoutOption}
-                        onValueChange={(value) =>
-                          setPayoutOption(value as PayoutOption)
-                        }
-                        className="flex items-center space-x-4"
-                      >
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="maturity" id="maturity" />
-                          <Label htmlFor="maturity">At Maturity</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="monthly" id="monthly" />
-                          <Label htmlFor="monthly">Monthly Interest</Label>
-                        </div>
-                      </RadioGroup>
+                          value={payoutOption}
+                          onValueChange={(value) => setPayoutOption(value as PayoutOption)}
+                          className="flex items-center space-x-4"
+                        >
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="maturity" id="maturity" />
+                            <Label htmlFor="maturity">At Maturity</Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="monthly" id="monthly" />
+                            <Label htmlFor="monthly">Monthly Interest</Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="yearly" id="yearly" />
+                            <Label htmlFor="yearly">Yearly Interest</Label>
+                          </div>
+                        </RadioGroup>
                     </div>
 
                     <div className="h-72">
@@ -477,52 +499,54 @@ export default function BankDetailsPage() {
                         <Skeleton className="h-full w-full" />
                       ) : (
                         <ResponsiveContainer width="100%" height="100%">
-                          <BarChart
-                            data={chartData}
-                            margin={{
-                              top: 20,
-                              right: 30,
-                              left: 20,
-                              bottom: 30,
-                            }}
-                          >
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="term" />
-                            <YAxis domain={[0, "dataMax + 2"]} />
-                            <Tooltip
-                              formatter={(value: number) => [
-                                `${value.toFixed(2)}%`,
-                                payoutOption === "maturity"
-                                  ? "At Maturity"
-                                  : "Monthly Interest",
-                              ]}
-                            />
-                            {payoutOption === "maturity" && (
-                              <Bar
-                                dataKey="maturityRate"
-                                fill="#10B981"
-                                name="At Maturity"
-                                radius={[4, 4, 0, 0]}
-                              />
-                            )}
-                            {payoutOption === "monthly" && (
-                              <Bar
-                                dataKey="monthlyRate"
-                                fill="#3B82F6"
-                                name="Monthly Interest"
-                                radius={[4, 4, 0, 0]}
-                              />
-                            )}
-                            {payoutOption === "yearly" && (
-                              <Bar
-                                dataKey="yearlyRate"
-                                fill="#2563EB"
-                                name="Yearly Interest"
-                                radius={[4, 4, 0, 0]}
-                              />
-                            )}
-                          </BarChart>
-                        </ResponsiveContainer>
+                              <BarChart
+                                data={chartData}
+                                margin={{
+                                  top: 20,
+                                  right: 30,
+                                  left: 20,
+                                  bottom: 30,
+                                }}
+                              >
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="term" />
+                                <YAxis domain={[0, "dataMax + 2"]} />
+                                <Tooltip
+                                  formatter={(value: number) => [
+                                    `${value.toFixed(2)}%`,
+                                    payoutOption === "maturity"
+                                      ? "At Maturity"
+                                      : payoutOption === "monthly"
+                                      ? "Monthly Interest"
+                                      : "Yearly Interest",
+                                  ]}
+                                />
+                                {payoutOption === "maturity" && (
+                                  <Bar
+                                    dataKey="maturityRate"
+                                    fill="#10B981"
+                                    name="At Maturity"
+                                    radius={[4, 4, 0, 0]}
+                                  />
+                                )}
+                                {payoutOption === "monthly" && (
+                                  <Bar
+                                    dataKey="monthlyRate"
+                                    fill="#3B82F6"
+                                    name="Monthly Interest"
+                                    radius={[4, 4, 0, 0]}
+                                  />
+                                )}
+                                {payoutOption === "yearly" && (
+                                  <Bar
+                                    dataKey="yearlyRate"
+                                    fill="#F97316"
+                                    name="Yearly Interest"
+                                    radius={[4, 4, 0, 0]}
+                                  />
+                                )}
+                              </BarChart>
+                            </ResponsiveContainer>
                       )}
                     </div>
                   </TabsContent>

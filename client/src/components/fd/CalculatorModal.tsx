@@ -24,6 +24,26 @@ import {
     amount,
     payoutOption,
   }: CalculatorModalProps) {
+
+
+    const getRelevantRate = () => {
+      if (!rate) return null;
+      switch (payoutOption) {
+        case "maturity":
+          return rate.maturityRate;
+        case "monthly":
+          return rate.monthlyRate;
+        case "yearly":
+          return rate.yearlyRate;
+        default:
+          return rate.maturityRate; // Fallback to maturity if payoutOption is undefined
+      }
+    };
+
+    const relevantRate = getRelevantRate();
+  
+    
+
     return (
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
@@ -33,11 +53,11 @@ import {
   
           {/* Pass the rate, term, amount, and payout option to the Calculator component */}
           <Calculator
-            rate={rate}
-            term={term}
-            amount={amount}
-            payoutOption={payoutOption}
-          />
+          rate={relevantRate}
+          term={term}
+          amount={amount}
+          payoutOption={payoutOption}
+        />
         </DialogContent>
       </Dialog>
     );

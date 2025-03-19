@@ -1,3 +1,4 @@
+import { useEffect } from "react"; // Add this import
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -13,20 +14,28 @@ import { Printer } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 
-export default function Calculator() {
+// Define props interface for Calculator
+interface CalculatorProps {
+  rate?: number | null; // The relevant rate from CalculatorModal
+  term?: number; // Term in months
+  amount?: number; // Deposit amount
+  payoutOption?: "maturity" | "monthly" | "yearly"; // Payout option
+}
+
+export default function Calculator({ rate, term, amount, payoutOption }: CalculatorProps = {}) {
   const params = new URLSearchParams(window.location.search);
   const {
-    amount,
+    amount: calcAmount,
     interestRate,
-    term,
+    term: calcTerm,
     tax,
-    payoutOption,
+    payoutOption: calcPayoutOption,
     totalInterest,
     finalAmount,
     afterTaxAmount,
     taxAmount,
     monthlyInterest,
-    yearlyInterest, // Added yearlyInterest
+    yearlyInterest,
     setAmount,
     setInterestRate,
     setTerm,
@@ -35,6 +44,16 @@ export default function Calculator() {
     calculate,
     formatCurrency,
   } = useCalculator();
+
+  // Use effect to set initial values from props
+  useEffect(() => {
+    if (amount !== undefined && amount !== null) setAmount(amount);
+    if (rate !== undefined && rate !== null) setInterestRate(rate.toString());
+    if (term !== undefined && term !== null) setTerm(term);
+    if (payoutOption !== undefined) setPayoutOption(payoutOption);
+    // Optionally trigger calculate() here if you want immediate results
+    // calculate();
+  }, [amount, rate, term, payoutOption, setAmount, setInterestRate, setTerm, setPayoutOption]);
 
   const handlePrint = () => {
     window.print();
@@ -72,7 +91,7 @@ export default function Calculator() {
                           id="calc-amount"
                           className="pl-12"
                           placeholder="100,000"
-                          value={amount === 0 ? "" : amount.toLocaleString()}
+                          value={calcAmount === 0 ? "" : calcAmount.toLocaleString()}
                           onChange={(e) => {
                             const value = e.target.value.replace(/,/g, "");
                             if (value === "" || !isNaN(Number(value))) {
@@ -120,7 +139,7 @@ export default function Calculator() {
                         Term (Months)
                       </label>
                       <Select
-                        value={term.toString()}
+                        value={calcTerm.toString()}
                         onValueChange={(val) => setTerm(Number(val))}
                       >
                         <SelectTrigger id="calc-term">
@@ -171,12 +190,12 @@ export default function Calculator() {
                         Payout Option
                       </label>
                       <RadioGroup
-                        value={payoutOption}
+                        value={calcPayoutOption}
                         onValueChange={(value) =>
                           setPayoutOption(
-                            value as "maturity" | "monthly" | "yearly",
+                            value as "maturity" | "monthly" | "yearly"
                           )
-                        } // Added 'yearly'
+                        }
                         className="flex space-x-4"
                       >
                         <div className="flex items-center space-x-2">
@@ -228,7 +247,7 @@ export default function Calculator() {
                       Initial Deposit
                     </div>
                     <div className="text-2xl font-bold text-gray-900">
-                      {formatCurrency(amount)}
+                      {formatCurrency(calcAmount)}
                     </div>
                   </div>
                   <div className="bg-gray-50 rounded-lg p-4 text-center">
@@ -253,14 +272,14 @@ export default function Calculator() {
                   </div>
                 </div>
 
-                {payoutOption === "monthly" && (
+                {calcPayoutOption === "monthly" && (
                   <div className="bg-blue-50 rounded-lg p-4 text-center">
                     <div className="text-sm text-gray-600 mb-1">
                       Monthly Interest Payout
                     </div>
                     <div className="text-xl font-bold text-blue-600">
                       {formatCurrency(
-                        monthlyInterest * (1 - Number(tax) / 100),
+                        monthlyInterest * (1 - Number(tax) / 100)
                       )}
                     </div>
                     <div className="text-xs text-gray-500">
@@ -268,7 +287,7 @@ export default function Calculator() {
                     </div>
                   </div>
                 )}
-                {payoutOption === "yearly" && (
+                {calcPayoutOption === "yearly" && (
                   <div className="bg-blue-50 rounded-lg p-4 text-center">
                     <div className="text-sm text-gray-600 mb-1">
                       Yearly Interest Payout

@@ -232,19 +232,19 @@ export default function BankDetailsPage() {
                 "@type": "ListItem",
                 position: 1,
                 name: "Home",
-                item: "/",
+                item: "https://www.colombostockexchange.info/sri-lanka-banks/1000",
               },
               {
                 "@type": "ListItem",
                 position: 2,
                 name: "Banks",
-                item: "/sri-lanka-banks",
+                item: "https://www.colombostockexchange.info/sri-lanka-banks",
               },
               {
                 "@type": "ListItem",
                 position: 3,
-                name: bank.name,
-                item: `/sri-lanka-banks/${bank.id}`,
+                name: `${bank.name} Fixed Deposit Rates`,
+                item: `https://www.colombostockexchange.info/sri-lanka-banks/${bank.id}`,
               },
             ],
           })}

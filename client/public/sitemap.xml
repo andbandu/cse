@@ -1,28 +1,187 @@
-
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Homepage -->
   <url>
-    <loc>https://your-deployed-replit-url.repl.co/</loc>
-    <lastmod>2023-08-01</lastmod>
-    <changefreq>weekly</changefreq>
+    <loc>https://www.colombostockexchange.info/</loc>
+    <lastmod>2025-03-18</lastmod>
+    <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
+
+  <!-- About Page -->
   <url>
-    <loc>https://your-deployed-replit-url.repl.co/about</loc>
-    <lastmod>2023-08-01</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://www.colombostockexchange.info/about</loc>
+    <lastmod>2025-03-18</lastmod>
+    <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
+
+  <!-- Contact Page -->
   <url>
-    <loc>https://your-deployed-replit-url.repl.co/contact</loc>
-    <lastmod>2023-08-01</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://www.colombostockexchange.info/contact</loc>
+    <lastmod>2025-03-18</lastmod>
+    <changefreq>yearly</changefreq>
     <priority>0.7</priority>
   </url>
+
+  <!-- Terms and Conditions Page -->
   <url>
-    <loc>https://your-deployed-replit-url.repl.co/terms</loc>
-    <lastmod>2023-08-01</lastmod>
+    <loc>https://www.colombostockexchange.info/terms</loc>
+    <lastmod>2025-03-18</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>
+
+   <!-- privacy Page -->
+  <url>
+    <loc>https://www.colombostockexchange.info/privacy</loc>
+    <lastmod>2025-03-18</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://www.colombostockexchange.info/disclaimer</loc>
+    <lastmod>2025-03-18</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://www.colombostockexchange.info/cse-dividend-history</loc>
+    <lastmod>2025-03-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://www.colombostockexchange.info/sri-lanka-fixed-deposit-interest-rates</loc>
+    <lastmod>2025-03-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://www.colombostockexchange.info/fd-calculator</loc>
+    <lastmod>2025-03-18</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.colombostockexchange.info/sri-lanka-banks</loc>
+    <lastmod>2025-03-18</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+   <url>
+    <loc>https://www.colombostockexchange.info/compare-fd-rates</loc>
+    <lastmod>2025-03-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Bank Pages -->
+  <url>
+    <loc>https://www.colombostockexchange.info/sri-lanka-banks/1000</loc>
+    <lastmod>2025-03-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.colombostockexchange.info/sri-lanka-banks/2000</loc>
+    <lastmod>2025-03-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.colombostockexchange.info/sri-lanka-banks/3000</loc>
+    <lastmod>2025-03-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.colombostockexchange.info/sri-lanka-banks/4000</loc>
+    <lastmod>2025-03-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.colombostockexchange.info/sri-lanka-banks/5000</loc>
+    <lastmod>2025-03-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>  
+
+  <url>
+    <loc>https://www.colombostockexchange.info/sri-lanka-banks/6000</loc>
+    <lastmod>2025-03-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>  
+
+  <url>
+    <loc>https://www.colombostockexchange.info/sri-lanka-banks/7000</loc>
+    <lastmod>2025-03-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>  
+
+  <url>
+    <loc>https://www.colombostockexchange.info/sri-lanka-banks/8000</loc>
+    <lastmod>2025-03-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.colombostockexchange.info/sri-lanka-banks/9000</loc>
+    <lastmod>2025-03-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.colombostockexchange.info/sri-lanka-banks/1100</loc>
+    <lastmod>2025-03-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.colombostockexchange.info/sri-lanka-banks/2200</loc>
+    <lastmod>2025-03-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.colombostockexchange.info/sri-lanka-banks/3300</loc>
+    <lastmod>2025-03-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.colombostockexchange.info/sri-lanka-banks/4400</loc>
+    <lastmod>2025-03-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.colombostockexchange.info/sri-lanka-banks/5500</loc>
+    <lastmod>2025-03-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority> 
+  </url>
+
+
+  
+
 </urlset>

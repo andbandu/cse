@@ -2,4 +2,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://your-deployed-replit-url.repl.co/sitemap.xml
+Sitemap: https://www.colombostockexchange.info/sitemap.xml

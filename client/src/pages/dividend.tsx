@@ -154,7 +154,7 @@ export default function DividendPage() {
       />
       <BreadcrumbStructuredData
         items={[
-          { name: 'Home', item: '/' }
+          { name: 'cse dividend histor', item: 'https://www.colombostockexchange.info/cse-dividend-history' }
         ]}
       />
       

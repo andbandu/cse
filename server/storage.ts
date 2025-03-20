@@ -54,10 +54,12 @@ export class MemStorage implements IStorage {
   }
 
   async getRatesByFilter(term: number, amount: number): Promise<any[]> {
+    
     const rates = await sheetsService.getRatesData();
     return rates.filter((rate) => {
       return rate.termMonths === term && rate.minDeposit <= amount;
     });
+    
   }
 }
 

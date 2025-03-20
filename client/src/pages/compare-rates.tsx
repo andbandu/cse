@@ -209,7 +209,7 @@ export default function CompareRatesPage() {
             payoutOption: filters.payoutOption,
             institutionType: institutionType, // Pass institutionType to RatesTable
           }}
-          limit={10}
+          limit={20}
           showViewAll={false}
         />
       </div>

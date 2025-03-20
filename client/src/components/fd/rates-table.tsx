@@ -113,6 +113,7 @@ export default function RatesTable({
     apiEndpoint = `/api/rates/filter?term=${filters.term}&amount=${filters.amount}`;
   } else if (filters?.term) {
     apiEndpoint = `/api/rates/filter?term=${filters.term}`;
+    
   }
 
   const { data: rates, isLoading: ratesLoading } = useQuery<Rate[]>({
@@ -120,7 +121,7 @@ export default function RatesTable({
   });
 
 
-  console.log("Raw rates from API:", rates);
+
 
   const { data: banks, isLoading: banksLoading } = useQuery<Bank[]>({
     queryKey: ["/api/banks"],
@@ -331,7 +332,7 @@ export default function RatesTable({
                 <DataTable
                   columns={columns}
                   data={filteredRates}
-                  showPagination={false}
+                  showPagination={true}
                 />
               )}
             </div>

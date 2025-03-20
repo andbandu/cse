@@ -128,8 +128,8 @@ export function DataTable<TData, TValue>({
       </div>
 
       {showPagination && (
-        <div className="flex items-center justify-between space-x-2 py-4">
-          <div className="flex-1 text-sm text-muted-foreground">
+        <div className="flex flex-col gap-4 justify-center items-center md:justify-between space-x-2 py-4 mr-4 md:flex-row">
+          <div className="flex-1 text-sm text-muted-foreground ml-4  md:min-w-60">
             Showing {table.getState().pagination.pageIndex * pageSize + 1} to{" "}
             {Math.min(
               (table.getState().pagination.pageIndex + 1) * pageSize,
@@ -137,10 +137,10 @@ export function DataTable<TData, TValue>({
             )}{" "}
             of {data.length} entries
           </div>
-          <Pagination>
+          <Pagination className="w-auto mr-4">
             <PaginationContent>
               <PaginationItem>
-                <Button
+                <Button className="px-6"
                   variant="outline"
                   size="sm"
                   onClick={() => table.previousPage()}

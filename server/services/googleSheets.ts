@@ -48,7 +48,7 @@ export class GoogleSheetsService {
         return [];
       }
 
-      console.log(`Found ${rows.length} rows of data`);
+      
 
       const records: DividendRecord[] = rows.map((row) => {
         const baseRecord = {

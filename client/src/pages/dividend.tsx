@@ -173,16 +173,18 @@ export default function DividendPage() {
             />
           )}
 
-        <script type="text/javascript">
-          atOptions = {
-            'key' : 'cf654562104854aa15c5703f8a6af993',
-            'format' : 'iframe',
-            'height' : 90,
-            'width' : 728,
-            'params' : {}
-          };
-        </script>
-        <script type="text/javascript" src="//www.highperformanceformat.com/cf654562104854aa15c5703f8a6af993/invoke.js"></script>
+          <script type="text/javascript" dangerouslySetInnerHTML={{
+            __html: `
+              atOptions = {
+                key: 'cf654562104854aa15c5703f8a6af993',
+                format: 'iframe',
+                height: 90,
+                width: 728,
+                params: {}
+              };
+            `
+          }} />
+          <script type="text/javascript" src="//www.highperformanceformat.com/cf654562104854aa15c5703f8a6af993/invoke.js" />
           <SearchFilter
             filter={filter}
             onFilterChange={setFilter}

@@ -18,11 +18,11 @@ import { DataTable } from "@/components/ui/data-table";
 import { ColumnDef } from "@tanstack/react-table";
 import { Helmet } from "react-helmet";
 import { PayoutOption } from "@/lib/utils/calculator";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { formatTerm } from "@/lib/utils/format-term";
-import { BankRating } from "@/components/bank/BankRating"; // Import BankRating component
+import { BankRating } from "@/components/bank/BankRating";
 import {
   BarChart,
   Bar,
@@ -56,12 +56,12 @@ const getRatingColor = (rating: string): string => {
   if (rating.startsWith("CC")) return "text-red-100";
   if (rating.startsWith("C")) return "text-red-100";
   if (rating.startsWith("D")) return "text-red-100";
-  return "text-gray-500"; // Default color for unknown ratings
+  return "text-gray-500";
 };
 
 export default function BankDetailsPage() {
   const params = useParams<{ id: string }>();
-  const bankId = parseInt(params.id);
+  const bankId = parseInt(params.id || "0");
   const [payoutOption, setPayoutOption] = useState<PayoutOption>("maturity");
 
   const payoutOptions = [
@@ -89,6 +89,19 @@ export default function BankDetailsPage() {
       }),
   });
 
+  // Load ad script dynamically
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.async = true;
+    script.dataset.cfasync = 'false';
+    script.src = '//pl26345529.profitableratecpm.com/f7240b5403c30b43f62242912e1688b4/invoke.js';
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
   const getRate = (rate: Rate, payoutOption: PayoutOption): number => {
     switch (payoutOption) {
       case "monthly":
@@ -108,7 +121,6 @@ export default function BankDetailsPage() {
         ? rate.yearlyAer
         : rate.maturityAer;
   
-    // Return null if the AER value is not available or invalid
     return aerValue && !isNaN(Number(aerValue)) ? Number(aerValue) : null;
   };
 
@@ -381,7 +393,7 @@ export default function BankDetailsPage() {
                         Last Updated
                       </span>
                       <span className="font-medium">
-                        {formatDateToLocal(bank?.updatedAt)}
+                        {formatDateToLocal(new Date(bank?.updatedAt || new Date()))}
                       </span>
                     </div>
                     <Button
@@ -396,8 +408,9 @@ export default function BankDetailsPage() {
             </Card>
           </div>
         </div>
-        <script async="async" data-cfasync="false" src="//pl26345529.profitableratecpm.com/f7240b5403c30b43f62242912e1688b4/invoke.js"></script>
-<div id="container-f7240b5403c30b43f62242912e1688b4"></div>
+
+        {/* Ad container */}
+        <div id="container-f7240b5403c30b43f62242912e1688b4"></div>
 
         {isLoadingBank ? (
           <div className="space-y-8">

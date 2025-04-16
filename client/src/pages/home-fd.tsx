@@ -1,4 +1,3 @@
-
 import HeroSection from "@/components/fd/hero-section";
 import RatesTable from "@/components/fd/rates-table";
 import Calculator from "@/components/fd/calculator";
@@ -12,6 +11,20 @@ export default function FixedDepositPage() {
 
   // Format amount to comma-separated string
   const formattedAmount = new Intl.NumberFormat("en-US").format(filters.amount);
+
+  useEffect(() => {
+    // Load the script dynamically
+    const script = document.createElement('script');
+    script.async = true;
+    script.dataset.cfasync = 'false';
+    script.src = '//pl26345529.profitableratecpm.com/f7240b5403c30b43f62242912e1688b4/invoke.js';
+    document.body.appendChild(script);
+
+    return () => {
+      // Clean up the script when component unmounts
+      document.body.removeChild(script);
+    };
+  }, []);
 
   return (
     <>
@@ -39,10 +52,8 @@ export default function FixedDepositPage() {
         }}
       />
       <Calculator />
-      <script async="async" data-cfasync="false" src="//pl26345529.profitableratecpm.com/f7240b5403c30b43f62242912e1688b4/invoke.js"></script>
       <div id="container-f7240b5403c30b43f62242912e1688b4"></div>
       <FeaturedBanks />
-      
     </>
   );
 }

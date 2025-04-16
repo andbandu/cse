@@ -23,8 +23,36 @@ export default function CompareRatesPage() {
   const [amount, setAmount] = useState("100000");
   const [formattedAmount, setFormattedAmount] = useState("");
   const [error, setError] = useState("");
-  const [institutionType, setInstitutionType] = useState("all"); // Added state for institution type
+  const [institutionType, setInstitutionType] = useState("all");
   const { toast } = useToast();
+
+  // Load ad script dynamically
+  useEffect(() => {
+    const script1 = document.createElement('script');
+    script1.type = 'text/javascript';
+    script1.innerHTML = `
+      atOptions = {
+        key: 'cf654562104854aa15c5703f8a6af993',
+        format: 'iframe',
+        height: 90,
+        width: 728,
+        params: {}
+      };
+    `;
+    
+    const script2 = document.createElement('script');
+    script2.type = 'text/javascript';
+    script2.src = '//www.highperformanceformat.com/cf654562104854aa15c5703f8a6af993/invoke.js';
+    script2.async = true;
+
+    document.body.appendChild(script1);
+    document.body.appendChild(script2);
+
+    return () => {
+      document.body.removeChild(script1);
+      document.body.removeChild(script2);
+    };
+  }, []);
 
   // Format amount with commas
   useEffect(() => {
@@ -39,10 +67,19 @@ export default function CompareRatesPage() {
   const handleSearch = () => {
     let depositAmount = parseInt(amount.replace(/,/g, ""));
 
-    if (isNaN(depositAmount) || depositAmount <= 0) {
+    if (isNaN(depositAmount) {
       toast({
         title: "Invalid deposit amount",
         description: "Please enter a valid deposit amount",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (depositAmount <= 0) {
+      toast({
+        title: "Invalid deposit amount",
+        description: "Deposit amount must be greater than 0",
         variant: "destructive",
       });
       return;
@@ -52,7 +89,7 @@ export default function CompareRatesPage() {
       term: filters.term,
       amount: depositAmount,
       payoutOption: filters.payoutOption,
-      institutionType: institutionType, // Added institutionType to filters
+      institutionType: institutionType,
     });
   };
 
@@ -89,14 +126,11 @@ export default function CompareRatesPage() {
             <CardTitle>Filter Rates</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6"> {/* Changed to 4 columns */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               <div className="space-y-2">
-                <label
-                  htmlFor="deposit-amount"
-                  className="block text-sm font-medium text-gray-700"
-                >
+                <Label htmlFor="deposit-amount">
                   Deposit Amount (LKR)
-                </label>
+                </Label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <span className="text-gray-500 sm:text-sm">Rs.</span>
@@ -114,27 +148,23 @@ export default function CompareRatesPage() {
               </div>
 
               <div className="space-y-2">
-                <label
-                  htmlFor="deposit-term"
-                  className="block text-sm font-medium text-gray-700"
-                >
+                <Label htmlFor="deposit-term">
                   Term Period
-                </label>
+                </Label>
                 <Select
                   value={filters.term.toString()}
                   onValueChange={(value) =>
                     filters.setFilters({
+                      ...filters,
                       term: parseInt(value),
-                      amount: filters.amount,
-                      institutionType: institutionType, //Added here too
                     })
                   }
                 >
-                  <SelectTrigger id="deposit-term" className="text-gray-500">
+                  <SelectTrigger id="deposit-term">
                     <SelectValue placeholder="Select term" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="1">1 Months</SelectItem>
+                    <SelectItem value="1">1 Month</SelectItem>
                     <SelectItem value="3">3 Months</SelectItem>
                     <SelectItem value="6">6 Months</SelectItem>
                     <SelectItem value="12">12 Months</SelectItem>
@@ -145,9 +175,18 @@ export default function CompareRatesPage() {
                 </Select>
               </div>
 
-              <div>
+              <div className="space-y-2">
                 <Label>Institution Type</Label>
-                <Select value={institutionType} onValueChange={setInstitutionType}>
+                <Select 
+                  value={institutionType} 
+                  onValueChange={(value) => {
+                    setInstitutionType(value);
+                    filters.setFilters({
+                      ...filters,
+                      institutionType: value
+                    });
+                  }}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select type" />
                   </SelectTrigger>
@@ -170,21 +209,21 @@ export default function CompareRatesPage() {
             </div>
 
             <div className="mt-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <Label className="mb-2">
                 Payout Option
-              </label>
+              </Label>
               <RadioGroup
                 value={filters.payoutOption}
                 onValueChange={(value) =>
-                  filters.setFilters({ payoutOption: value as PayoutOption, institutionType: institutionType })
+                  filters.setFilters({
+                    ...filters,
+                    payoutOption: value as PayoutOption
+                  })
                 }
                 className="flex space-x-4"
               >
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem
-                    value="maturity"
-                    id="compare-payout-maturity"
-                  />
+                  <RadioGroupItem value="maturity" id="compare-payout-maturity" />
                   <Label htmlFor="compare-payout-maturity">At Maturity</Label>
                 </div>
                 <div className="flex items-center space-x-2">
@@ -199,24 +238,18 @@ export default function CompareRatesPage() {
             </div>
           </CardContent>
         </Card>
-        <script type="text/javascript">
-          atOptions = {
-            'key' : 'cf654562104854aa15c5703f8a6af993',
-            'format' : 'iframe',
-            'height' : 90,
-            'width' : 728,
-            'params' : {}
-          };
-        </script>
-        <script type="text/javascript" src="//www.highperformanceformat.com/cf654562104854aa15c5703f8a6af993/invoke.js"></script>        
+
+        {/* Ad container */}
+        <div id="container-f7240b5403c30b43f62242912e1688b4"></div>
+
         <RatesTable
           title="Fixed Deposit Rates Comparison"
-          description={`Showing rates for ${filters.term}-month fixed deposits of Rs. ${filters.amount.toLocaleString()} (${filters.payoutOption === "maturity" ? "At Maturity" : "Monthly Payout"})`}
+          description={`Showing rates for ${filters.term}-month fixed deposits of Rs. ${filters.amount.toLocaleString()} (${filters.payoutOption === "maturity" ? "At Maturity" : filters.payoutOption === "monthly" ? "Monthly Payout" : "Yearly Payout"})`}
           filters={{
             term: filters.term,
             amount: filters.amount,
             payoutOption: filters.payoutOption,
-            institutionType: institutionType, // Pass institutionType to RatesTable
+            institutionType: institutionType,
           }}
           limit={20}
           showViewAll={false}

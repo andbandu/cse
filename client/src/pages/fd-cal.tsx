@@ -38,7 +38,8 @@ export default function FdCal() {
           </motion.p>
         </motion.div>
       </div>
-
+      <script async="async" data-cfasync="false" src="//pl26345529.profitableratecpm.com/f7240b5403c30b43f62242912e1688b4/invoke.js"></script>
+      <div id="container-f7240b5403c30b43f62242912e1688b4"></div>
       <Calculator />
     </>
   );

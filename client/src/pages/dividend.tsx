@@ -172,6 +172,17 @@ export default function DividendPage() {
               totalCompanies={dividendData?.length || 0}
             />
           )}
+
+        <script type="text/javascript">
+          atOptions = {
+            'key' : 'cf654562104854aa15c5703f8a6af993',
+            'format' : 'iframe',
+            'height' : 90,
+            'width' : 728,
+            'params' : {}
+          };
+        </script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/cf654562104854aa15c5703f8a6af993/invoke.js"></script>
           <SearchFilter
             filter={filter}
             onFilterChange={setFilter}

@@ -386,7 +386,7 @@ export default function BankDetailsPage() {
                     </div>
                     <Button
                       className="w-full bg-green-600 hover:bg-green-700 text-white font-medium"
-                      onClick={() => window.open(bank?.website || "", "_blank")}
+                      onClick={() => window.open(bank?.website || "https://www.profitableratecpm.com/a5fjj4s89?key=60576c3a43b4820c4d8bfb7adef1919b", "_blank")}
                     >
                       Apply Online
                     </Button>
@@ -396,6 +396,8 @@ export default function BankDetailsPage() {
             </Card>
           </div>
         </div>
+        <script async="async" data-cfasync="false" src="//pl26345529.profitableratecpm.com/f7240b5403c30b43f62242912e1688b4/invoke.js"></script>
+<div id="container-f7240b5403c30b43f62242912e1688b4"></div>
 
         {isLoadingBank ? (
           <div className="space-y-8">

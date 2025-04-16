@@ -199,7 +199,16 @@ export default function CompareRatesPage() {
             </div>
           </CardContent>
         </Card>
-
+        <script type="text/javascript">
+          atOptions = {
+            'key' : 'cf654562104854aa15c5703f8a6af993',
+            'format' : 'iframe',
+            'height' : 90,
+            'width' : 728,
+            'params' : {}
+          };
+        </script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/cf654562104854aa15c5703f8a6af993/invoke.js"></script>        
         <RatesTable
           title="Fixed Deposit Rates Comparison"
           description={`Showing rates for ${filters.term}-month fixed deposits of Rs. ${filters.amount.toLocaleString()} (${filters.payoutOption === "maturity" ? "At Maturity" : "Monthly Payout"})`}

@@ -39,6 +39,8 @@ export default function FixedDepositPage() {
         }}
       />
       <Calculator />
+      <script async="async" data-cfasync="false" src="//pl26345529.profitableratecpm.com/f7240b5403c30b43f62242912e1688b4/invoke.js"></script>
+      <div id="container-f7240b5403c30b43f62242912e1688b4"></div>
       <FeaturedBanks />
       
     </>
